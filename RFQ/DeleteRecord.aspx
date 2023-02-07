@@ -1,0 +1,1 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="DeleteRecord.aspx.cs" Inherits="RFQ.DeleteRecord" %>

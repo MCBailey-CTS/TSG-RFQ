@@ -1,0 +1,80 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.Mobile.master.cs" Inherits="RFQ.Site_Mobile" %>
+<%@ Register Src="~/ViewSwitcher.ascx" TagPrefix="friendlyUrls" TagName="ViewSwitcher" %>
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%: Page.Title %> - TSG RFQ</title>
+
+    <asp:PlaceHolder runat="server">
+    </asp:PlaceHolder>
+
+<link href="/Content/bootstrap.css" rel="stylesheet"/>
+
+<link href="jqueryui/jquery-ui.min.css" rel="stylesheet" type="text/css">
+<link href="/Content/Site.css" rel="stylesheet"/>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+</head>
+<body>
+    <form runat="server" id="form2"  enctype="multipart/form-data">
+    
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a id="A1" class="navbar-brand" runat="server" href="~/"><img src="TSGLogo.png" border="0" height="55" /> RFQ</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a id="A2" runat="server" href="~/Default">Home</a></li>
+                        <li><a id="A3" runat="server" href="~/Dashboard">RFQ Dashboard</a></li>
+                        <li><a id="A4" runat="server" href="~/QuoteDashboard">Quote Dashboard</a></li>
+                        <li><a id="A5" runat="server" href="~/QuoteSummary">Reporting</a></li>
+                        <li><a id="A6" runat="server" href="~/Search">Search</a></li>
+                        <li><a id="A7" runat="server" href="~/About">About</a></li>
+                        <li><a id="A8" runat="server" href="~/Admin">Admin</a></li>
+                    </ul>
+                    <asp:LoginView runat="server" ViewStateMode="Disabled">
+                        <LoggedInTemplate>
+                            <ul id="configMenu" class="ui-menu" style="float: right; background-color: black; border: 1px solid black;">
+                                <li class="ui-menu-item" style="border: 0px solid black;">
+                                    <img src="configure.png" border="0" width="36" height="36" />
+                                    <div style="display: inline; position: relative; left: 10px; color: red; font-weight: bold;" id="MessageCount">
+                                    </div>
+                                    <ul>
+                                        <li class="ui-menu-item">
+                                            <%: Context.User.Identity.Name  %>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </LoggedInTemplate>
+                        <AnonymousTemplate>
+                            <ul class="nav navbar-nav  navbar-right">
+                                <li><a href="~/" runat="server">Sign in</a></li>
+                            </ul>
+                        </AnonymousTemplate>
+                    </asp:LoginView>
+                </div>
+            </div>
+        </div>
+        <div class="container body-content">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+            </asp:ContentPlaceHolder>
+            <hr />
+            <footer>
+                <p>&copy; Tooling Systems Group <%: DateTime.Now.Year %> </p>
+            </footer>
+        </div>
+        <asp:Literal id="litMessageCount" runat="server" />
+    </form>
+    </body>
+    
+</html>

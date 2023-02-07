@@ -1,0 +1,5 @@
+packages/*
+.vs/*
+RFQ/bin/*
+RFQ/obj/*
+weeklyReport/*

@@ -1,0 +1,219 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="RFQ.Site" %>
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%: Page.Title %> - TSG RFQ</title>
+
+    <asp:PlaceHolder runat="server">
+    </asp:PlaceHolder>
+
+<link href="/Content/bootstrap.css" rel="stylesheet"/>
+
+<link href="jqueryui/jquery-ui.min.css" rel="stylesheet" type="text/css">
+<link href="/Content/Site.css" rel="stylesheet"/>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+    <script type="text/javascript">
+        var appInsights=window.appInsights||function(config){
+            function s(config){t[config]=function(){var i=arguments;t.queue.push(function(){t[config].apply(t,i)})}}var t={config:config},r=document,f=window,e="script",o=r.createElement(e),i,u;for(o.src=config.url||"//az416426.vo.msecnd.net/scripts/a/ai.0.js",r.getElementsByTagName(e)[0].parentNode.appendChild(o),t.cookie=r.cookie,t.queue=[],i=["Event","Exception","Metric","PageView","Trace"];i.length;)s("track"+i.pop());return config.disableExceptionTracking||(i="onerror",s("_"+i),u=f[i],f[i]=function(config,r,f,e,o){var s=u&&u(config,r,f,e,o);return s!==!0&&t["_"+i](config,r,f,e,o),s}),t
+        }({
+            instrumentationKey:"d17816ec-8693-48ef-94fc-556146db1c71"
+        });
+        
+        window.appInsights=appInsights;
+        appInsights.trackPageView();
+    </script>
+</head>
+<body>
+    <script src="Scripts/jquery-1.10.2.js" type="text/javascript"></script>
+    <script src="jqueryui/jquery-ui.js" type="text/javascript"></script>
+	<script  type="text/javascript" src="Scripts/jquery.flot.js"></script>
+	<script  type="text/javascript" src="Scripts/jquery.flot.pie.js"></script>
+    <form runat="server" id="form1"  enctype="multipart/form-data">
+    
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a id="A1" class="navbar-brand" runat="server" href="~/"><img src="TSGLogo.png" border="0" height="55" /> RFQ</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a id="A2" runat="server" href="~/Default">Home</a></li>
+                        <li><a id="A3" runat="server" href="~/Dashboard">RFQ Dashboard</a></li>
+                        <li><a id="A4" runat="server" href="~/QuoteDashboard">Quote Dashboard</a></li>
+                        <li><a id="A5" runat="server" href="~/STSQuoteDashboard">STS Quote Dashboard</a></li>
+                        <li><a id="A6" runat="server" href="~/QuoteSummary">Reporting</a></li>
+                        <li><a id="A7" runat="server" href="~/Search">Search</a></li>
+                        <li><a id="A8" runat="server" href="~/About">About</a></li>
+                        <li><a id="A9" runat="server" href="~/Admin">Admin</a></li>
+                    </ul>
+                    <asp:LoginView runat="server" ViewStateMode="Disabled">
+                        <LoggedInTemplate>
+                            <ul id="configMenu" class="ui-menu" style="float: right; background-color: black; border: 1px solid black;">
+                                <li class="ui-menu-item" style="border: 0px solid black;">
+                                    <img src="configure.png" border="0" width="36" height="36" />
+                                    <div style="display: inline; position: relative; left: 10px; color: red; font-weight: bold;" id="MessageCount">
+                                    </div>
+                                    <ul>
+                                        <li class="ui-menu-item">
+                                            <%: Context.User.Identity.Name  %>
+                                        </li>
+                                        <li class="ui-menu-item">
+                                            <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="Sign out"
+                                                LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />
+                                        </li>
+                                        <li class="ui-menu-item"  onclick="showNotificationsUser();">
+                                            Notifications
+                                        </li>
+                                        <li class="ui-menu-item" onclick="showNotificationConfig();">
+                                            Notification Setup
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </LoggedInTemplate>
+                        <AnonymousTemplate>
+                            <ul class="nav navbar-nav  navbar-right">
+                                <li><a href="~/" runat="server">Sign in</a></li>
+                            </ul>
+                        </AnonymousTemplate>
+                    </asp:LoginView>
+                </div>
+            </div>
+        </div>
+        <div class="container body-content">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+            </asp:ContentPlaceHolder>
+            <hr />
+            <footer>
+                <p>&copy; Tooling Systems Group <%: DateTime.Now.Year %> </p>
+            </footer>
+        </div>
+        <div id="configurationSetupDialog" style="display: none;">
+            <h4>Select how you want to be notified</h4>
+            <asp:CheckBox runat="server" ID="cbEmail" />
+            &nbsp;Email to <%: Context.User.Identity.Name  %><br />
+            <asp:CheckBox runat="server" ID="cbMessaging" />
+            &nbsp;Internal Messaging System<br />
+            <asp:CheckBox runat="server" ID="cbTexting" />
+            &nbsp;Text Message to my Phone<br />
+            <br />
+            <h4>Select when you want to be notified</h4>
+            <asp:Label id="lblWhenNotifiedList" runat="server"></asp:Label>
+            <div class="mybutton" onclick="updateNotificationConfig()">Apply</div>
+        </div>
+        <div id="notificationDialog" style="display: none; max-height: 600px; max-width: 1200px;">
+        </div>
+        <asp:Button ID='btnCheckAll' runat='server' style="visibility: hidden;" Text='Check All' CssClass='ui-widget mybutton' OnClick='setAllMessagesViewed'/>
+        <asp:Literal id="litMessageCount" runat="server" />
+    </form>
+    </body>
+    <script>
+        $(document).ready(function () {
+            try {
+                $('#configMenu').menu();
+            }
+            catch (err) {
+
+            }
+            try {
+                $('.mybutton').button();
+                $('.datepicker').datepicker();
+            }
+            catch (err) {
+            }
+            try {
+                page_init();
+            } catch (err) {
+            }
+            <asp:Literal ID="litViewMessages" runat="server" />
+            });
+
+        function setMessageViewed(val, ck) {
+            ckval = 0;
+            if (ck == 'checked') {
+                ckval = 1;
+                if (document.getElementById('MessageCount').textContent.toString() > 1) {
+                    document.getElementById('MessageCount').innerHTML = document.getElementById('MessageCount').textContent.toString() - 1;
+                }
+                else {
+                    document.getElementById('MessageCount').innerHTML = '';
+                }
+            }
+            if (ck) {
+                ckval = 1;
+                if (document.getElementById('MessageCount').textContent.toString() > 1) {
+                    document.getElementById('MessageCount').innerHTML = document.getElementById('MessageCount').textContent.toString() - 1;
+                }
+                else {
+                    document.getElementById('MessageCount').innerHTML = '';
+                }
+            }
+            if (ckval == 0) {
+                if (document.getElementById('MessageCount').textContent.toString() == '') {
+                    document.getElementById('MessageCount').innerHTML = 1;
+                }
+                else {
+                    document.getElementById('MessageCount').innerHTML = parseInt(document.getElementById('MessageCount').textContent.toString()) + 1;;
+                }
+            }
+            url = "MarkMessageViewed.aspx?messageid=" + val + "&ck=" + ckval;
+            $.ajax(url);
+        }
+
+        function showNotificationsUser() {
+            url = "GetUserMessages.aspx";
+            $.ajax({ url: url, success: function (data) { processNotificationsUser(data); } });
+        }
+
+        function processNotificationsUser(data) {
+            $('#notificationDialog').html(data);
+            $('#notificationDialog').dialog({ width: 600 }, { maxHeight: 750});
+            $(this).css({ 'max-height': 700, 'overflow-y': 'auto' });
+        }
+
+        function showNotificationConfig() {
+            $('#configurationSetupDialog').dialog({ width: 600 });
+        }
+
+        function updateNotificationConfig() {
+            var numberNotify = $('#numberNotifyWhen').val();
+            notifyIDList = '';
+            for (i = 1; i <= numberNotify; i++)
+            {
+                if (document.getElementById("cbNotifyWhen"+i).checked) {
+                    if (notifyIDList != '') {
+                        notifyIDList = notifyIDList + ',';
+                    }
+                    notifyIDList += document.getElementById("cbNotifyWhen"+i).value;
+                }
+            }
+            email = '0'
+            messaging = '0';
+            texting = '0';
+            if (document.getElementById('cbEmail').checked) {
+                email='1';
+            }
+            if (document.getElementById('cbMessaging').checked) {
+                messaging='1';
+            }
+            if (document.getElementById('cbTexting').checked) {
+                texting='1';
+            }
+            url = 'processNotifyConfiguration?id=' + notifyIDList + '&email=' + email + '&messaging=' + messaging + '&texting=' + texting + '&rand=' + Math.random();
+            $.ajax(url);
+            $('#configurationSetupDialog').dialog('close');
+        }
+    </script>
+
+
+</html>
