@@ -135,18 +135,23 @@
                 <td class="ui-widget"><b><u>Quote Type</u></b></td>
                 <td class="ui-widget"><b><u>Die Content</u></b></td>
                 <td class="ui-widget"><b><u>Additional items to quote</u></b></td>
+                <td class="ui-widget"><b><u>Bundle Quotes to customer</u></b></td>
             </tr>
 
             <tr>
                 <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbDies" Text="Dies" /></td>
                 <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbNaBuild" Text="NA Build" /></td>
                 <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbHomeLineSupport" Text="Home Line Support" /></td>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="CheckBox1" Text="Yes" /></td>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="CheckBox2" Text="No" /></td>
             </tr>
 
             <tr>
                 <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbCheckFixture" Text="Check Fixture" /></td>
                 <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbBlended" Text="Blended" /></td>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="CheckBox3" Text="Shipping to Plant" /></td>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbShippingToPlant" Text="Shipping to Plant" /></td>
+                <td valign="top" class="ui-widget">Send quote to:</td>
+                 <td><asp:TextBox ID="txtSendQuotes"  runat="server" CssClass="ui-widget" MaxLength="120"></asp:TextBox></td>
             </tr>
             <tr>
                 <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbHydroformTooling" Text="Hydroform Tooling" /></td>
@@ -2305,16 +2310,9 @@
     <asp:Label ID="lblMessage" runat="server"></asp:Label>
     <asp:Literal ID="litPartScripts" runat="server"></asp:Literal>
     <asp:Literal ID="litDownloadQuotes" runat="server"></asp:Literal>
-    <%--<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
-        asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-        asp-fallback-test="window.jQuery"
-        crossorigin="anonymous"
-        integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
-</script>--%>
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
-    <link href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
-        rel="Stylesheet" type="text/css" />
+    <link href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css" rel="Stylesheet" type="text/css" />
     <script type="text/javascript">
         $(function () {
             $("[id$=txtExtraEmail]").autocomplete({

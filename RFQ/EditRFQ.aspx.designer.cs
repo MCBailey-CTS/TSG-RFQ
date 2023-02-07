@@ -294,6 +294,24 @@ namespace RFQ
         protected global::System.Web.UI.WebControls.CheckBox cbHomeLineSupport;
 
         /// <summary>
+        /// CheckBox1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox CheckBox1;
+
+        /// <summary>
+        /// CheckBox2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox CheckBox2;
+
+        /// <summary>
         /// cbCheckFixture control.
         /// </summary>
         /// <remarks>
@@ -312,13 +330,22 @@ namespace RFQ
         protected global::System.Web.UI.WebControls.CheckBox cbBlended;
 
         /// <summary>
-        /// CheckBox3 control.
+        /// cbShippingToPlant control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox CheckBox3;
+        protected global::System.Web.UI.WebControls.CheckBox cbShippingToPlant;
+
+        /// <summary>
+        /// txtSendQuotes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtSendQuotes;
 
         /// <summary>
         /// cbHydroformTooling control.
