@@ -1,733 +1,877 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="EditRFQ.aspx.cs" Inherits="RFQ.EditRFQ" MasterPageFile="~/Site.Master"  %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="EditRFQ.aspx.cs" Inherits="RFQ.EditRFQ" MasterPageFile="~/Site.Master" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <link href="jqueryui/jquery-ui.min.css" rel="stylesheet" type="text/css">
     <a href="Content/">Content/</a>
     <div style="min-height: 40px"></div>
     <center>
-    <table style="background-color: lightgrey">
-        <tr><td colspan="4" valign="top" align="center" class="ui-widget"> TSG RFQ Number: <asp:Label ID="rfqNumber" runat="server" CssClass="ui-widget"></asp:Label>&nbsp;&nbsp;</td>
-            <td class="ui-widget">RFQ Checklist</td>
-            <td>
-                <div style="cursor: pointer" onclick="showRFQCheckList();">
-                    <img id="rfqcl" src="checklist.png" width="50" height="75" />
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td class="ui-widget">Customer: </td><td><asp:DropDownList ID="ddlCustomer" runat="server" CssClass="ui-widget" OnSelectedIndexChanged="ddlCustomer_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList></td>
-            <td class="ui-widget">Plant: </td><td><asp:DropDownList ID="ddlPlant" runat="server" CssClass="ui-widget"  OnSelectedIndexChanged="ddlPlant_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList></td>
-            <td class="ui-widget">Status:</td><td><asp:DropDownList ID="ddlStatus" runat="server" CssClass="ui-widget" ></asp:DropDownList></td>
-        </tr>
-        <tr>
-            <td class="ui-widget">Customer Rank: </td><td><asp:Label ID="lblRank" runat="server"></asp:Label></td>
-            <td class="ui-widget">TSG Salesman: </td><td><asp:Label id="lblSalesman" runat="server"></asp:Label></td>
-            <td class="ui-widget">When To Send Quotes: </td><td><asp:DropDownList ID="ddlHandling" runat="server" CssClass="ui-widget"></asp:DropDownList></td>
-        </tr>
-        <tr>
-            <td class="ui-widget">Customer RFQ</td><td><asp:TextBox  ID="txtCustomerRFQ" onkeyup="custRFQcheck()" runat="server" CssClass="ui-widget" MaxLength="120"></asp:TextBox></td>
-            <td valign="top" class="ui-widget">Date Received:</td><td valign="top"><asp:TextBox ID="calReceivedDate" CssClass="ui-widget datepicker" runat="server"></asp:TextBox></td>
-            <td class="ui-widget">Use TSG Logo </td><td><asp:CheckBox ID="cbUseTSGLogo" runat="server"/></td>
-        </tr>
-        <tr>
-            <td class="ui-widget">Vehicle ID: </td><td><asp:DropDownList ID="ddlVehicle" runat="server" CssClass="ui-widget"></asp:DropDownList><div class="mybutton" onclick="newVehicle();"  id="newVehicleButton" >Add New Vehicle</div></td>
-            <td valign="top" class="ui-widget">Due Date:</td><td valign="top"><asp:TextBox ID="calDueDate" CssClass="ui-widget datepicker" runat="server" ></asp:TextBox></td>
-            <td class="ui-widget">Potential Turnkey </td><td><asp:CheckBox ID="cbTurnkey" runat="server" Checked="False" /></td>
-        </tr>
-        <tr>
-            <td class="ui-widget">OEM ID: </td><td><asp:DropDownList ID="ddlOEM" runat="server" CssClass="ui-widget"></asp:DropDownList></td>
-            <td valign="top" class="ui-widget">Internal Due Date: </td>
-            <%--<td valign="top"><asp:Label ID="lblIntDueDate" runat="server"></asp:Label></td>--%>
-            <td valign="top"><asp:TextBox ID="calIntDueDate" CssClass="ui-widget datepicker" runat="server" ></asp:TextBox></td>
-            <td class="ui-widget">Global Program </td><td valign="top"><asp:CheckBox ID="cbGlobalProgram" runat="server" /></td>
-        </tr>
-        <tr>
-            <td class="ui-widget">Program: </td><td><asp:DropDownList ID="ddlProgram" runat="server" CssClass="ui-widget"></asp:DropDownList></td>
-            <td valign="top" class="ui-widget">Bid Date:</td><td valign="top"><asp:TextBox ID="calBidDate" CssClass="ui-widget datepicker" runat="server" ></asp:TextBox></td>
-        </tr>
-        <tr>
-            <td class="ui-widget"></td><td><div class="mybutton" onclick="newProgram();"  id="newProgramButton" >Add New Program</div></td>
-            <td valign="top" class="ui-widget">Estimated PO Date: </td><td valign="top"><asp:TextBox ID="calPODate" CssClass="ui-widget datepicker" runat="server"></asp:TextBox></td>
-            <td class="ui-widget">Live Work</td><td><asp:CheckBox ID="cbLiveWork" runat="server" /></td>
-        </tr>
-        <tr>
-            <td class="ui-widget">Tool Country</td><td><asp:DropDownList ID="ddlToolCountry" runat="server" CssClass="ui-widget"></asp:DropDownList></td>
-            <td class="ui-widget">Product Type:</td><td><asp:DropDownList ID="ddlProductType" runat="server" CssClass="ui-widget"></asp:DropDownList></td>
-            <td class="ui-widget">Engineering Number: </td><td><asp:TextBox ID="txtEngineeringNumber" runat="server" CssClass="ui-widget"></asp:TextBox></td>
-        </tr>
-        <tr>
-            <td class="ui-widget">RFQ Source</td><td><asp:DropDownList ID="ddlRFQSource" runat="server" CssClass="ui-widget"></asp:DropDownList></td>
-            <td class="ui-widget">Additional RFQ Source:</td><td><asp:DropDownList ID="ddlRFQSource2" runat="server" CssClass="ui-widget"></asp:DropDownList></td>
-            <td class="ui-widget">Customer Contact:</td><td><asp:DropDownList ID="ddlCustomerContact" runat="server" CssClass="ui-widget"></asp:DropDownList></td>
-        </tr>
-        <%--<tr>
-             <td class="ui-widget" colspan="6">
-                <Center>
-                    <br />
-                    <b>THIS IS STILL BEING TESTED THE BUNDLER IS NOT IN PRODUCTION YET</b>
-                    <br />
-                    <asp:CheckBox ID="cbATSReady" Text="ATS Ready" runat="server" />&nbsp;&nbsp;&nbsp;&nbsp;<asp:CheckBox ID="cbBTSReady" Text="BTS Ready" runat="server" />&nbsp;&nbsp;&nbsp;&nbsp;
-                    <asp:CheckBox ID="cbDTSReady" Text="DTS Ready" runat="server" />&nbsp;&nbsp;&nbsp;&nbsp;<asp:CheckBox ID="cbETSReady" Text="ETS Ready" runat="server" />&nbsp;&nbsp;&nbsp;&nbsp;
-                    <asp:CheckBox ID="cbGTSReady" Text="GTS Ready" runat="server" />&nbsp;&nbsp;&nbsp;&nbsp;<asp:CheckBox ID="cbHTSReady" Text="HTS Ready" runat="server" />&nbsp;&nbsp;&nbsp;&nbsp;
-                    <asp:CheckBox ID="cbRTSReady" Text="RTS Ready" runat="server" />&nbsp;&nbsp;&nbsp;&nbsp;<asp:CheckBox ID="cbSTSReady" Text="STS Ready" runat="server" />&nbsp;&nbsp;&nbsp;&nbsp;
-                    <asp:CheckBox ID="cbUGSReady" Text="UGS Ready" runat="server" />
-                </Center>
-            </td>
-        </tr>--%>
-        <%--<tr>
-            <td class="ui-widget">Send Bundled Quotes To:<br />Seperate By Comma</td><td><asp:TextBox ID="txtSendBundledTo" runat="server" TextMode="MultiLine" CssClass="ui-widget" Rows="3" Columns="50"></asp:TextBox></td>
-            <td class="ui-widget">CC Bundled Quotes To:<br />Seperate By Comma</td><td><asp:TextBox ID="txtCCBundledTo" runat="server" TextMode="MultiLine" CssClass="ui-widget" Rows="3" Columns="50"></asp:TextBox></td>
-            <td class="ui-widget">BCC Bundled Qutoes To:<br />Seperate By Comma</td><td><asp:TextBox ID="txtBCCBundledTo" runat="server" TextMode="MultiLine" CssClass="ui-widget" Rows="3" Columns="50"></asp:TextBox></td>
-        </tr>--%>
-        <tr>
-            <%--<td class="ui-widget" valign="top">Meeting Notes</td><td colspan="2"><asp:TextBox ID="txtMeetingNotes" TextMode="MultiLine" runat="server" CssClass="ui-widget" Rows="2" Columns="50"></asp:TextBox></td>--%>
-            <td valign="top" class="ui-widget">Notes:</td><td><asp:TextBox ID="txtNotes" runat="server" TextMode="MultiLine" Rows="15" Columns="100"></asp:TextBox></td>
-            <td valign="bottom" class="ui-widget"><asp:Button ID="btnUpdateNotification" runat="server" CssClass="ui-widget mybutton" OnClick="sendUpdateNotification" Text="Send Update Notification" /></td>
-            <td class="ui-widget" valign="bottom"><div class="mybutton" onclick="deleteRFQ();"  id="deleteRFQBut" >Delete RFQ</div></td>
-            <td class="ui-widget" valign="bottom"><div class="mybutton" onclick="newCustomerContact();"  id="newCustomerContactButton" >New Customer Contact</div></td>
-            <td class="ui-widget" valign="bottom"><asp:Button CssClass="ui-widget mybutton" OnClick="unlockRFQ" runat="Server" ID="btnUnlockRFQ" Text="Unlock RFQ" /></td>
-        </tr>
-<%--        <tr>
-            
-        </tr>--%>
-        <tr>
-            <td colspan="6" style="background-color: sandybrown; font-weight: bold; padding: 4px;">
-                RFQ Link: 
+        <table style="background-color: lightgrey">
+            <tr>
+                <td colspan="4" valign="top" align="center" class="ui-widget">TSG RFQ Number:
+                    <asp:Label ID="rfqNumber" runat="server" CssClass="ui-widget"></asp:Label>&nbsp;&nbsp;</td>
+                <td class="ui-widget">RFQ Checklist</td>
+                <td>
+                    <div style="cursor: pointer" onclick="showRFQCheckList();">
+                        <img id="rfqcl" src="checklist.png" width="50" height="75" />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="ui-widget">Customer: </td>
+                <td>
+                    <asp:DropDownList ID="ddlCustomer" runat="server" CssClass="ui-widget" OnSelectedIndexChanged="ddlCustomer_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList></td>
+                <td class="ui-widget">Plant: </td>
+                <td>
+                    <asp:DropDownList ID="ddlPlant" runat="server" CssClass="ui-widget" OnSelectedIndexChanged="ddlPlant_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList></td>
+                <td class="ui-widget">Status:</td>
+                <td>
+                    <asp:DropDownList ID="ddlStatus" runat="server" CssClass="ui-widget"></asp:DropDownList></td>
+            </tr>
+            <tr>
+                <td class="ui-widget">Customer Rank: </td>
+                <td>
+                    <asp:Label ID="lblRank" runat="server"></asp:Label></td>
+                <td class="ui-widget">TSG Salesman: </td>
+                <td>
+                    <asp:Label ID="lblSalesman" runat="server"></asp:Label></td>
+                <td class="ui-widget">When To Send Quotes: </td>
+                <td>
+                    <asp:DropDownList ID="ddlHandling" runat="server" CssClass="ui-widget"></asp:DropDownList></td>
+            </tr>
+            <tr>
+                <td class="ui-widget">Customer RFQ</td>
+                <td>
+                    <asp:TextBox ID="txtCustomerRFQ" onkeyup="custRFQcheck()" runat="server" CssClass="ui-widget" MaxLength="120"></asp:TextBox></td>
+                <td valign="top" class="ui-widget">Date Received:</td>
+                <td valign="top">
+                    <asp:TextBox ID="calReceivedDate" CssClass="ui-widget datepicker" runat="server"></asp:TextBox></td>
+                <td class="ui-widget">Use TSG Logo </td>
+                <td>
+                    <asp:CheckBox ID="cbUseTSGLogo" runat="server" /></td>
+            </tr>
+            <tr>
+                <td class="ui-widget">Vehicle ID: </td>
+                <td>
+                    <asp:DropDownList ID="ddlVehicle" runat="server" CssClass="ui-widget"></asp:DropDownList><div class="mybutton" onclick="newVehicle();" id="newVehicleButton">Add New Vehicle</div>
+                </td>
+                <td valign="top" class="ui-widget">Due Date:</td>
+                <td valign="top">
+                    <asp:TextBox ID="calDueDate" CssClass="ui-widget datepicker" runat="server"></asp:TextBox></td>
+                <td class="ui-widget">Potential Turnkey </td>
+                <td>
+                    <asp:CheckBox ID="cbTurnkey" runat="server" Checked="False" /></td>
+            </tr>
+            <tr>
+                <td class="ui-widget">OEM ID: </td>
+                <td>
+                    <asp:DropDownList ID="ddlOEM" runat="server" CssClass="ui-widget"></asp:DropDownList></td>
+                <td valign="top" class="ui-widget">Internal Due Date: </td>
+                <%--<td valign="top"><asp:Label ID="lblIntDueDate" runat="server"></asp:Label></td>--%>
+                <td valign="top">
+                    <asp:TextBox ID="calIntDueDate" CssClass="ui-widget datepicker" runat="server"></asp:TextBox></td>
+                <td class="ui-widget">Global Program </td>
+                <td valign="top">
+                    <asp:CheckBox ID="cbGlobalProgram" runat="server" /></td>
+            </tr>
+            <tr>
+                <td class="ui-widget">Program: </td>
+                <td>
+                    <asp:DropDownList ID="ddlProgram" runat="server" CssClass="ui-widget"></asp:DropDownList></td>
+                <td valign="top" class="ui-widget">Bid Date:</td>
+                <td valign="top">
+                    <asp:TextBox ID="calBidDate" CssClass="ui-widget datepicker" runat="server"></asp:TextBox></td>
+            </tr>
+            <tr>
+                <td class="ui-widget"></td>
+                <td>
+                    <div class="mybutton" onclick="newProgram();" id="newProgramButton">Add New Program</div>
+                </td>
+                <td valign="top" class="ui-widget">Estimated PO Date: </td>
+                <td valign="top">
+                    <asp:TextBox ID="calPODate" CssClass="ui-widget datepicker" runat="server"></asp:TextBox></td>
+                <td class="ui-widget">Live Work</td>
+                <td>
+                    <asp:CheckBox ID="cbLiveWork" runat="server" /></td>
+            </tr>
+            <tr>
+                <td class="ui-widget">Tool Country</td>
+                <td>
+                    <asp:DropDownList ID="ddlToolCountry" runat="server" CssClass="ui-widget"></asp:DropDownList></td>
+                <td class="ui-widget">Product Type:</td>
+                <td>
+                    <asp:DropDownList ID="ddlProductType" runat="server" CssClass="ui-widget"></asp:DropDownList></td>
+                <td class="ui-widget">Engineering Number: </td>
+                <td>
+                    <asp:TextBox ID="txtEngineeringNumber" runat="server" CssClass="ui-widget"></asp:TextBox></td>
+            </tr>
+            <tr>
+                <td class="ui-widget">RFQ Source</td>
+                <td>
+                    <asp:DropDownList ID="ddlRFQSource" runat="server" CssClass="ui-widget"></asp:DropDownList></td>
+                <td class="ui-widget">Additional RFQ Source:</td>
+                <td>
+                    <asp:DropDownList ID="ddlRFQSource2" runat="server" CssClass="ui-widget"></asp:DropDownList></td>
+                <td class="ui-widget">Customer Contact:</td>
+                <td>
+                    <asp:DropDownList ID="ddlCustomerContact" runat="server" CssClass="ui-widget"></asp:DropDownList></td>
+            </tr>
+
+            <tr>
+
+                <td valign="bottom" class="ui-widget">
+                    <asp:Button ID="btnUpdateNotification" runat="server" CssClass="ui-widget mybutton" OnClick="sendUpdateNotification" Text="Send Update Notification" />
+                </td>
+                <td class="ui-widget" valign="bottom">
+                    <div class="mybutton" onclick="deleteRFQ();" id="deleteRFQBut">Delete RFQ</div>
+                </td>
+                <td class="ui-widget" valign="bottom">
+                    <div class="mybutton" onclick="newCustomerContact();" id="newCustomerContactButton">New Customer Contact</div>
+                </td>
+                <td class="ui-widget" valign="bottom">
+                    <asp:Button CssClass="ui-widget mybutton" OnClick="unlockRFQ" runat="Server" ID="btnUnlockRFQ" Text="Unlock RFQ" />
+                </td>
+            </tr>
+            <tr>
+                <td valign="top" class="ui-widget">Notes:</td>
+
+                <td>
+                    <asp:TextBox ID="txtNotes" runat="server" TextMode="MultiLine" Rows="20" Columns="20"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6" style="background-color: sandybrown; font-weight: bold; padding: 4px;">RFQ Link: 
                 <asp:HyperLink runat="server" ID="hlRFQLink" Target="_blank"></asp:HyperLink>
 
-            </td>
-        </tr>
-        <tr>
-            <td colspan="6" style="align-self: center">
-                Created: <asp:Label ID="create" runat="server" CssClass="ui-widget" ></asp:Label>&nbsp;&nbsp;&nbsp;&nbsp;
-                Modified: <asp:Label ID="modify" runat="server" CssClass="ui-widget"></asp:Label>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="6">
-                <asp:Label ID="lblNotified" runat="server" CssClass="ui-widget"></asp:Label>
-            </td>
-        </tr>
-        <tr>
-            <td class="ui-widget">Number of Parts: </td><td><asp:Label ID="lblNumberOfParts" runat="server" CssClass="ui-widget"></asp:Label></td>
-            <td class="ui-widget" hidden="hidden">Number of Tools:</td><td><asp:Label ID="lblNumberOfTools" runat="server" CssClass="ui-widget" Visible="false"></asp:Label></td>
-        </tr>
-        <tr id="notificationTR">
-            <td colspan="6" style="background-color: sandybrown; font-weight: bold; padding: 4px;">
-                <div id="sendNotificationsMessage"></div>
-                <div style='float: left;'>Notification: <div  onclick="reSendNotifications();"  class="ui-widget mybutton"  style='float: right;' >Re-Send Notifications</div><div  onclick="sendNotifications();"  class="ui-widget mybutton"  style='float: right;' >Send Notifications</div></div>
-                <div>&nbsp;</div><div>&nbsp;</div>
-                <asp:Label ID="lblNotificationCheckList" runat="server"></asp:Label>
-            </td>
-        </tr>
-        <tr><td colspan="6" align="center"><asp:Button ID="btnSave_Click" runat="server"  Text="Save" CssClass="ui-widget mybutton" OnClick="btnSave_Click_Click"/></td></tr>
-    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6" style="align-self: center">Created:
+                    <asp:Label ID="create" runat="server" CssClass="ui-widget"></asp:Label>&nbsp;&nbsp;&nbsp;&nbsp;
+                Modified:
+                    <asp:Label ID="modify" runat="server" CssClass="ui-widget"></asp:Label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6">
+                    <asp:Label ID="lblNotified" runat="server" CssClass="ui-widget"></asp:Label>
+                </td>
+            </tr>
+            <tr>
+                <td class="ui-widget">Number of Parts: </td>
+                <td>
+                    <asp:Label ID="lblNumberOfParts" runat="server" CssClass="ui-widget"></asp:Label></td>
+                <td class="ui-widget" hidden="hidden">Number of Tools:</td>
+                <td>
+                    <asp:Label ID="lblNumberOfTools" runat="server" CssClass="ui-widget" Visible="false"></asp:Label></td>
+            </tr>
+            <tr id="notificationTR">
+                <td colspan="6" style="background-color: sandybrown; font-weight: bold; padding: 4px;">
+                    <div id="sendNotificationsMessage"></div>
+                    <div style='float: left;'>
+                        Notification:
+                        <div onclick="reSendNotifications();" class="ui-widget mybutton" style='float: right;'>Re-Send Notifications</div>
+                        <div onclick="sendNotifications();" class="ui-widget mybutton" style='float: right;'>Send Notifications</div>
+                    </div>
+                    <div>&nbsp;</div>
+                    <div>&nbsp;</div>
+                    <asp:Label ID="lblNotificationCheckList" runat="server"></asp:Label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6" align="center">
+                    <asp:Button ID="btnSave_Click" runat="server" Text="Save" CssClass="ui-widget mybutton" OnClick="btnSave_Click_Click" /></td>
+            </tr>
+        </table>
     </center>
     <hr />
-        <center>
-            <asp:Button ID="hdnImportParts" runat="server" style="visibility: hidden;" Text="Import Parts"  CssClass="ui-widget mybutton" OnClick="btnImport_Click"/>
-            <asp:Button ID="htnAttachmentUpload" runat="server" style="visibility: hidden;" Text="Upload Parts"  CssClass="ui-widget mybutton" OnClick="importFiles_click"/>
-            <asp:FileUpload ID="uploadFile" runat="server" AllowMultiple="true" style="opacity: 0; visibility: hidden;" />
-            <asp:FileUpload ID="fileUpload" runat="server" style="opacity: 0; visibility: hidden;" onChange='$("#MainContent_hdnImportParts").click();'  />
-
-            <label class="ui-widget" >Sales Buttons</label>
-            <br />
-
-            <button class="mybutton" onclick="downloadSummary();">Quote Summary (Excel)</button>
-            <button class="mybutton" onclick="downloadPartSummary();">Part Summary (Excel)</button>
-            <asp:Button ID="viewAllQuotesButton" runat="server" Text="View All Quotes" CssClass="ui-widget mybutton" OnClientClick="viewAllQuotes();" />
-            <asp:Button ID="downloadCompanyQuotesButton" runat="server" Text="Download my Company's PDFs" CssClass="ui-widget mybutton" OnClick="btnDownloadCompanyQuotes_Click" />
-            <br />
-            <div class="mybutton" onclick="openSendQuoteDialog();"  id="btnSendQuoteDialog" >Send Quotes To Customer</div>
-            <asp:Button ID="downloadAllQuotesButton" runat="server" Text="Download All Quotes PDFs" CssClass="ui-widget mybutton" OnClick="btnDownloadQuotes_Click" />
-            <asp:Button ID="viewOnlyMyQuotesButton" runat="server" Text="View My Companies Quotes (1 PDF)" CssClass="ui-widget mybutton" OnClientClick="onlyMyCompaniesQuoteOnePDF();" />
-            <div class="mybutton" onclick="openNoQuotesDialog();" id="btnShowNoQuotesDialog" >View No Quote Reasons</div>
-
-            <hr />
-            
-            <label class="ui-widget" >Data Cordinator Buttons</label>
-            <br />
-            <div class="mybutton" ID="btnImport" runat="server" OnClick="importParts();">Import Parts</div>
-            <div class="mybutton" onclick="showAddPart();"  id="addButton" >Add Part</div>
-            <br />
-            <div class="mybutton" onclick="removeAllParts();" id="removeAllButton">Remove All Parts</div>
-            <asp:Button ID="btnRemoveHistory" runat="server" OnClick="btnDeleteAllHistory" CssClass="ui-widget mybutton" Text="Remove All History"/>
-            <br />
-            <div class="mybutton" id="btnSTSRfqInfo" onclick="populateSTSRFQDialog();return false;">STS RFQ Info</div>
-            <%--<asp:Button runat="server" CssClass="mybutton" OnClick="sendNoQuotesToCustomer" Text="Send No Quotes to Customer" ID="btnSendNoQuotesToCustomer" />--%>
-            <div class="mybutton" onclick="openSendNoQuoteDialog();"  id="btnSendNoQuoteDialog" >Send No Quotes to Customer</div>
-             <%--<asp:Button runat="server" CssClass="mybutton" OnClientClick="openSendNoQuoteDialog()" Text="Send No Quotes to Customer" ID="btnSendNoQuotesToCustomer" />--%>
-
-
-            <hr />
-            <label class="ui-widget" >Estimator Buttons</label>
-            <br />
-            <div class="mybutton" onclick="uploadQuote();" id="quoteUploadButton">Upload Quote</div>
-            <div class="mybutton" onclick="showNoReason();" id="nqRemainingPartsDiv" >No Quote Remaining Parts</div>
-            <div class="mybutton" onclick="showRemoveNoQuotes();" id="removeNoQuotesAllPartsDiv">Remove No Quotes All Parts</div>
-            <br />
-            <div class="mybutton" onclick="reserveAllParts();" id="reserveAllPartsDiv">Reserve All Remaining Parts</div>
-            <asp:Button ID="btnRemoveAllReservations" runat="server" OnClick="removeAllReservations" CssClass="ui-widget mybutton" Text="Remove All Reservations" />
-            <div class="mybutton" onclick="downloadNewQuoteSheet();" id="newQuoteSheet">New Parts Quote Sheet</div>
-            <div class="mybutton" onclick="downloadQuoteSheet();" id="quoteSheet">Quote Sheet (Excel)</div>
-            <div class="mybutton" onclick="downloadQuoteSheet();" id="STSquoteSheet">STS Quote Engine Sheet (Excel)</div>
-            <%--<div class="mybutton" onclick="downloadUGSQuoteSheet();" id="UGSQuoteSheet">UGS Quote Sheet</div>--%>
-            <br />
-            <div class="mybutton" onclick="openAssembly();" id="btnCreateAssembly">Add Assembly</div>
-            <div class="mybutton" onclick="ugsMultiQuote();" id="btnUGSMultiQuote">UGS Multi Quote</div>
-            <div class="mybutton" onclick="ugsSummary();" id="btnUGSSummary">UGS Quote Summary</div>
-            <br />
-            <div class="mybutton" onclick="hideAllParts();showReservedParts();" id="btnShowOnlyReservedParts">Show Only Reserved Parts</div>
-            <div class="mybutton" onclick="showAllParts();hideReservedParts();" id="btnShowUnreservedParts">Show Only Unreserved Parts</div>
-            <div class="mybutton" onclick="showAllParts();showReservedParts();" id="btnShowAllParts">Show All Parts</div>
-            <div class="mybutton" onclick="hideAllHistory();" id="btnHideAllHistory">Hide History</div>
-            <div class="mybutton" onclick="showAllHistory();" id="btnShowAllHistory">Show History</div>
-            
-        </center>
     <center>
-    <asp:DataGrid ID="dgParts" runat="server" AutoGenerateColumns="false" OnItemDataBound="dgParts_ItemDataBound" width="1600px" >
-        <Columns>
-            <asp:TemplateColumn Visible="false">
-                <ItemTemplate>
-                    <asp:Label ID="lblBackGroundColor" Text='<%# Eval("BackGroundColor") %>' runat="server"></asp:Label>
-                    <asp:Label ID="PartID" Text='<%# Eval("PartId") %>' runat="server"></asp:Label>
-                </ItemTemplate>
-            </asp:TemplateColumn>
-            <asp:TemplateColumn HeaderText="Edit" HeaderStyle-HorizontalAlign="Center">
-                <ItemTemplate>
-                    <asp:HyperLink ID="btnEdit" runat="server" ImageUrl="~/edit.png" onclick="editPart(this.id, $(this).closest('tr').attr('id'));" style="cursor: pointer;"></asp:HyperLink>
-                </ItemTemplate>
-            </asp:TemplateColumn>
-            <asp:TemplateColumn  HeaderText="Line" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
-                <ItemTemplate>
-                    <asp:Label id="LineNumber" runat="server" Text='<%# Eval("LineNumber") %>'></asp:Label>
-                </ItemTemplate>
-            </asp:TemplateColumn>
-            <asp:TemplateColumn HeaderText ="Picture">
-                <ItemTemplate>
-                    <span class="SharepointLogin" >Be sure you are logged in to Sharepoint</span>
-                    <a href='<%# Eval("prtPicture") %>' target=_blank>
-                    <asp:Image ID="imgPart" runat="server" ImageUrl='<%# Eval("prtPicture") %>' onerror="imgError(this)"  CssClass="PartPic" Width="310px" Height="230px"/>
-                    </a>
-                </ItemTemplate>
-            </asp:TemplateColumn>
-            <asp:TemplateColumn HeaderText="Part" HeaderStyle-HorizontalAlign="Center">
-                <ItemTemplate>
-                    <asp:TextBox runat="server" ID="PartNumber" Text='<%# Eval("prtPartNumber") %>' Wrap="true" ReadOnly="true" Rows="11" BackColor="Transparent" BorderStyle="None" TextMode="MultiLine" Width="300px" ></asp:TextBox>
-                </ItemTemplate>
-            </asp:TemplateColumn>
-            <asp:TemplateColumn HeaderText="Description" HeaderStyle-HorizontalAlign="Center">
-                <ItemTemplate>
-                    <asp:TextBox runat="server" ID="PartDescription" Text='<%# Eval("prtPartDescription") %>' Wrap="true" ReadOnly="true" BackColor="Transparent" Rows="11" BorderStyle="None" TextMode="MultiLine" Width="300px"></asp:TextBox>
-                </ItemTemplate>
-            </asp:TemplateColumn>
-            <asp:TemplateColumn HeaderText="Part Type" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
-                <ItemTemplate>
-                    <asp:Label runat="server" ID="PartType" Text='<%# Eval("ptyPartDescription") %>'></asp:Label>
-                </ItemTemplate>
-            </asp:TemplateColumn>
-            <asp:TemplateColumn HeaderText="Length" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
-                <ItemTemplate>
-                    <asp:Label runat="server" ID="PartLength" Text='<%# Eval("Length") %>' ></asp:Label>
-                </ItemTemplate>
-            </asp:TemplateColumn>
-            <asp:TemplateColumn HeaderText="Width" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
-                <ItemTemplate>
-                    <asp:Label runat="server" ID="PartWidth" Text='<%# Eval("Width") %>' ></asp:Label>
-                </ItemTemplate>
-            </asp:TemplateColumn>
-            <asp:TemplateColumn HeaderText="Height" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
-                <ItemTemplate>
-                    <asp:Label runat="server" ID="PartHeight" Text='<%# Eval("Height") %>' ></asp:Label>
-                </ItemTemplate>
-            </asp:TemplateColumn>
-            <asp:TemplateColumn HeaderText="Material Type" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
-                <ItemTemplate>
-                    <asp:Label runat="server" ID="MaterialType" Text='<%# Eval("MaterialType") %>' ></asp:Label>
-                </ItemTemplate>
-            </asp:TemplateColumn>
-            <asp:TemplateColumn HeaderText="Thickness" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
-                <ItemTemplate>
-                    <asp:Label runat="server" ID="Thickness" Text='<%# Eval("MaterialThickness") %>' ></asp:Label>
-                </ItemTemplate>
-            </asp:TemplateColumn>
-            <asp:TemplateColumn HeaderText="Weight" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
-                <ItemTemplate>
-                    <asp:Label runat="server" ID="PartWeight" Text='<%# Eval("Weight") %>' ></asp:Label>
-                </ItemTemplate>
-            </asp:TemplateColumn>
-            <asp:TemplateColumn HeaderText="Annual Volume" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
-                <ItemTemplate>
-                    <asp:Label runat="server" ID="AnnualVolume" Text='<%# Eval("annualVolume") %>'></asp:Label>
-                </ItemTemplate>
-            </asp:TemplateColumn>
-<%--            <asp:TemplateColumn HeaderText="Part Check List" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
+        <asp:Button ID="hdnImportParts" runat="server" Style="visibility: hidden;" Text="Import Parts" CssClass="ui-widget mybutton" OnClick="btnImport_Click" />
+        <asp:Button ID="htnAttachmentUpload" runat="server" Style="visibility: hidden;" Text="Upload Parts" CssClass="ui-widget mybutton" OnClick="importFiles_click" />
+        <asp:FileUpload ID="uploadFile" runat="server" AllowMultiple="true" Style="opacity: 0; visibility: hidden;" />
+        <asp:FileUpload ID="fileUpload" runat="server" Style="opacity: 0; visibility: hidden;" onChange='$("#MainContent_hdnImportParts").click();' />
+
+        <label class="ui-widget">Sales Buttons</label>
+        <br />
+
+        <button class="mybutton" onclick="downloadSummary();">Quote Summary (Excel)</button>
+        <button class="mybutton" onclick="downloadPartSummary();">Part Summary (Excel)</button>
+        <asp:Button ID="viewAllQuotesButton" runat="server" Text="View All Quotes" CssClass="ui-widget mybutton" OnClientClick="viewAllQuotes();" />
+        <asp:Button ID="downloadCompanyQuotesButton" runat="server" Text="Download my Company's PDFs" CssClass="ui-widget mybutton" OnClick="btnDownloadCompanyQuotes_Click" />
+        <br />
+        <div class="mybutton" onclick="openSendQuoteDialog();" id="btnSendQuoteDialog">Send Quotes To Customer</div>
+        <asp:Button ID="downloadAllQuotesButton" runat="server" Text="Download All Quotes PDFs" CssClass="ui-widget mybutton" OnClick="btnDownloadQuotes_Click" />
+        <asp:Button ID="viewOnlyMyQuotesButton" runat="server" Text="View My Companies Quotes (1 PDF)" CssClass="ui-widget mybutton" OnClientClick="onlyMyCompaniesQuoteOnePDF();" />
+        <div class="mybutton" onclick="openNoQuotesDialog();" id="btnShowNoQuotesDialog">View No Quote Reasons</div>
+
+        <hr />
+
+        <label class="ui-widget">Data Cordinator Buttons</label>
+        <br />
+        <div class="mybutton" id="btnImport" runat="server" onclick="importParts();">Import Parts</div>
+        <div class="mybutton" onclick="showAddPart();" id="addButton">Add Part</div>
+        <br />
+        <div class="mybutton" onclick="removeAllParts();" id="removeAllButton">Remove All Parts</div>
+        <asp:Button ID="btnRemoveHistory" runat="server" OnClick="btnDeleteAllHistory" CssClass="ui-widget mybutton" Text="Remove All History" />
+        <br />
+        <div class="mybutton" id="btnSTSRfqInfo" onclick="populateSTSRFQDialog();return false;">STS RFQ Info</div>
+        <%--<asp:Button runat="server" CssClass="mybutton" OnClick="sendNoQuotesToCustomer" Text="Send No Quotes to Customer" ID="btnSendNoQuotesToCustomer" />--%>
+        <div class="mybutton" onclick="openSendNoQuoteDialog();" id="btnSendNoQuoteDialog">Send No Quotes to Customer</div>
+        <%--<asp:Button runat="server" CssClass="mybutton" OnClientClick="openSendNoQuoteDialog()" Text="Send No Quotes to Customer" ID="btnSendNoQuotesToCustomer" />--%>
+
+
+        <hr />
+        <label class="ui-widget">Estimator Buttons</label>
+        <br />
+        <div class="mybutton" onclick="uploadQuote();" id="quoteUploadButton">Upload Quote</div>
+        <div class="mybutton" onclick="showNoReason();" id="nqRemainingPartsDiv">No Quote Remaining Parts</div>
+        <div class="mybutton" onclick="showRemoveNoQuotes();" id="removeNoQuotesAllPartsDiv">Remove No Quotes All Parts</div>
+        <br />
+        <div class="mybutton" onclick="reserveAllParts();" id="reserveAllPartsDiv">Reserve All Remaining Parts</div>
+        <asp:Button ID="btnRemoveAllReservations" runat="server" OnClick="removeAllReservations" CssClass="ui-widget mybutton" Text="Remove All Reservations" />
+        <div class="mybutton" onclick="downloadNewQuoteSheet();" id="newQuoteSheet">New Parts Quote Sheet</div>
+        <div class="mybutton" onclick="downloadQuoteSheet();" id="quoteSheet">Quote Sheet (Excel)</div>
+        <div class="mybutton" onclick="downloadQuoteSheet();" id="STSquoteSheet">STS Quote Engine Sheet (Excel)</div>
+        <%--<div class="mybutton" onclick="downloadUGSQuoteSheet();" id="UGSQuoteSheet">UGS Quote Sheet</div>--%>
+        <br />
+        <div class="mybutton" onclick="openAssembly();" id="btnCreateAssembly">Add Assembly</div>
+        <div class="mybutton" onclick="ugsMultiQuote();" id="btnUGSMultiQuote">UGS Multi Quote</div>
+        <div class="mybutton" onclick="ugsSummary();" id="btnUGSSummary">UGS Quote Summary</div>
+        <br />
+        <div class="mybutton" onclick="hideAllParts();showReservedParts();" id="btnShowOnlyReservedParts">Show Only Reserved Parts</div>
+        <div class="mybutton" onclick="showAllParts();hideReservedParts();" id="btnShowUnreservedParts">Show Only Unreserved Parts</div>
+        <div class="mybutton" onclick="showAllParts();showReservedParts();" id="btnShowAllParts">Show All Parts</div>
+        <div class="mybutton" onclick="hideAllHistory();" id="btnHideAllHistory">Hide History</div>
+        <div class="mybutton" onclick="showAllHistory();" id="btnShowAllHistory">Show History</div>
+
+    </center>
+    <center>
+        <asp:DataGrid ID="dgParts" runat="server" AutoGenerateColumns="false" OnItemDataBound="dgParts_ItemDataBound" Width="1600px">
+            <Columns>
+                <asp:TemplateColumn Visible="false">
+                    <ItemTemplate>
+                        <asp:Label ID="lblBackGroundColor" Text='<%# Eval("BackGroundColor") %>' runat="server"></asp:Label>
+                        <asp:Label ID="PartID" Text='<%# Eval("PartId") %>' runat="server"></asp:Label>
+                    </ItemTemplate>
+                </asp:TemplateColumn>
+                <asp:TemplateColumn HeaderText="Edit" HeaderStyle-HorizontalAlign="Center">
+                    <ItemTemplate>
+                        <asp:HyperLink ID="btnEdit" runat="server" ImageUrl="~/edit.png" onclick="editPart(this.id, $(this).closest('tr').attr('id'));" Style="cursor: pointer;"></asp:HyperLink>
+                    </ItemTemplate>
+                </asp:TemplateColumn>
+                <asp:TemplateColumn HeaderText="Line" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
+                    <ItemTemplate>
+                        <asp:Label ID="LineNumber" runat="server" Text='<%# Eval("LineNumber") %>'></asp:Label>
+                    </ItemTemplate>
+                </asp:TemplateColumn>
+                <asp:TemplateColumn HeaderText="Picture">
+                    <ItemTemplate>
+                        <span class="SharepointLogin">Be sure you are logged in to Sharepoint</span>
+                        <a href='<%# Eval("prtPicture") %>' target="_blank">
+                            <asp:Image ID="imgPart" runat="server" ImageUrl='<%# Eval("prtPicture") %>' onerror="imgError(this)" CssClass="PartPic" Width="310px" Height="230px" />
+                        </a>
+                    </ItemTemplate>
+                </asp:TemplateColumn>
+                <asp:TemplateColumn HeaderText="Part" HeaderStyle-HorizontalAlign="Center">
+                    <ItemTemplate>
+                        <asp:TextBox runat="server" ID="PartNumber" Text='<%# Eval("prtPartNumber") %>' Wrap="true" ReadOnly="true" Rows="11" BackColor="Transparent" BorderStyle="None" TextMode="MultiLine" Width="300px"></asp:TextBox>
+                    </ItemTemplate>
+                </asp:TemplateColumn>
+                <asp:TemplateColumn HeaderText="Description" HeaderStyle-HorizontalAlign="Center">
+                    <ItemTemplate>
+                        <asp:TextBox runat="server" ID="PartDescription" Text='<%# Eval("prtPartDescription") %>' Wrap="true" ReadOnly="true" BackColor="Transparent" Rows="11" BorderStyle="None" TextMode="MultiLine" Width="300px"></asp:TextBox>
+                    </ItemTemplate>
+                </asp:TemplateColumn>
+                <asp:TemplateColumn HeaderText="Part Type" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
+                    <ItemTemplate>
+                        <asp:Label runat="server" ID="PartType" Text='<%# Eval("ptyPartDescription") %>'></asp:Label>
+                    </ItemTemplate>
+                </asp:TemplateColumn>
+                <asp:TemplateColumn HeaderText="Length" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
+                    <ItemTemplate>
+                        <asp:Label runat="server" ID="PartLength" Text='<%# Eval("Length") %>'></asp:Label>
+                    </ItemTemplate>
+                </asp:TemplateColumn>
+                <asp:TemplateColumn HeaderText="Width" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
+                    <ItemTemplate>
+                        <asp:Label runat="server" ID="PartWidth" Text='<%# Eval("Width") %>'></asp:Label>
+                    </ItemTemplate>
+                </asp:TemplateColumn>
+                <asp:TemplateColumn HeaderText="Height" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
+                    <ItemTemplate>
+                        <asp:Label runat="server" ID="PartHeight" Text='<%# Eval("Height") %>'></asp:Label>
+                    </ItemTemplate>
+                </asp:TemplateColumn>
+                <asp:TemplateColumn HeaderText="Material Type" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
+                    <ItemTemplate>
+                        <asp:Label runat="server" ID="MaterialType" Text='<%# Eval("MaterialType") %>'></asp:Label>
+                    </ItemTemplate>
+                </asp:TemplateColumn>
+                <asp:TemplateColumn HeaderText="Thickness" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
+                    <ItemTemplate>
+                        <asp:Label runat="server" ID="Thickness" Text='<%# Eval("MaterialThickness") %>'></asp:Label>
+                    </ItemTemplate>
+                </asp:TemplateColumn>
+                <asp:TemplateColumn HeaderText="Weight" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
+                    <ItemTemplate>
+                        <asp:Label runat="server" ID="PartWeight" Text='<%# Eval("Weight") %>'></asp:Label>
+                    </ItemTemplate>
+                </asp:TemplateColumn>
+                <asp:TemplateColumn HeaderText="Annual Volume" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
+                    <ItemTemplate>
+                        <asp:Label runat="server" ID="AnnualVolume" Text='<%# Eval("annualVolume") %>'></asp:Label>
+                    </ItemTemplate>
+                </asp:TemplateColumn>
+                <%--            <asp:TemplateColumn HeaderText="Part Check List" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
                 <ItemTemplate>
                     <asp:Label ID="checklist" runat="server" Text='<%# Eval("checklistHTML") %>' ></asp:Label>
                 </ItemTemplate>
             </asp:TemplateColumn>--%>
-            <asp:TemplateColumn HeaderText="Quoting" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
-                <ItemTemplate>
-                    <asp:Label ID="linkquotebutton" runat="server" Text='<%# Eval("quotingHTML") %>' ></asp:Label>
-                </ItemTemplate>
-            </asp:TemplateColumn>
-            <asp:TemplateColumn HeaderText="Link Parts" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
-                <ItemTemplate>
-                    <asp:Label ID="linkpartsbutton" runat="server" Text='<%# Eval("linkpartsHTML") %>' ></asp:Label>
-                </ItemTemplate>
-            </asp:TemplateColumn>
-            <asp:TemplateColumn HeaderText="Part Note" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
-                <ItemTemplate>
-                    <asp:TextBox runat="server" ID="txtPartNote" Text='<%# Eval("prtNote") %>' Wrap="true" ReadOnly="true" Rows="11" BackColor="Transparent" BorderStyle="None" TextMode="MultiLine" Width="200px" ></asp:TextBox>
-                </ItemTemplate>
-            </asp:TemplateColumn>
-        </Columns>
-    </asp:DataGrid>
+                <asp:TemplateColumn HeaderText="Quoting" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
+                    <ItemTemplate>
+                        <asp:Label ID="linkquotebutton" runat="server" Text='<%# Eval("quotingHTML") %>'></asp:Label>
+                    </ItemTemplate>
+                </asp:TemplateColumn>
+                <asp:TemplateColumn HeaderText="Link Parts" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
+                    <ItemTemplate>
+                        <asp:Label ID="linkpartsbutton" runat="server" Text='<%# Eval("linkpartsHTML") %>'></asp:Label>
+                    </ItemTemplate>
+                </asp:TemplateColumn>
+                <asp:TemplateColumn HeaderText="Part Note" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
+                    <ItemTemplate>
+                        <asp:TextBox runat="server" ID="txtPartNote" Text='<%# Eval("prtNote") %>' Wrap="true" ReadOnly="true" Rows="11" BackColor="Transparent" BorderStyle="None" TextMode="MultiLine" Width="200px"></asp:TextBox>
+                    </ItemTemplate>
+                </asp:TemplateColumn>
+            </Columns>
+        </asp:DataGrid>
     </center>
-        <div id="FindPartDialog" style="display:none; padding: 20px; background-color: #D0D0D0; width: 1600px; height: 800px;" >
-            <asp:HiddenField ID="hdnPartID" Value="0" runat="server" />
-            <div style="float: left;"><label class="ui-widget">Part Number: </label> <br />
-                <input type="text" class="ui-widget-content" id="txtFindPartNumber" value="" />
-            </div>
-            <div style="float: left;"><label class="ui-widget">Customer: </label> <br />
-                <input type="text" class="ui-widget-content" id="txtFindPartCustomer" value="" />
-            </div>
-            <div style="float: left;"><label class="ui-widget">Part Desc: </label> <br />
-                <input type="text" class="ui-widget-content" id="txtFindPartDesc" value="" />
-            </div>
-            <div style="float: left;"><label class="ui-widget">Quote Number: </label><br />
-                <input type="text" class="ui-widget-content" id="txtQuoteNumber" value="" />
-            </div>
-            <div style="float: left;">&nbsp;</div><br /><br /><br />
-            <div style="float: left;"><label class="ui-widget">Customer RFQ #: </label> <br />
-                <asp:TextBox ID="txtCustomerRFQNumber" CssClass="ui-widget" runat="server" value=""></asp:TextBox>
-            </div>
-            <div style="float: left;"><label class="ui-widget">Start Date: </label> <br />
-                <asp:TextBox ID="txtFindStartDate" CssClass="ui-widget datepicker" runat="server" value="" ></asp:TextBox>
-            </div>
-            <div style="float: left;"><label class="ui-widget">End Date: </label> <br />
-                <asp:TextBox ID="txtFindEndDate" CssClass="ui-widget datepicker" runat="server" value="" ></asp:TextBox>
-            </div>
-            <div style="float: left;">&nbsp;</div><br /><br /><br />
-            <div style="float: right;">
-                <input type="button" class="mybutton" onclick="fineNewPartsNoLink();" value="Find" />
-            </div>
-            <div style="clear: both;"></div>
-            <div id="tblFindResults"></div>
-            <div style="float: right;">
-                <input type="button" class="mybutton" onclick="processHistoryResults(); hideFindPartDialog();" value="Apply" />
-            </div>
+    <div id="FindPartDialog" style="display: none; padding: 20px; background-color: #D0D0D0; width: 1600px; height: 800px;">
+        <asp:HiddenField ID="hdnPartID" Value="0" runat="server" />
+        <div style="float: left;">
+            <label class="ui-widget">Part Number: </label>
+            <br />
+            <input type="text" class="ui-widget-content" id="txtFindPartNumber" value="" />
         </div>
-        <div id="LinkPartsDialog" style="display:none; background-color: #D0D0D0; ">
+        <div style="float: left;">
+            <label class="ui-widget">Customer: </label>
+            <br />
+            <input type="text" class="ui-widget-content" id="txtFindPartCustomer" value="" />
         </div>
-        <div id="addAssemblyDialog" style="display: none; background-color: #D0D0D0;">
-            <Center>
-                <h3>Add Assembly</h3>
-                <br />
-                <table>
-                    <tr >
-                        <td>
-                            Assembly Number
-                        </td>
-                        <td>
-                            <asp:TextBox ID="txtAssemblyNum" runat="server" CssClass="ui-widget"></asp:TextBox>
-                        </td>
-                        <td>
-                            Assembly Description
-                        </td>
-                        <td>
-                            <asp:TextBox ID="txtAssemblyDescription" runat="server" CssClass="ui-widget"></asp:TextBox>
-                        </td>
-                    </tr>
-                    <tr><td>&nbsp;</td></tr>
-                    <tr>
-                        <td>
-                            Assembly Type
-                        </td>
-                        <td>
-                            <asp:DropDownList ID="ddlAssemblyType" runat="server" CssClass="ui-widget"></asp:DropDownList>
-                        </td>
-                        <td>
-                            <%--Upload Picture--%>
-                        </td>
-                        <td>
-                            <%--<asp:FileUpload ID="assemblyPictureUpload" runat="server" />--%>
-                        </td>
-                    </tr>
-                </table>
-                <br />
-                <br />
-                <h3>Available Parts</h3>
-                <br />
-                <asp:label ID="lblAssemblyTable" runat="server"></asp:label>
+        <div style="float: left;">
+            <label class="ui-widget">Part Desc: </label>
+            <br />
+            <input type="text" class="ui-widget-content" id="txtFindPartDesc" value="" />
+        </div>
+        <div style="float: left;">
+            <label class="ui-widget">Quote Number: </label>
+            <br />
+            <input type="text" class="ui-widget-content" id="txtQuoteNumber" value="" />
+        </div>
+        <div style="float: left;">&nbsp;</div>
+        <br />
+        <br />
+        <br />
+        <div style="float: left;">
+            <label class="ui-widget">Customer RFQ #: </label>
+            <br />
+            <asp:TextBox ID="txtCustomerRFQNumber" CssClass="ui-widget" runat="server" value=""></asp:TextBox>
+        </div>
+        <div style="float: left;">
+            <label class="ui-widget">Start Date: </label>
+            <br />
+            <asp:TextBox ID="txtFindStartDate" CssClass="ui-widget datepicker" runat="server" value=""></asp:TextBox>
+        </div>
+        <div style="float: left;">
+            <label class="ui-widget">End Date: </label>
+            <br />
+            <asp:TextBox ID="txtFindEndDate" CssClass="ui-widget datepicker" runat="server" value=""></asp:TextBox>
+        </div>
+        <div style="float: left;">&nbsp;</div>
+        <br />
+        <br />
+        <br />
+        <div style="float: right;">
+            <input type="button" class="mybutton" onclick="fineNewPartsNoLink();" value="Find" />
+        </div>
+        <div style="clear: both;"></div>
+        <div id="tblFindResults"></div>
+        <div style="float: right;">
+            <input type="button" class="mybutton" onclick="processHistoryResults(); hideFindPartDialog();" value="Apply" />
+        </div>
+    </div>
+    <div id="LinkPartsDialog" style="display: none; background-color: #D0D0D0;">
+    </div>
+    <div id="addAssemblyDialog" style="display: none; background-color: #D0D0D0;">
+        <center>
+            <h3>Add Assembly</h3>
+            <br />
+            <table>
+                <tr>
+                    <td>Assembly Number
+                    </td>
+                    <td>
+                        <asp:TextBox ID="txtAssemblyNum" runat="server" CssClass="ui-widget"></asp:TextBox>
+                    </td>
+                    <td>Assembly Description
+                    </td>
+                    <td>
+                        <asp:TextBox ID="txtAssemblyDescription" runat="server" CssClass="ui-widget"></asp:TextBox>
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Assembly Type
+                    </td>
+                    <td>
+                        <asp:DropDownList ID="ddlAssemblyType" runat="server" CssClass="ui-widget"></asp:DropDownList>
+                    </td>
+                    <td>
+                        <%--Upload Picture--%>
+                    </td>
+                    <td>
+                        <%--<asp:FileUpload ID="assemblyPictureUpload" runat="server" />--%>
+                    </td>
+                </tr>
+            </table>
+            <br />
+            <br />
+            <h3>Available Parts</h3>
+            <br />
+            <asp:Label ID="lblAssemblyTable" runat="server"></asp:Label>
 
-                <div ID="btnSaveAssembly" class="ui-widget mybutton" onclick="createAssembly();" >Create Assembly</div>
-                <div id="btnDeleteAssembly" class="ui-widget mybutton" onclick="deleteAssembly();">Delete Assembly</div>
-            </Center>
-        </div>
-        <div id="SendQuotesDialog" style="display: none; padding: 20px; background-color: #D0D0D0;">
-            <%--<center>
+            <div id="btnSaveAssembly" class="ui-widget mybutton" onclick="createAssembly();">Create Assembly</div>
+            <div id="btnDeleteAssembly" class="ui-widget mybutton" onclick="deleteAssembly();">Delete Assembly</div>
+        </center>
+    </div>
+    <div id="SendQuotesDialog" style="display: none; padding: 20px; background-color: #D0D0D0;">
+        <%--<center>
                 <asp:label class="ui-widget" ID="lblEmailCustomerAddress" runat="server">Sending all quotes to -</asp:label><br />
             </center>--%>
-            <asp:CheckBox ID="cbSendAsMe" runat="server" Text="Send email as me" /><br />
-            <asp:CheckBox ID="cbSendOnlyMyQuotes" onchange="onlyMyCompanies();" runat="server" Text="Send only my company's quotes (All Quotes from your company)"/><br />
-            <asp:CheckBox ID="cbSendUpdatedQuotes" onchange="onlyMyCompaniesNew();" runat="server" Text="Send only my company's new quotes (Only quotes that have not been sent yet)" Checked="true"/><br />
-            <asp:CheckBox ID="cbSendAll" onchange="allQuotesForRFQ();" runat="server" Text="Send all quotes for this RFQ" /><br />
-            <asp:CheckBox ID="cbIndividualPDF" runat="server" Text="Split into individual PDFs" /><br />
-            <label class="ui-widget">Email addresses to send the quotes to? (Seperate by comma)</label><br />
-            <asp:TextBox id="txtExtraEmail" runat="server" ReadOnly="false" CssClass="ui-widget" style="width:350px;" autocomplete="off"></asp:TextBox>
-            <br />
-            <label class="ui-widget">Any other email address to cc? (Seperate by comma)</label><br />
-            <asp:TextBox id="txtccEmail" runat="server" ReadOnly="false" CssClass="ui-widget" style="width:350px;" autocomplete="off"></asp:TextBox>
-            <br />
-            <label class="ui-widget">Any other email address to bcc? (Seperate by comma)</label><br />
-            <asp:TextBox id="txtbccEmail" runat="server" ReadOnly="false" CssClass="ui-widget" style="width:350px;" autocomplete="off"></asp:TextBox>
-            <br />
-            <label class="ui-widget">Email Subject</label><br />
-            <asp:TextBox id="txtSubject" runat="server" ReadOnly="false" CssClass="ui-widget" style="width:350px;"></asp:TextBox>
-            <br />
-            <label class="ui-widget">What would you like the message to say?</label><br />
-            <asp:TextBox ID="txtMessageText" TextMode="multiline" runat="server" ReadOnly="false" CssClass="ui-widget" style="width:100%;" Height="200px" ColSpan="4" Width="600px"></asp:TextBox><br /><br />
-            <br />
-            <label class="ui-widget">Upload attachments to quote (Screen will auto refresh when the files have uploaded)</label>
-            <asp:FileUpload ID="attachmentUpload" runat="server" AllowMultiple="true" onChange='$("#MainContent_htnAttachmentUpload").click();'/>
-            <asp:HyperLink runat="server" ID="hlquoteAttachment" Target="_blank"></asp:HyperLink>
-            <br />
-            <asp:Label ID="lblUploadsToEmail" runat="server"></asp:Label>
-            <br />
-            <br />
-            <div class="mybutton" onclick="sendQuotes();"  id="btnSendQuotes" >Send Quotes To Customer</div>
-        </div>
+        <asp:CheckBox ID="cbSendAsMe" runat="server" Text="Send email as me" /><br />
+        <asp:CheckBox ID="cbSendOnlyMyQuotes" onchange="onlyMyCompanies();" runat="server" Text="Send only my company's quotes (All Quotes from your company)" /><br />
+        <asp:CheckBox ID="cbSendUpdatedQuotes" onchange="onlyMyCompaniesNew();" runat="server" Text="Send only my company's new quotes (Only quotes that have not been sent yet)" Checked="true" /><br />
+        <asp:CheckBox ID="cbSendAll" onchange="allQuotesForRFQ();" runat="server" Text="Send all quotes for this RFQ" /><br />
+        <asp:CheckBox ID="cbIndividualPDF" runat="server" Text="Split into individual PDFs" /><br />
+        <label class="ui-widget">Email addresses to send the quotes to? (Seperate by comma)</label><br />
+        <asp:TextBox ID="txtExtraEmail" runat="server" ReadOnly="false" CssClass="ui-widget" Style="width: 350px;" autocomplete="off"></asp:TextBox>
+        <br />
+        <label class="ui-widget">Any other email address to cc? (Seperate by comma)</label><br />
+        <asp:TextBox ID="txtccEmail" runat="server" ReadOnly="false" CssClass="ui-widget" Style="width: 350px;" autocomplete="off"></asp:TextBox>
+        <br />
+        <label class="ui-widget">Any other email address to bcc? (Seperate by comma)</label><br />
+        <asp:TextBox ID="txtbccEmail" runat="server" ReadOnly="false" CssClass="ui-widget" Style="width: 350px;" autocomplete="off"></asp:TextBox>
+        <br />
+        <label class="ui-widget">Email Subject</label><br />
+        <asp:TextBox ID="txtSubject" runat="server" ReadOnly="false" CssClass="ui-widget" Style="width: 350px;"></asp:TextBox>
+        <br />
+        <label class="ui-widget">What would you like the message to say?</label><br />
+        <asp:TextBox ID="txtMessageText" TextMode="multiline" runat="server" ReadOnly="false" CssClass="ui-widget" Style="width: 100%;" Height="200px" ColSpan="4" Width="600px"></asp:TextBox><br />
+        <br />
+        <br />
+        <label class="ui-widget">Upload attachments to quote (Screen will auto refresh when the files have uploaded)</label>
+        <asp:FileUpload ID="attachmentUpload" runat="server" AllowMultiple="true" onChange='$("#MainContent_htnAttachmentUpload").click();' />
+        <asp:HyperLink runat="server" ID="hlquoteAttachment" Target="_blank"></asp:HyperLink>
+        <br />
+        <asp:Label ID="lblUploadsToEmail" runat="server"></asp:Label>
+        <br />
+        <br />
+        <div class="mybutton" onclick="sendQuotes();" id="btnSendQuotes">Send Quotes To Customer</div>
+    </div>
     <div id="sendNoQuoteDialog" style="display: none; padding: 20px; background-color: #D0D0D0;">
-            <label>Email addresses to send no quote to (Seperated by comma)</label><br />
-            <asp:TextBox ID="txtNoQuoteTo" runat="server" CssClass="ui-widget" style="width: 600px; max-width: 600px;"></asp:TextBox>
-            <br />
-            <label>Email addresses to CC (Seperated by comma)</label><br />
-            <asp:TextBox ID="txtNoQuoteCC" runat="server" CssClass="ui-widget" style="width: 600px; max-width: 600px;"></asp:TextBox>
-            <br /><label>Customer RFQ</label><br />
-            <asp:TextBox ID="txtCusRfq" runat="server" CssClass="ui-widget" style="width: 600px; max-width: 600px;"></asp:TextBox>
-            <br />
-            <label>Subject</label><br />
-            <asp:TextBox ID="txtNoQuoteSubject" runat="server" CssClass="ui-widget" style="width: 600px; max-width: 600px;"></asp:TextBox>
-            <br />
-            <label>Body</label><br />
-            <asp:TextBox ID="txtNoQuoteBody" runat="server" TextMode="MultiLine" CssClass="ui-widget" style="max-width: 600px;" Height="200px" ColSpan="4" Width="600px"></asp:TextBox>
+        <label>Email addresses to send no quote to (Seperated by comma)</label><br />
+        <asp:TextBox ID="txtNoQuoteTo" runat="server" CssClass="ui-widget" Style="width: 600px; max-width: 600px;"></asp:TextBox>
+        <br />
+        <label>Email addresses to CC (Seperated by comma)</label><br />
+        <asp:TextBox ID="txtNoQuoteCC" runat="server" CssClass="ui-widget" Style="width: 600px; max-width: 600px;"></asp:TextBox>
+        <br />
+        <label>Customer RFQ</label><br />
+        <asp:TextBox ID="txtCusRfq" runat="server" CssClass="ui-widget" Style="width: 600px; max-width: 600px;"></asp:TextBox>
+        <br />
+        <label>Subject</label><br />
+        <asp:TextBox ID="txtNoQuoteSubject" runat="server" CssClass="ui-widget" Style="width: 600px; max-width: 600px;"></asp:TextBox>
+        <br />
+        <label>Body</label><br />
+        <asp:TextBox ID="txtNoQuoteBody" runat="server" TextMode="MultiLine" CssClass="ui-widget" Style="max-width: 600px;" Height="200px" ColSpan="4" Width="600px"></asp:TextBox>
 
-            <br /><br />
-            <asp:Button runat="server" CssClass="mybutton" OnClick="sendNoQuotesToCustomer" Text="Send No Quotes to Customer" ID="btnSendNoQuotesToCustomer" />
-        </div>
-        <div id="NoQuoteReasonDialog" style="display: none; padding: 20px; background-color: #D0D0D0;">
-                <label class="ui-widget">Applies To: </label><br />
-            <asp:TextBox id="txtNQRAppliesTo" runat="server" ReadOnly="true" CssClass="ui-widget"></asp:TextBox>
+        <br />
+        <br />
+        <asp:Button runat="server" CssClass="mybutton" OnClick="sendNoQuotesToCustomer" Text="Send No Quotes to Customer" ID="btnSendNoQuotesToCustomer" />
+    </div>
+    <div id="NoQuoteReasonDialog" style="display: none; padding: 20px; background-color: #D0D0D0;">
+        <label class="ui-widget">Applies To: </label>
+        <br />
+        <asp:TextBox ID="txtNQRAppliesTo" runat="server" ReadOnly="true" CssClass="ui-widget"></asp:TextBox>
+        <br />
+        <br />
+        Reason<br />
+        <asp:DropDownList ID="ddlNoQuoteReason" runat="server"></asp:DropDownList>
+        <br />
+        <br />
+        <button class="mybutton" onclick="ApplyNoQuote();">Apply</button>
+    </div>
+    <div id="RemoveNoQuoteDialog" style="display: none; padding: 20px; background-color: #D0D0D0;">
+        <label class="ui-widget">Applies To: </label>
+        <br />
+        <asp:TextBox ID="txtRemoveNQAppliesTo" runat="server" ReadOnly="true" CssClass="ui-widget"></asp:TextBox>
+        <br />
+        <br />
+        Pleased Click Confirm if you really want to remove no quote(s) for your company.<br />
+        <button class="mybutton" onclick="RemoveNoQuote();">Confirm</button>
+    </div>
+    <div id="noQuoteReasonsDialog" style="display: none; padding: 20px; background-color: #D0D0D0;">
+        <asp:TextBox ID="txtNoQuoteText" runat="server" ReadOnly="true" BorderStyle="None" TextMode="MultiLine" Rows="20" Columns="20" Width="400"></asp:TextBox>
+        <%--<asp:Literal ID="textNoQuoteTXT" runat="server" ></asp:Literal>--%>
+    </div>
+    <div id="EditPartDialog" style="display: none; padding: 20px; background-color: #D0D0D0;">
+        <div style="float: left;">
+            <label class="ui-widget">Part: </label>
             <br />
-            <br />
-            Reason<br />
-            <asp:DropDownList ID="ddlNoQuoteReason" runat="server"></asp:DropDownList>
-            <br /><br />
-            <button class="mybutton" onclick="ApplyNoQuote();"  >Apply</button>
+            <asp:TextBox ID="txtPart" runat="server" CssClass="ui-widget" Width="250"></asp:TextBox>
         </div>
-        <div id="RemoveNoQuoteDialog" style="display: none; padding: 20px; background-color: #D0D0D0;">
-                <label class="ui-widget">Applies To: </label><br />
-            <asp:TextBox id="txtRemoveNQAppliesTo" runat="server" ReadOnly="true" CssClass="ui-widget"></asp:TextBox>
+        <div style="float: left;">&nbsp;</div>
+        <div style="float: left;">
+            <label class="ui-widget">Line number: </label>
             <br />
+            <asp:TextBox ID="txtLineNumber" runat="server" CssClass="ui-widget" Width="50" ReadOnly="true"></asp:TextBox>
+        </div>
+        <div style="float: left;">&nbsp;</div>
+        <div style="float: left;">
+            <label class="ui-widget">Description: </label>
             <br />
-            Pleased Click Confirm if you really want to remove no quote(s) for your company.<br />
-            <button class="mybutton" onclick="RemoveNoQuote();">Confirm</button>
+            <asp:TextBox ID="txtDescription" runat="server" CssClass="ui-widget" Width="500"></asp:TextBox>
         </div>
-        <div id="noQuoteReasonsDialog" style="display: none; padding: 20px; background-color: #D0D0D0;">
-            <asp:TextBox ID="txtNoQuoteText" runat="server" ReadOnly="true" BorderStyle="None" TextMode="MultiLine" Rows="20" Columns="20" Width="400"></asp:TextBox>
-            <%--<asp:Literal ID="textNoQuoteTXT" runat="server" ></asp:Literal>--%>
+        <div style="clear: both;">
         </div>
-        <div id="EditPartDialog" style="display:none; padding: 20px; background-color: #D0D0D0; ">
-            <div style="float: left;">
-                <label class="ui-widget">Part: </label><br />
-                <asp:TextBox ID="txtPart" runat="server" CssClass="ui-widget" Width="250"></asp:TextBox>
-            </div>
-            <div style="float: left;">&nbsp;</div>
-            <div style="float: left;">
-                <label class="ui-widget">Line number: </label><br />
-                <asp:TextBox ID="txtLineNumber" runat="server" CssClass="ui-widget" Width="50" ReadOnly="true"></asp:TextBox>
-            </div>
-            <div style="float: left;">&nbsp;</div>
-            <div style="float: left;">
-                <label class="ui-widget">Description: </label><br />
-                <asp:TextBox ID="txtDescription" runat="server" CssClass="ui-widget" Width="500"></asp:TextBox>
-            </div>
-            <div style="clear: both;">
-            </div>
-            <div style="float: left;">
-                <label class="ui-widget">Part Type: </label><br />
-                <asp:DropDownList runat="server" ID="ddlPartType"></asp:DropDownList>
-            </div>
-            <div style="float: left;">&nbsp;</div>
-            <div style="float: left;">
-            </div>
-            <div style="float: left;">&nbsp;</div>
-            <div style="float: left;">
-                <label class="ui-widget">Length &nbsp&nbsp&nbsp&nbsp x &nbsp&nbsp&nbsp&nbsp Width &nbsp&nbsp&nbsp&nbsp x &nbsp&nbsp&nbsp&nbsp Height &nbsp&nbsp&nbsp&nbsp Annual Volume</label><br />
-                <asp:TextBox ID="txtLength" runat="server" CssClass="ui-widget" Width="80"></asp:TextBox> x 
-                <asp:TextBox ID="txtWidth" runat="server" CssClass="ui-widget" Width="80"></asp:TextBox> x 
+        <div style="float: left;">
+            <label class="ui-widget">Part Type: </label>
+            <br />
+            <asp:DropDownList runat="server" ID="ddlPartType"></asp:DropDownList>
+        </div>
+        <div style="float: left;">&nbsp;</div>
+        <div style="float: left;">
+        </div>
+        <div style="float: left;">&nbsp;</div>
+        <div style="float: left;">
+            <label class="ui-widget">Length &nbsp&nbsp&nbsp&nbsp x &nbsp&nbsp&nbsp&nbsp Width &nbsp&nbsp&nbsp&nbsp x &nbsp&nbsp&nbsp&nbsp Height &nbsp&nbsp&nbsp&nbsp Annual Volume</label><br />
+            <asp:TextBox ID="txtLength" runat="server" CssClass="ui-widget" Width="80"></asp:TextBox>
+            x 
+                <asp:TextBox ID="txtWidth" runat="server" CssClass="ui-widget" Width="80"></asp:TextBox>
+            x 
                 <asp:TextBox ID="txtHeight" runat="server" CssClass="ui-widget" Width="80"></asp:TextBox>&nbsp&nbsp&nbsp
                 <asp:TextBox ID="txtPartAnnualVolume" runat="server" CssClass="ui-widget" Width="120"></asp:TextBox>
-            </div>
-            <div style="clear: both;">
-            </div>
-            <div style="float: left;">
-                <label class="ui-widget">Material Type: </label><br />
-                <asp:TextBox ID="txtMaterialType" runat="server"></asp:TextBox><br />
-            </div>
-            <div style="float: left;">&nbsp;</div>
-            <div style="float: left;">
-                <label class="ui-widget">Weight: </label><br />
-                <asp:TextBox ID="txtWeight" runat="server" CssClass="ui-widget" Width="80"></asp:TextBox><br /> 
-            </div>
-            <div style="float: left;">&nbsp;</div>
-            <div style="float: left;">
-                <label class="ui-widget">Thickness: </label><br />
-                <asp:TextBox ID="txtThickness" runat="server" CssClass="ui-widget" Width="80"></asp:TextBox><br />
-            </div>
-            <div style="float: left;">&nbsp;</div>
-            <div style="float: left;">
-                <label class="ui-widget">Part Notes: </label><br />
-                <asp:TextBox ID="txtPartNotesDia" runat="server" CssClass="ui-widget" width="300" TextMode="MultiLine" Rows="3"></asp:TextBox>
-            </div>
-            <div style="float: left;">
-                <label class="ui-widget">Picture: </label><br />
-                <asp:FileUpload ID="filePicture" runat="server" />
-                <asp:Label ID="lblPicture" runat="server"></asp:Label>
-            </div>
-            <div style="float: left;">&nbsp;</div>
-            <div style="float: right;">
-                <asp:Button ID="btnSavePart" runat="server" Text="Save" CssClass="mybutton" OnClick="btnSavePart_Click"/>
-                <asp:Button ID="deletePartButton" runat="server" Text="Delete Part" CssClass="ui-widget mybutton" OnClick="deletePart_click" Visible="true" />
-                <asp:Button ID="duplicatePart" runat="server" Text="Duplicate Part" CssClass="mybutton" OnClick="duplicatePart_click"/>
-            </div>
-            <div style="clear: both;"></div>
-            <asp:HiddenField ID="hdnLineNum" runat="server" />
-            <asp:HiddenField ID="hdnPartNum" runat="server" />
-            <asp:HiddenField ID="hdnAssemblyId" runat="server" />
-            <asp:HiddenField ID="hdnNextAssemblyNum" runat="server" />
-            <asp:Literal ID="litLastAssemblyId" runat="server"></asp:Literal>
         </div>
+        <div style="clear: both;">
+        </div>
+        <div style="float: left;">
+            <label class="ui-widget">Material Type: </label>
+            <br />
+            <asp:TextBox ID="txtMaterialType" runat="server"></asp:TextBox><br />
+        </div>
+        <div style="float: left;">&nbsp;</div>
+        <div style="float: left;">
+            <label class="ui-widget">Weight: </label>
+            <br />
+            <asp:TextBox ID="txtWeight" runat="server" CssClass="ui-widget" Width="80"></asp:TextBox><br />
+        </div>
+        <div style="float: left;">&nbsp;</div>
+        <div style="float: left;">
+            <label class="ui-widget">Thickness: </label>
+            <br />
+            <asp:TextBox ID="txtThickness" runat="server" CssClass="ui-widget" Width="80"></asp:TextBox><br />
+        </div>
+        <div style="float: left;">&nbsp;</div>
+        <div style="float: left;">
+            <label class="ui-widget">Part Notes: </label>
+            <br />
+            <asp:TextBox ID="txtPartNotesDia" runat="server" CssClass="ui-widget" Width="300" TextMode="MultiLine" Rows="3"></asp:TextBox>
+        </div>
+        <div style="float: left;">
+            <label class="ui-widget">Picture: </label>
+            <br />
+            <asp:FileUpload ID="filePicture" runat="server" />
+            <asp:Label ID="lblPicture" runat="server"></asp:Label>
+        </div>
+        <div style="float: left;">&nbsp;</div>
+        <div style="float: right;">
+            <asp:Button ID="btnSavePart" runat="server" Text="Save" CssClass="mybutton" OnClick="btnSavePart_Click" />
+            <asp:Button ID="deletePartButton" runat="server" Text="Delete Part" CssClass="ui-widget mybutton" OnClick="deletePart_click" Visible="true" />
+            <asp:Button ID="duplicatePart" runat="server" Text="Duplicate Part" CssClass="mybutton" OnClick="duplicatePart_click" />
+        </div>
+        <div style="clear: both;"></div>
+        <asp:HiddenField ID="hdnLineNum" runat="server" />
+        <asp:HiddenField ID="hdnPartNum" runat="server" />
+        <asp:HiddenField ID="hdnAssemblyId" runat="server" />
+        <asp:HiddenField ID="hdnNextAssemblyNum" runat="server" />
+        <asp:Literal ID="litLastAssemblyId" runat="server"></asp:Literal>
+    </div>
 
-        <div id="newCustomerDialog" style="display:none; padding: 20px; background-color: #D0D0D0;" >
-            <div style="float: left;">&nbsp;</div>
-            <div style="float: left">
-                <asp:Label ID="lblCompany" runat="server"></asp:Label>
-            </div>
-            <div style="float: left;">&nbsp;</div>
-            <div style="float: left">
-                <label class="ui-widget">Contact Name: </label><br />
-                <asp:TextBox ID="txtContactName" runat="server" CssClass="ui-widget" Width="200"></asp:TextBox>
-            </div>
-            <div style="float: left;">&nbsp;</div>
-            <div style="float: left">
-                <label class="ui-widget">Contact Title: </label><br />
-                <asp:TextBox ID="txtContactTitle" runat="server" CssClass="ui-widget" Width="200"></asp:TextBox>
-            </div>
-            <div style="float: left;">&nbsp;</div>
-            <div style="clear: both;">
-            </div>
-            <div style="float: left;">&nbsp;</div>
-            <div style="float: left">
-                <label class="ui-widget">Email: </label><br />
-                <asp:TextBox ID="txtContactEmail" runat="server" CssClass="ui-widget" Width="400"></asp:TextBox>
-            </div>
-            <div style="float: left;">&nbsp;</div>
-            <div style="float: left">
-                <label class="ui-widget">Contact Office Number: </label><br />
-                <asp:TextBox ID="txtContactOfficeNumber" runat="server" CssClass="ui-widget" Width="200"></asp:TextBox>
-            </div>
-            <div style="float: left;">&nbsp;</div>
-            <div style="float: left">
-                <label class="ui-widget">Contact Mobile Number: </label><br />
-                <asp:TextBox ID="txtContactMobileNumber" runat="server" CssClass="ui-widget" Width="200"></asp:TextBox>
-            </div>
-            <div style="clear: both;">
-            </div>
-            <div style="float: left;">&nbsp;</div>
-            <div style="float: left">
-                <label class="ui-widget">Notes: </label><br />
-                <td colspan="4"><asp:TextBox ID="txtCustomerContactNotes" TextMode="MultiLine" runat="server" CssClass="ui-widget" Rows="4" Width="800"></asp:TextBox></td>
-            </div>
-            <div style="float: left;">&nbsp;</div>
-            <div style="clear: both;">
-            </div>
-            <div style="float: left">
-                <asp:Button ID="btnNewCustomerContact" runat="server" Text="Add New Customer" CssClass="mybutton"  OnClick="addNewCustomer_Click"/>
-            </div>
+    <div id="newCustomerDialog" style="display: none; padding: 20px; background-color: #D0D0D0;">
+        <div style="float: left;">&nbsp;</div>
+        <div style="float: left">
+            <asp:Label ID="lblCompany" runat="server"></asp:Label>
         </div>
-        <div id="newVehicleDialog" style="display:none; padding: 20px; background-color: #D0D0D0;">
-            <div style="float: left;">&nbsp;</div>
-            <div style="float: left;">
-                <label class="ui-widget">New Vehicle: </label><br />
-                <asp:TextBox ID="txtVehicle" runat="server" CssClass="ui-widget" Width="200"></asp:TextBox>
-            </div>
-            <div style="float: left;">&nbsp;</div>
-            <div style="clear: both;">
-            </div>
-            <div style="float: left">
-                <asp:Button ID="btnNewVehicle" runat="server" Text="Save" CssClass="mybutton"  OnClick="addNewVehicle_Click"/>
-            </div>
+        <div style="float: left;">&nbsp;</div>
+        <div style="float: left">
+            <label class="ui-widget">Contact Name: </label>
+            <br />
+            <asp:TextBox ID="txtContactName" runat="server" CssClass="ui-widget" Width="200"></asp:TextBox>
         </div>
-        <div id="newProgramDialog" style="display:none; padding: 20px; background-color: #D0D0D0;">
-            <div style="float: left;">&nbsp;</div>
-            <div style="float: left;">
-                <label class="ui-widget">New Program: </label><br />
-                <asp:TextBox ID="txtNewProgram" runat="server" CssClass="ui-widget" Width="200"></asp:TextBox>
-            </div>
-            <div style="float: left;">&nbsp;</div>
-            <div style="clear: both;">
-            </div>
-            <div style="float: left">
-                <asp:Button ID="btnNewProgram" runat="server" Text="Save" CssClass="mybutton"  OnClick="addNewProgram_Click"/>
-            </div>
+        <div style="float: left;">&nbsp;</div>
+        <div style="float: left">
+            <label class="ui-widget">Contact Title: </label>
+            <br />
+            <asp:TextBox ID="txtContactTitle" runat="server" CssClass="ui-widget" Width="200"></asp:TextBox>
         </div>
-        <div id="deleteRFQDialog" style="display:none; padding:20px; background-color: #D0D0D0;">
-            <div style="float: left">&nbsp;</div>
-            <div style="float:left;">
-                <label class="ui-widget">Are you sure you want to delete the RFQ?</label>
-            </div>
-            <div style="float: left;">&nbsp;</div>
-            <div style="clear: both;">
-            </div>
-            <div style="float:left;">
-                <asp:Button ID="deleteRFQButton" runat="server" Text="Delete RFQ" CssClass="ui-widget mybutton" OnClick="deleteRFQ" Visible="true" />
-            </div>
+        <div style="float: left;">&nbsp;</div>
+        <div style="clear: both;">
         </div>
-        <div id="checklistDialog" style="display: none; min-width: 600px; padding: 10px;">
-            <center>
-                <div id="clPart"></div>
-                <asp:Label ID="lbCheckList" runat="server" Width="100%"></asp:Label>
+        <div style="float: left;">&nbsp;</div>
+        <div style="float: left">
+            <label class="ui-widget">Email: </label>
+            <br />
+            <asp:TextBox ID="txtContactEmail" runat="server" CssClass="ui-widget" Width="400"></asp:TextBox>
+        </div>
+        <div style="float: left;">&nbsp;</div>
+        <div style="float: left">
+            <label class="ui-widget">Contact Office Number: </label>
+            <br />
+            <asp:TextBox ID="txtContactOfficeNumber" runat="server" CssClass="ui-widget" Width="200"></asp:TextBox>
+        </div>
+        <div style="float: left;">&nbsp;</div>
+        <div style="float: left">
+            <label class="ui-widget">Contact Mobile Number: </label>
+            <br />
+            <asp:TextBox ID="txtContactMobileNumber" runat="server" CssClass="ui-widget" Width="200"></asp:TextBox>
+        </div>
+        <div style="clear: both;">
+        </div>
+        <div style="float: left;">&nbsp;</div>
+        <div style="float: left">
+            <label class="ui-widget">Notes: </label>
+            <br />
+            <td colspan="4">
+                <asp:TextBox ID="txtCustomerContactNotes" TextMode="MultiLine" runat="server" CssClass="ui-widget" Rows="4" Width="800"></asp:TextBox></td>
+        </div>
+        <div style="float: left;">&nbsp;</div>
+        <div style="clear: both;">
+        </div>
+        <div style="float: left">
+            <asp:Button ID="btnNewCustomerContact" runat="server" Text="Add New Customer" CssClass="mybutton" OnClick="addNewCustomer_Click" />
+        </div>
+    </div>
+    <div id="newVehicleDialog" style="display: none; padding: 20px; background-color: #D0D0D0;">
+        <div style="float: left;">&nbsp;</div>
+        <div style="float: left;">
+            <label class="ui-widget">New Vehicle: </label>
+            <br />
+            <asp:TextBox ID="txtVehicle" runat="server" CssClass="ui-widget" Width="200"></asp:TextBox>
+        </div>
+        <div style="float: left;">&nbsp;</div>
+        <div style="clear: both;">
+        </div>
+        <div style="float: left">
+            <asp:Button ID="btnNewVehicle" runat="server" Text="Save" CssClass="mybutton" OnClick="addNewVehicle_Click" />
+        </div>
+    </div>
+    <div id="newProgramDialog" style="display: none; padding: 20px; background-color: #D0D0D0;">
+        <div style="float: left;">&nbsp;</div>
+        <div style="float: left;">
+            <label class="ui-widget">New Program: </label>
+            <br />
+            <asp:TextBox ID="txtNewProgram" runat="server" CssClass="ui-widget" Width="200"></asp:TextBox>
+        </div>
+        <div style="float: left;">&nbsp;</div>
+        <div style="clear: both;">
+        </div>
+        <div style="float: left">
+            <asp:Button ID="btnNewProgram" runat="server" Text="Save" CssClass="mybutton" OnClick="addNewProgram_Click" />
+        </div>
+    </div>
+    <div id="deleteRFQDialog" style="display: none; padding: 20px; background-color: #D0D0D0;">
+        <div style="float: left">&nbsp;</div>
+        <div style="float: left;">
+            <label class="ui-widget">Are you sure you want to delete the RFQ?</label>
+        </div>
+        <div style="float: left;">&nbsp;</div>
+        <div style="clear: both;">
+        </div>
+        <div style="float: left;">
+            <asp:Button ID="deleteRFQButton" runat="server" Text="Delete RFQ" CssClass="ui-widget mybutton" OnClick="deleteRFQ" Visible="true" />
+        </div>
+    </div>
+    <div id="checklistDialog" style="display: none; min-width: 600px; padding: 10px;">
+        <center>
+            <div id="clPart"></div>
+            <asp:Label ID="lbCheckList" runat="server" Width="100%"></asp:Label>
             <hr />
-            <input type="checkbox" id="allParts" class="ui-widget" /> Apply to All Parts
+            <input type="checkbox" id="allParts" class="ui-widget" />
+            Apply to All Parts
                 <br />
-                <div class="mybutton" onclick="applyCheckList()">Save</div>
-            </center>
-        </div>
-        <div id="RFQchecklistDialog" style="display: none;">
-            <center>
-                <div ><h4>RFQ Checklist</h4></div>
-                <asp:Label ID="lblRFQCheckList" runat="server" Width="100%"></asp:Label>
+            <div class="mybutton" onclick="applyCheckList()">Save</div>
+        </center>
+    </div>
+    <div id="RFQchecklistDialog" style="display: none;">
+        <center>
+            <div>
+                <h4>RFQ Checklist</h4>
+            </div>
+            <asp:Label ID="lblRFQCheckList" runat="server" Width="100%"></asp:Label>
             <hr />
-                <br />
-                <div class="mybutton" onclick="applyRFQCheckList()">Save</div>
-            </center>
-        </div>
-        <div id="DeleteAllPartsDialog" style="display: none;">
-            <center>
-                <div><h4>Are you sure you want to delete all the parts.  This will not work if there are quotes or reservations associated with the parts.</h4></div>
-                <br />
-                <asp:Button ID="deleteButton" runat="server"  Text="Yes"  CssClass="ui-widget mybutton" OnClick="deleteAllParts_click" Visible="true"/>
-            </center>
-        </div>
+            <br />
+            <div class="mybutton" onclick="applyRFQCheckList()">Save</div>
+        </center>
+    </div>
+    <div id="DeleteAllPartsDialog" style="display: none;">
+        <center>
+            <div>
+                <h4>Are you sure you want to delete all the parts.  This will not work if there are quotes or reservations associated with the parts.</h4>
+            </div>
+            <br />
+            <asp:Button ID="deleteButton" runat="server" Text="Yes" CssClass="ui-widget mybutton" OnClick="deleteAllParts_click" Visible="true" />
+        </center>
+    </div>
 
-        <div id="STSPartInfoDialog" style="display:none; padding: 20px; background-color: #D0D0D0; width: 1000px; height: 500px;" >
-            <asp:HiddenField ID="HiddenField1" Value="0" runat="server" />
-            <div class="container">
-                <div class="row">
-                    <h4>Mandatory</h4>
+    <div id="STSPartInfoDialog" style="display: none; padding: 20px; background-color: #D0D0D0; width: 1000px; height: 500px;">
+        <asp:HiddenField ID="HiddenField1" Value="0" runat="server" />
+        <div class="container">
+            <div class="row">
+                <h4>Mandatory</h4>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">Annual Volume</div>
+                <div class="col-lg-3">
+                    <asp:TextBox ID="txtAnnualVolume" runat="server" CssClass="ui-widget"></asp:TextBox>
                 </div>
-                <div class="row">
-                    <div class="col-lg-3">Annual Volume</div>
-                    <div class="col-lg-3"><asp:TextBox ID="txtAnnualVolume" runat="server" CssClass="ui-widget"></asp:TextBox></div>
-                    <div class="col-lg-3">Production Days per Year</div>
-                    <div class="col-lg-3"><asp:TextBox ID="txtProductionDaysPerYear" runat="server" CssClass="ui-widget"></asp:TextBox></div>
+                <div class="col-lg-3">Production Days per Year</div>
+                <div class="col-lg-3">
+                    <asp:TextBox ID="txtProductionDaysPerYear" runat="server" CssClass="ui-widget"></asp:TextBox>
                 </div>
-                <div class="row">
-                    <div class="col-lg-3">Shifts per Day</div>
-                    <div class="col-lg-3"><asp:TextBox ID="txtShiftsPerDay" runat="server" CssClass="ui-widget"></asp:TextBox></div>
-                    <div class="col-lg-3">Hours per Shift</div>
-                    <div class="col-lg-3"><asp:TextBox ID="txtHoursPerShift" runat="server" CssClass="ui-widget"></asp:TextBox></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">Shifts per Day</div>
+                <div class="col-lg-3">
+                    <asp:TextBox ID="txtShiftsPerDay" runat="server" CssClass="ui-widget"></asp:TextBox>
                 </div>
-                <div class="row">
-                    <div class="col-lg-3">OEE %</div>
-                    <div class="col-lg-3"><asp:TextBox ID="txtOEE" runat="server" CssClass="ui-widget"></asp:TextBox></div>
+                <div class="col-lg-3">Hours per Shift</div>
+                <div class="col-lg-3">
+                    <asp:TextBox ID="txtHoursPerShift" runat="server" CssClass="ui-widget"></asp:TextBox>
                 </div>
-                <div class="row">
-                    <h4>Requested</h4>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">OEE %</div>
+                <div class="col-lg-3">
+                    <asp:TextBox ID="txtOEE" runat="server" CssClass="ui-widget"></asp:TextBox>
                 </div>
-                <div class="row">
-                    <div class="col-lg-3">Award Date</div>
-                    <div class="col-lg-3"><asp:TextBox ID="txtAwardDate" runat="server" CssClass="ui-widget datepicker"></asp:TextBox></div>
-                    <div class="col-lg-3">Runoff</div>
-                    <div class="col-lg-3"><asp:TextBox ID="txtRunoff" runat="server" CssClass="ui-widget"></asp:TextBox></div>
+            </div>
+            <div class="row">
+                <h4>Requested</h4>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">Award Date</div>
+                <div class="col-lg-3">
+                    <asp:TextBox ID="txtAwardDate" runat="server" CssClass="ui-widget datepicker"></asp:TextBox>
                 </div>
-                <div class="row">
-                    <div class="col-lg-3">Delivery Date</div>
-                    <div class="col-lg-3"><asp:TextBox ID="txtDeliveryDate" runat="server" CssClass="ui-widget datepicker"></asp:TextBox></div>
-                    <div class="col-lg-3">Point of Installation</div>
-                    <div class="col-lg-3"><asp:TextBox ID="txtPointOfInstallation" runat="server" CssClass="ui-widget"></asp:TextBox></div>
+                <div class="col-lg-3">Runoff</div>
+                <div class="col-lg-3">
+                    <asp:TextBox ID="txtRunoff" runat="server" CssClass="ui-widget"></asp:TextBox>
                 </div>
-                <div class="row">
-                    <div class="col-lg-3">Union Workplace</div>
-                    <div class="col-lg-3"><asp:TextBox ID="txtUnionWorkplace" runat="server" CssClass="ui-widget"></asp:TextBox></div>
-                    <div class="col-lg-3">Available Data</div>
-                    <div class="col-lg-3"><asp:TextBox ID="txtAvailableData" runat="server" CssClass="ui-widget"></asp:TextBox></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">Delivery Date</div>
+                <div class="col-lg-3">
+                    <asp:TextBox ID="txtDeliveryDate" runat="server" CssClass="ui-widget datepicker"></asp:TextBox>
                 </div>
-                <div class="row">
-                    <div class="col-lg-3">Available GD&%</div>
-                    <div class="col-lg-3"><asp:TextBox ID="txtAvailableGDT" runat="server" CssClass="ui-widget"></asp:TextBox></div>
-                    <div class="col-lg-3">Controls PLC</div>
-                    <div class="col-lg-3"><asp:TextBox ID="txtControlsPLC" runat="server" CssClass="ui-widget"></asp:TextBox></div>
+                <div class="col-lg-3">Point of Installation</div>
+                <div class="col-lg-3">
+                    <asp:TextBox ID="txtPointOfInstallation" runat="server" CssClass="ui-widget"></asp:TextBox>
                 </div>
-                <div class="row">
-                    <div class="col-lg-3">Robots</div>
-                    <div class="col-lg-3"><asp:TextBox ID="txtRobots" runat="server" CssClass="ui-widget"></asp:TextBox></div>
-                    <div class="col-lg-3">Welders</div>
-                    <div class="col-lg-3"><asp:TextBox ID="txtWelders" runat="server" CssClass="ui-widget"></asp:TextBox></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">Union Workplace</div>
+                <div class="col-lg-3">
+                    <asp:TextBox ID="txtUnionWorkplace" runat="server" CssClass="ui-widget"></asp:TextBox>
                 </div>
-                <div class="row">
-                    <div class="col-lg-3">Positioners</div>
-                    <div class="col-lg-3"><asp:TextBox ID="txtPositioners" runat="server" CssClass="ui-widget"></asp:TextBox></div>
-                    <div class="col-lg-3">CNC Machine</div>
-                    <div class="col-lg-3"><asp:TextBox ID="txtCNCMachine" runat="server" CssClass="ui-widget"></asp:TextBox></div>
+                <div class="col-lg-3">Available Data</div>
+                <div class="col-lg-3">
+                    <asp:TextBox ID="txtAvailableData" runat="server" CssClass="ui-widget"></asp:TextBox>
                 </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <center>
-                            <Button ID="btnSaveSTSInfo" class="ui-widget mybutton" OnClick="saveStsInfo();return false;" >Save</Button>
-                        </center>
-                    </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">Available GD&%</div>
+                <div class="col-lg-3">
+                    <asp:TextBox ID="txtAvailableGDT" runat="server" CssClass="ui-widget"></asp:TextBox>
+                </div>
+                <div class="col-lg-3">Controls PLC</div>
+                <div class="col-lg-3">
+                    <asp:TextBox ID="txtControlsPLC" runat="server" CssClass="ui-widget"></asp:TextBox>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">Robots</div>
+                <div class="col-lg-3">
+                    <asp:TextBox ID="txtRobots" runat="server" CssClass="ui-widget"></asp:TextBox>
+                </div>
+                <div class="col-lg-3">Welders</div>
+                <div class="col-lg-3">
+                    <asp:TextBox ID="txtWelders" runat="server" CssClass="ui-widget"></asp:TextBox>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">Positioners</div>
+                <div class="col-lg-3">
+                    <asp:TextBox ID="txtPositioners" runat="server" CssClass="ui-widget"></asp:TextBox>
+                </div>
+                <div class="col-lg-3">CNC Machine</div>
+                <div class="col-lg-3">
+                    <asp:TextBox ID="txtCNCMachine" runat="server" CssClass="ui-widget"></asp:TextBox>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <center>
+                        <button id="btnSaveSTSInfo" class="ui-widget mybutton" onclick="saveStsInfo();return false;">Save</button>
+                    </center>
                 </div>
             </div>
         </div>
+    </div>
 
-<asp:Label ID="lblSendNotificationsScript" runat="server"></asp:Label>
-<asp:Label ID="lblReSendNotificationsScript" runat="server"></asp:Label>
-<asp:HiddenField ID="hdnQuoteToDelete" runat="server" />
-<asp:HiddenField ID="hdnCompanyID" runat="server" />
-<asp:Button ID="btnDeleteQuote" runat="server"  CssClass="ui-widget mybutton" OnClick="deleteQuote_click" Style="visibility: hidden"/>
-<asp:HiddenField ID="hdnReservedPartIds" runat="server" />
-<asp:HiddenField ID="hdnAllPartIds" runat="server" />
+    <asp:Label ID="lblSendNotificationsScript" runat="server"></asp:Label>
+    <asp:Label ID="lblReSendNotificationsScript" runat="server"></asp:Label>
+    <asp:HiddenField ID="hdnQuoteToDelete" runat="server" />
+    <asp:HiddenField ID="hdnCompanyID" runat="server" />
+    <asp:Button ID="btnDeleteQuote" runat="server" CssClass="ui-widget mybutton" OnClick="deleteQuote_click" Style="visibility: hidden" />
+    <asp:HiddenField ID="hdnReservedPartIds" runat="server" />
+    <asp:HiddenField ID="hdnAllPartIds" runat="server" />
 
-        <div id="messageDialog" style="display: none;"></div>
+    <div id="messageDialog" style="display: none;"></div>
     <div id="NoQuoteDialog" style="display: none;"></div>
-</div>
+    </div>
 
     <asp:Literal ID="litScript" runat="server"></asp:Literal>
-<script>
+    <script>
         // these functions are used to detect if we can do the ajax upload or must use the old way, which will redraw the page
 
         var assemblyIds = [];
 
         function supportAjaxUploadWithProgress() {
-          return supportFileAPI() && supportAjaxUploadProgressEvents() && supportFormData();
+            return supportFileAPI() && supportAjaxUploadProgressEvents() && supportFormData();
 
-          function supportFileAPI() {
-            var fi = document.createElement('INPUT');
-            fi.type = 'file';
-            return 'files' in fi;
-          };
+            function supportFileAPI() {
+                var fi = document.createElement('INPUT');
+                fi.type = 'file';
+                return 'files' in fi;
+            };
 
-          function supportAjaxUploadProgressEvents() {
-            var xhr = new XMLHttpRequest();
-            return !! (xhr && ('upload' in xhr) && ('onprogress' in xhr.upload));
-          };
+            function supportAjaxUploadProgressEvents() {
+                var xhr = new XMLHttpRequest();
+                return !!(xhr && ('upload' in xhr) && ('onprogress' in xhr.upload));
+            };
 
-          function supportFormData() {
-            return !! window.FormData;
-          }
+            function supportFormData() {
+                return !!window.FormData;
+            }
         }
         var pageX = 0;
         var pageY = 0;
@@ -751,7 +895,7 @@
                 success: function (response, status) {
                     console.log('success');
                     if (response.substring(0, 2) == 'OK') {
-                       // Good Response is OK|PartID|quotinghtml
+                        // Good Response is OK|PartID|quotinghtml
                         responseParts = response.split('|');
                         document.getElementById('quoting' + responseParts[1]).innerHTML = responseParts[2];
                     } else {
@@ -1031,7 +1175,7 @@
                         lineNums += rows[i].split('<td>')[2].split('>')[1].split('</span')[0];
                         linkedPartNums += '<br /><br />Linked Parts<br />' + rows[i].split('<td>')[3].split('</td>')[0];
                     }
-                    
+
                     //lineNums.push(rows[i].split('<td>')[2].split('>')[1].split('</span')[0]);
                 }
             }
@@ -1052,7 +1196,7 @@
             // I think you have to do something like this to send the picture data
             //var formData = new FormData(this);
             //formData.append("Picture", $('#MainContent_assemblyPictureUpload')[0].files[0]);
-            
+
             $.ajax({
                 url: url,
                 success: function (data) {
@@ -1062,7 +1206,7 @@
                         var newLineHtml = '<tr id="lineA' + data + '"><td><asp:HyperLink ID="btnEdit" runat="server" ImageUrl="~/edit.png" onclick="editPart(this.id, $(this).closest(\'tr\').attr(\'id\'));" style="cursor: pointer;"></asp:HyperLink></td><td>A' + count + '</td><td>';
                         newLineHtml += '<img id="MainContent_dgParts_imgPart_0" class="PartPic" onerror="imgError(this)" src="https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Part%20Pictures/RFQ358_22_51326-45010.png" style="height:230px;width:310px;"></td>';
                         newLineHtml += "<td>" + assemblyNum + linkedPartNums + "</td><td>" + assemblyDesc + "</td><td>Assembly</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><div id='quotingA" + data + "' >" + "<input type='button' class='mybutton' value='Reserve' onClick=\"reservePart('A" + data + "');return false;\" ></div></td><td></td><td></td></tr>";
-                        
+
                         if (assemblyIds.length - 1 < 0) {
                             $('#MainContent_dgParts tbody tr:first').after(newLineHtml);
                         }
@@ -1286,8 +1430,7 @@
             openAssembly();
             var url = 'GetAssemblyInfo?AssemblyId=' + id;
             $.ajax({
-                url: url, success: function (data)
-                {
+                url: url, success: function (data) {
                     var array = data.split('|');
                     for (i = 0; i < array.length; i++) {
                         var split = array[i].split('::::');
@@ -1344,7 +1487,7 @@
             $('#MainContent_txtWeight').val($(newid).html());
             newid = '#' + btnid.replace('btnEdit', 'txtPartNote');
             $('#MainContent_txtPartNotesDia').val($(newid).html());
-            
+
             newid = btnid.replace('btnEdit', 'imgPart');
             $('#MainContent_lblPicture').html("<a href='" + document.getElementById(newid).src + "' target='_blank'><img src='" + document.getElementById(newid).src + "' width='100'></a>");
             newid = '#' + btnid.replace('btnEdit', 'PartType');
@@ -1471,14 +1614,14 @@
         // make ajax call to get any matching history parts.
         function findParts() {
             globalPartID = $('#MainContent_hdnPartID').val();
-            
+
             url = "GetHistory.aspx?create=yes&search=" + $('#txtFindPartNumber').val().replace("+", "%2B") + "&part=" + $('#MainContent_hdnPartID').val() + '&rfq=' + $('#MainContent_rfqNumber').html() + '&rand=' + Math.random();
-            $.ajax({ url: url, success: function (data) { parseResults(data, 1, partToLink ); } });
+            $.ajax({ url: url, success: function (data) { parseResults(data, 1, partToLink); } });
         }
 
         function fineNewPartsNoLink() {
             globalPartID = $('#MainContent_hdnPartID').val();
-            
+
             url = "GetHistory.aspx?create=no&search=" + $('#txtFindPartNumber').val().replace("+", "%2B") + "&part=" + $('#MainContent_hdnPartID').val().replace("+", "%2B") + '&rfq=' + $('#MainContent_rfqNumber').html().replace("+", "%2B");
             url += '&desc=' + $('#txtFindPartDesc').val().replace("+", "%2B") + '&cust=' + $('#txtFindPartCustomer').val().replace("+", "%2B") + '&custRFQ=' + $('#MainContent_txtCustomerRFQNumber').val().replace("+", "%2B") + '&start=' + $('#MainContent_txtFindStartDate').val();
             url += '&end=' + $('#MainContent_txtFindEndDate').val() + '&quoteNum=' + $("#txtQuoteNumber").val() + '&rand=' + Math.random();
@@ -1623,7 +1766,7 @@
                             userCompany = "NRS"
                             break;
                     }
-//                    alert("$('#MainContent_hdnCompanyID').val(): " + $('#MainContent_hdnCompanyID').val() + "  userCompany:" + userCompany);
+                    //                    alert("$('#MainContent_hdnCompanyID').val(): " + $('#MainContent_hdnCompanyID').val() + "  userCompany:" + userCompany);
                     if (quoteNumber[frCounter].indexOf("OPEN RFQ") != -1) {
                         if (userCompany == partCompany[frCounter] || userCompany == "TSG") {
                             results = results + "<a href='EditRFQ.aspx?id=" + rfqID[frCounter] + "' target='_blank'>" + rfqID[frCounter] + "</a></td>";
@@ -1669,7 +1812,7 @@
                     }
                     else if (status != 'History from MAS') {
                         if (userCompany == partCompany[frCounter] || userCompany == "TSG") {
-                        results = results + "<a href='EditQuote.aspx?id=" + quoteID[frCounter] + "&quoteType=2' target='_blank'>" + quoteNumber[frCounter] + "</a></td>";
+                            results = results + "<a href='EditQuote.aspx?id=" + quoteID[frCounter] + "&quoteType=2' target='_blank'>" + quoteNumber[frCounter] + "</a></td>";
                         }
                         else {
                             results = results + quoteNumber[frCounter] + "</td>";
@@ -1724,7 +1867,7 @@
                 results = results + '"';
                 results = results + "> <input type='button' class='mybutton' id='historyBtn" + partID + "' value='Hide History' onClick='toggleHistory(" + partID + ");return false;'><BR>";
                 results = results + "<div id='History" + partID + "'>" + tblResults + "</div>";
-                
+
                 //$('#lineHistory' + partHistoryID).remove();
                 $('#line' + partID).after("<tr id='lineHistory" + partID.replace(/\s/g, "") + "'><td></td><td colspan='12'>" + results + "<td colspan='3'></td></tr>");
 
@@ -1760,13 +1903,13 @@
             // in this case,we want to send to the row under the part
             globalPartID = $('#MainContent_hdnPartID').val();
             //alert(globalPartID);
-            $.ajax({ url: url, success: function (data) { parseResults(data, 0, partToLink ); } });
+            $.ajax({ url: url, success: function (data) { parseResults(data, 0, partToLink); } });
         }
 
         function addThePart() {
             document.form1.submit();
         }
-        
+
 
         function showNoReason() {
             $('#MainContent_txtNQRAppliesTo').val('ALL REMAINING');
@@ -1847,7 +1990,8 @@
             $.ajax({ url: url, success: function (data) { processReserveResponse(data); } })
         }
 
-        function processReserveResponse(data) {;
+        function processReserveResponse(data) {
+            ;
             // if all, reload the page - do not use reload as this would reprocess any postbacks
             //alert(globalReservePart);
             if (globalReservePart == 'ALL') {
@@ -1976,7 +2120,7 @@
             var mySelect = document.getElementById('MainContent_ddlPlant');
             mySelect.options.length = 0;
             var optlist = data.split('\r\n');
-            for (i = 0; i < optlist.length ; i++) {
+            for (i = 0; i < optlist.length; i++) {
                 var myvalues = optlist[i].split(':')
                 if (myvalues.length > 1) {
                     var option = document.createElement("option");
@@ -2105,33 +2249,33 @@
             }
         }
 
-</script>
-<script src="blueimp/js/jquery.ui.widget.js" type="text/javascript"></script>
-<script src="blueimp/js/jquery.iframe-transport.js" type="text/javascript"></script>
-<script src="blueimp/js/jquery.fileupload.js" type="text/javascript"></script>
-                <asp:Label ID="lblMessage" runat="server"></asp:Label>
-        <asp:Literal ID="litPartScripts" runat="server"></asp:Literal>
-        <asp:Literal ID="litDownloadQuotes" runat="server"></asp:Literal>    
- <%--<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+    </script>
+    <script src="blueimp/js/jquery.ui.widget.js" type="text/javascript"></script>
+    <script src="blueimp/js/jquery.iframe-transport.js" type="text/javascript"></script>
+    <script src="blueimp/js/jquery.fileupload.js" type="text/javascript"></script>
+    <asp:Label ID="lblMessage" runat="server"></asp:Label>
+    <asp:Literal ID="litPartScripts" runat="server"></asp:Literal>
+    <asp:Literal ID="litDownloadQuotes" runat="server"></asp:Literal>
+    <%--<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
         asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
         asp-fallback-test="window.jQuery"
         crossorigin="anonymous"
         integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
 </script>--%>
-     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
-<link href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
-    rel="Stylesheet" type="text/css" />
-<script type="text/javascript">
-    $(function () {
-        $("[id$=txtExtraEmail]").autocomplete({
-            source: function (request, response) {
-                
-                var searchText = extractLast(request.term);
-                var rfqid = document.getElementById('<%=rfqNumber.ClientID%>').innerText;
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
+    <link href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
+        rel="Stylesheet" type="text/css" />
+    <script type="text/javascript">
+        $(function () {
+            $("[id$=txtExtraEmail]").autocomplete({
+                source: function (request, response) {
 
-                $.ajax({
-                    url: '<%=ResolveUrl("~/EditRFQ.aspx/GetCustomers") %>',
+                    var searchText = extractLast(request.term);
+                    var rfqid = document.getElementById('<%=rfqNumber.ClientID%>').innerText;
+
+                    $.ajax({
+                        url: '<%=ResolveUrl("~/EditRFQ.aspx/GetCustomers") %>',
                     data: "{ 'prefix': '" + searchText + "' , 'rfq': '" + rfqid + "' }",
                     dataType: "json",
                     type: "POST",
@@ -2142,7 +2286,7 @@
                         //        label: item.split('-')[0]
                         //    }
                         //}))
-                        response( data.d );
+                        response(data.d);
                     },
                     error: function (response) {
                         alert(response.responseText);
@@ -2151,41 +2295,41 @@
                         alert(response.responseText);
                     }
                 });
-            },focus: function() {                
-                return false;
-            },
-            select: function (e, i) {
-                var terms = split($("[id$=txtExtraEmail]").val());
+                }, focus: function () {
+                    return false;
+                },
+                select: function (e, i) {
+                    var terms = split($("[id$=txtExtraEmail]").val());
 
-                terms.pop();
+                    terms.pop();
 
                     terms.push(i.item.label);
 
-                    terms.push( "" );
+                    terms.push("");
                     $("[id$=txtExtraEmail]").val(terms.join(", "));
-                return false;
-            },
-            //minLength: 1
+                    return false;
+                },
+                //minLength: 1
+            });
         });
-    });
 
-    function split( val ) {
-      return val.toString().split( /,\s*/ );
-    }
-function extractLast(term) {
-      return split( term ).pop();
-    }
-</script>
+        function split(val) {
+            return val.toString().split(/,\s*/);
+        }
+        function extractLast(term) {
+            return split(term).pop();
+        }
+    </script>
     <script type="text/javascript">
-    $(function () {
-        $("[id$=txtccEmail]").autocomplete({
-            source: function (request, response) {
-                
-                var searchText = extractLast(request.term);
-                var rfqid = document.getElementById('<%=rfqNumber.ClientID%>').innerText;
+        $(function () {
+            $("[id$=txtccEmail]").autocomplete({
+                source: function (request, response) {
 
-                $.ajax({
-                    url: '<%=ResolveUrl("~/EditRFQ.aspx/GetCustomers") %>',
+                    var searchText = extractLast(request.term);
+                    var rfqid = document.getElementById('<%=rfqNumber.ClientID%>').innerText;
+
+                    $.ajax({
+                        url: '<%=ResolveUrl("~/EditRFQ.aspx/GetCustomers") %>',
                     data: "{ 'prefix': '" + searchText + "' , 'rfq': '" + rfqid + "' }",
                     dataType: "json",
                     type: "POST",
@@ -2196,7 +2340,7 @@ function extractLast(term) {
                         //        label: item.split('-')[0]
                         //    }
                         //}))
-                        response( data.d );
+                        response(data.d);
                     },
                     error: function (response) {
                         alert(response.responseText);
@@ -2205,41 +2349,41 @@ function extractLast(term) {
                         alert(response.responseText);
                     }
                 });
-            },focus: function() {                
-                return false;
-            },
-            select: function (e, i) {
-                var terms = split($("[id$=txtccEmail]").val());
+                }, focus: function () {
+                    return false;
+                },
+                select: function (e, i) {
+                    var terms = split($("[id$=txtccEmail]").val());
 
-                terms.pop();
+                    terms.pop();
 
                     terms.push(i.item.label);
 
-                    terms.push( "" );
+                    terms.push("");
                     $("[id$=txtccEmail]").val(terms.join(", "));
-                return false;
-            },
-            //minLength: 1
+                    return false;
+                },
+                //minLength: 1
+            });
         });
-    });
 
-    function split( val ) {
-      return val.toString().split( /,\s*/ );
-    }
-function extractLast(term) {
-      return split( term ).pop();
-    }
-</script>
+        function split(val) {
+            return val.toString().split(/,\s*/);
+        }
+        function extractLast(term) {
+            return split(term).pop();
+        }
+    </script>
     <script type="text/javascript">
-    $(function () {
-        $("[id$=txtbccEmail]").autocomplete({
-            source: function (request, response) {
-                
-                var searchText = extractLast(request.term);
-                var rfqid = document.getElementById('<%=rfqNumber.ClientID%>').innerText;
+        $(function () {
+            $("[id$=txtbccEmail]").autocomplete({
+                source: function (request, response) {
 
-                $.ajax({
-                    url: '<%=ResolveUrl("~/EditRFQ.aspx/GetCustomers") %>',
+                    var searchText = extractLast(request.term);
+                    var rfqid = document.getElementById('<%=rfqNumber.ClientID%>').innerText;
+
+                    $.ajax({
+                        url: '<%=ResolveUrl("~/EditRFQ.aspx/GetCustomers") %>',
                     data: "{ 'prefix': '" + searchText + "' , 'rfq': '" + rfqid + "' }",
                     dataType: "json",
                     type: "POST",
@@ -2250,7 +2394,7 @@ function extractLast(term) {
                         //        label: item.split('-')[0]
                         //    }
                         //}))
-                        response( data.d );
+                        response(data.d);
                     },
                     error: function (response) {
                         alert(response.responseText);
@@ -2259,30 +2403,30 @@ function extractLast(term) {
                         alert(response.responseText);
                     }
                 });
-            },focus: function() {                
-                return false;
-            },
-            select: function (e, i) {
-                var terms = split($("[id$=txtbccEmail]").val());
+                }, focus: function () {
+                    return false;
+                },
+                select: function (e, i) {
+                    var terms = split($("[id$=txtbccEmail]").val());
 
-                terms.pop();
+                    terms.pop();
 
                     terms.push(i.item.label);
 
-                    terms.push( "" );
+                    terms.push("");
                     $("[id$=txtbccEmail]").val(terms.join(", "));
-                return false;
-            },
-            //minLength: 1
+                    return false;
+                },
+                //minLength: 1
+            });
         });
-    });
 
-    function split( val ) {
-      return val.toString().split( /,\s*/ );
-    }
-function extractLast(term) {
-      return split( term ).pop();
-    }
-</script>
+        function split(val) {
+            return val.toString().split(/,\s*/);
+        }
+        function extractLast(term) {
+            return split(term).pop();
+        }
+    </script>
 
 </asp:Content>

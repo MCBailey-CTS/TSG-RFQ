@@ -3,3 +3,4 @@ packages/*
 RFQ/bin/*
 RFQ/obj/*
 weeklyReport/*
+.idea/*

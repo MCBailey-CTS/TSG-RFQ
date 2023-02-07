@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RFQ {
-    
-    
-    public partial class EditRFQ {
-        
+namespace RFQ
+{
+
+
+    public partial class EditRFQ
+    {
+
         /// <summary>
         /// rfqNumber control.
         /// </summary>
@@ -20,7 +22,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label rfqNumber;
-        
+
         /// <summary>
         /// ddlCustomer control.
         /// </summary>
@@ -29,7 +31,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlCustomer;
-        
+
         /// <summary>
         /// ddlPlant control.
         /// </summary>
@@ -38,7 +40,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlPlant;
-        
+
         /// <summary>
         /// ddlStatus control.
         /// </summary>
@@ -47,7 +49,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlStatus;
-        
+
         /// <summary>
         /// lblRank control.
         /// </summary>
@@ -56,7 +58,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblRank;
-        
+
         /// <summary>
         /// lblSalesman control.
         /// </summary>
@@ -65,7 +67,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblSalesman;
-        
+
         /// <summary>
         /// ddlHandling control.
         /// </summary>
@@ -74,7 +76,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlHandling;
-        
+
         /// <summary>
         /// txtCustomerRFQ control.
         /// </summary>
@@ -83,7 +85,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtCustomerRFQ;
-        
+
         /// <summary>
         /// calReceivedDate control.
         /// </summary>
@@ -92,7 +94,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox calReceivedDate;
-        
+
         /// <summary>
         /// cbUseTSGLogo control.
         /// </summary>
@@ -101,7 +103,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox cbUseTSGLogo;
-        
+
         /// <summary>
         /// ddlVehicle control.
         /// </summary>
@@ -110,7 +112,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlVehicle;
-        
+
         /// <summary>
         /// calDueDate control.
         /// </summary>
@@ -119,7 +121,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox calDueDate;
-        
+
         /// <summary>
         /// cbTurnkey control.
         /// </summary>
@@ -128,7 +130,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox cbTurnkey;
-        
+
         /// <summary>
         /// ddlOEM control.
         /// </summary>
@@ -137,7 +139,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlOEM;
-        
+
         /// <summary>
         /// calIntDueDate control.
         /// </summary>
@@ -146,7 +148,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox calIntDueDate;
-        
+
         /// <summary>
         /// cbGlobalProgram control.
         /// </summary>
@@ -155,7 +157,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox cbGlobalProgram;
-        
+
         /// <summary>
         /// ddlProgram control.
         /// </summary>
@@ -164,7 +166,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlProgram;
-        
+
         /// <summary>
         /// calBidDate control.
         /// </summary>
@@ -173,7 +175,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox calBidDate;
-        
+
         /// <summary>
         /// calPODate control.
         /// </summary>
@@ -182,7 +184,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox calPODate;
-        
+
         /// <summary>
         /// cbLiveWork control.
         /// </summary>
@@ -191,7 +193,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox cbLiveWork;
-        
+
         /// <summary>
         /// ddlToolCountry control.
         /// </summary>
@@ -200,7 +202,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlToolCountry;
-        
+
         /// <summary>
         /// ddlProductType control.
         /// </summary>
@@ -209,7 +211,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlProductType;
-        
+
         /// <summary>
         /// txtEngineeringNumber control.
         /// </summary>
@@ -218,7 +220,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtEngineeringNumber;
-        
+
         /// <summary>
         /// ddlRFQSource control.
         /// </summary>
@@ -227,7 +229,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlRFQSource;
-        
+
         /// <summary>
         /// ddlRFQSource2 control.
         /// </summary>
@@ -236,7 +238,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlRFQSource2;
-        
+
         /// <summary>
         /// ddlCustomerContact control.
         /// </summary>
@@ -245,16 +247,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlCustomerContact;
-        
-        /// <summary>
-        /// txtNotes control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtNotes;
-        
+
         /// <summary>
         /// btnUpdateNotification control.
         /// </summary>
@@ -263,7 +256,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnUpdateNotification;
-        
+
         /// <summary>
         /// btnUnlockRFQ control.
         /// </summary>
@@ -272,7 +265,16 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnUnlockRFQ;
-        
+
+        /// <summary>
+        /// txtNotes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtNotes;
+
         /// <summary>
         /// hlRFQLink control.
         /// </summary>
@@ -281,7 +283,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink hlRFQLink;
-        
+
         /// <summary>
         /// create control.
         /// </summary>
@@ -290,7 +292,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label create;
-        
+
         /// <summary>
         /// modify control.
         /// </summary>
@@ -299,7 +301,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label modify;
-        
+
         /// <summary>
         /// lblNotified control.
         /// </summary>
@@ -308,7 +310,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblNotified;
-        
+
         /// <summary>
         /// lblNumberOfParts control.
         /// </summary>
@@ -317,7 +319,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblNumberOfParts;
-        
+
         /// <summary>
         /// lblNumberOfTools control.
         /// </summary>
@@ -326,7 +328,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblNumberOfTools;
-        
+
         /// <summary>
         /// lblNotificationCheckList control.
         /// </summary>
@@ -335,7 +337,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblNotificationCheckList;
-        
+
         /// <summary>
         /// btnSave_Click control.
         /// </summary>
@@ -344,7 +346,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSave_Click;
-        
+
         /// <summary>
         /// hdnImportParts control.
         /// </summary>
@@ -353,7 +355,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button hdnImportParts;
-        
+
         /// <summary>
         /// htnAttachmentUpload control.
         /// </summary>
@@ -362,7 +364,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button htnAttachmentUpload;
-        
+
         /// <summary>
         /// uploadFile control.
         /// </summary>
@@ -371,7 +373,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.FileUpload uploadFile;
-        
+
         /// <summary>
         /// fileUpload control.
         /// </summary>
@@ -380,7 +382,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.FileUpload fileUpload;
-        
+
         /// <summary>
         /// viewAllQuotesButton control.
         /// </summary>
@@ -389,7 +391,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button viewAllQuotesButton;
-        
+
         /// <summary>
         /// downloadCompanyQuotesButton control.
         /// </summary>
@@ -398,7 +400,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button downloadCompanyQuotesButton;
-        
+
         /// <summary>
         /// downloadAllQuotesButton control.
         /// </summary>
@@ -407,7 +409,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button downloadAllQuotesButton;
-        
+
         /// <summary>
         /// viewOnlyMyQuotesButton control.
         /// </summary>
@@ -416,7 +418,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button viewOnlyMyQuotesButton;
-        
+
         /// <summary>
         /// btnImport control.
         /// </summary>
@@ -425,7 +427,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl btnImport;
-        
+
         /// <summary>
         /// btnRemoveHistory control.
         /// </summary>
@@ -434,7 +436,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnRemoveHistory;
-        
+
         /// <summary>
         /// btnRemoveAllReservations control.
         /// </summary>
@@ -443,7 +445,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnRemoveAllReservations;
-        
+
         /// <summary>
         /// dgParts control.
         /// </summary>
@@ -452,7 +454,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DataGrid dgParts;
-        
+
         /// <summary>
         /// hdnPartID control.
         /// </summary>
@@ -461,7 +463,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnPartID;
-        
+
         /// <summary>
         /// txtCustomerRFQNumber control.
         /// </summary>
@@ -470,7 +472,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtCustomerRFQNumber;
-        
+
         /// <summary>
         /// txtFindStartDate control.
         /// </summary>
@@ -479,7 +481,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtFindStartDate;
-        
+
         /// <summary>
         /// txtFindEndDate control.
         /// </summary>
@@ -488,7 +490,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtFindEndDate;
-        
+
         /// <summary>
         /// txtAssemblyNum control.
         /// </summary>
@@ -497,7 +499,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtAssemblyNum;
-        
+
         /// <summary>
         /// txtAssemblyDescription control.
         /// </summary>
@@ -506,7 +508,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtAssemblyDescription;
-        
+
         /// <summary>
         /// ddlAssemblyType control.
         /// </summary>
@@ -515,7 +517,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlAssemblyType;
-        
+
         /// <summary>
         /// lblAssemblyTable control.
         /// </summary>
@@ -524,7 +526,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblAssemblyTable;
-        
+
         /// <summary>
         /// cbSendAsMe control.
         /// </summary>
@@ -533,7 +535,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox cbSendAsMe;
-        
+
         /// <summary>
         /// cbSendOnlyMyQuotes control.
         /// </summary>
@@ -542,7 +544,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox cbSendOnlyMyQuotes;
-        
+
         /// <summary>
         /// cbSendUpdatedQuotes control.
         /// </summary>
@@ -551,7 +553,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox cbSendUpdatedQuotes;
-        
+
         /// <summary>
         /// cbSendAll control.
         /// </summary>
@@ -560,7 +562,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox cbSendAll;
-        
+
         /// <summary>
         /// cbIndividualPDF control.
         /// </summary>
@@ -569,7 +571,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox cbIndividualPDF;
-        
+
         /// <summary>
         /// txtExtraEmail control.
         /// </summary>
@@ -578,7 +580,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtExtraEmail;
-        
+
         /// <summary>
         /// txtccEmail control.
         /// </summary>
@@ -587,7 +589,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtccEmail;
-        
+
         /// <summary>
         /// txtbccEmail control.
         /// </summary>
@@ -596,7 +598,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtbccEmail;
-        
+
         /// <summary>
         /// txtSubject control.
         /// </summary>
@@ -605,7 +607,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtSubject;
-        
+
         /// <summary>
         /// txtMessageText control.
         /// </summary>
@@ -614,7 +616,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtMessageText;
-        
+
         /// <summary>
         /// attachmentUpload control.
         /// </summary>
@@ -623,7 +625,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.FileUpload attachmentUpload;
-        
+
         /// <summary>
         /// hlquoteAttachment control.
         /// </summary>
@@ -632,7 +634,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink hlquoteAttachment;
-        
+
         /// <summary>
         /// lblUploadsToEmail control.
         /// </summary>
@@ -641,7 +643,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblUploadsToEmail;
-        
+
         /// <summary>
         /// txtNoQuoteTo control.
         /// </summary>
@@ -650,7 +652,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtNoQuoteTo;
-        
+
         /// <summary>
         /// txtNoQuoteCC control.
         /// </summary>
@@ -659,7 +661,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtNoQuoteCC;
-        
+
         /// <summary>
         /// txtCusRfq control.
         /// </summary>
@@ -668,7 +670,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtCusRfq;
-        
+
         /// <summary>
         /// txtNoQuoteSubject control.
         /// </summary>
@@ -677,7 +679,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtNoQuoteSubject;
-        
+
         /// <summary>
         /// txtNoQuoteBody control.
         /// </summary>
@@ -686,7 +688,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtNoQuoteBody;
-        
+
         /// <summary>
         /// btnSendNoQuotesToCustomer control.
         /// </summary>
@@ -695,7 +697,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSendNoQuotesToCustomer;
-        
+
         /// <summary>
         /// txtNQRAppliesTo control.
         /// </summary>
@@ -704,7 +706,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtNQRAppliesTo;
-        
+
         /// <summary>
         /// ddlNoQuoteReason control.
         /// </summary>
@@ -713,7 +715,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlNoQuoteReason;
-        
+
         /// <summary>
         /// txtRemoveNQAppliesTo control.
         /// </summary>
@@ -722,7 +724,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtRemoveNQAppliesTo;
-        
+
         /// <summary>
         /// txtNoQuoteText control.
         /// </summary>
@@ -731,7 +733,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtNoQuoteText;
-        
+
         /// <summary>
         /// txtPart control.
         /// </summary>
@@ -740,7 +742,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtPart;
-        
+
         /// <summary>
         /// txtLineNumber control.
         /// </summary>
@@ -749,7 +751,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtLineNumber;
-        
+
         /// <summary>
         /// txtDescription control.
         /// </summary>
@@ -758,7 +760,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtDescription;
-        
+
         /// <summary>
         /// ddlPartType control.
         /// </summary>
@@ -767,7 +769,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlPartType;
-        
+
         /// <summary>
         /// txtLength control.
         /// </summary>
@@ -776,7 +778,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtLength;
-        
+
         /// <summary>
         /// txtWidth control.
         /// </summary>
@@ -785,7 +787,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtWidth;
-        
+
         /// <summary>
         /// txtHeight control.
         /// </summary>
@@ -794,7 +796,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtHeight;
-        
+
         /// <summary>
         /// txtPartAnnualVolume control.
         /// </summary>
@@ -803,7 +805,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtPartAnnualVolume;
-        
+
         /// <summary>
         /// txtMaterialType control.
         /// </summary>
@@ -812,7 +814,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtMaterialType;
-        
+
         /// <summary>
         /// txtWeight control.
         /// </summary>
@@ -821,7 +823,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtWeight;
-        
+
         /// <summary>
         /// txtThickness control.
         /// </summary>
@@ -830,7 +832,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtThickness;
-        
+
         /// <summary>
         /// txtPartNotesDia control.
         /// </summary>
@@ -839,7 +841,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtPartNotesDia;
-        
+
         /// <summary>
         /// filePicture control.
         /// </summary>
@@ -848,7 +850,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.FileUpload filePicture;
-        
+
         /// <summary>
         /// lblPicture control.
         /// </summary>
@@ -857,7 +859,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblPicture;
-        
+
         /// <summary>
         /// btnSavePart control.
         /// </summary>
@@ -866,7 +868,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSavePart;
-        
+
         /// <summary>
         /// deletePartButton control.
         /// </summary>
@@ -875,7 +877,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button deletePartButton;
-        
+
         /// <summary>
         /// duplicatePart control.
         /// </summary>
@@ -884,7 +886,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button duplicatePart;
-        
+
         /// <summary>
         /// hdnLineNum control.
         /// </summary>
@@ -893,7 +895,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnLineNum;
-        
+
         /// <summary>
         /// hdnPartNum control.
         /// </summary>
@@ -902,7 +904,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnPartNum;
-        
+
         /// <summary>
         /// hdnAssemblyId control.
         /// </summary>
@@ -911,7 +913,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnAssemblyId;
-        
+
         /// <summary>
         /// hdnNextAssemblyNum control.
         /// </summary>
@@ -920,7 +922,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnNextAssemblyNum;
-        
+
         /// <summary>
         /// litLastAssemblyId control.
         /// </summary>
@@ -929,7 +931,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litLastAssemblyId;
-        
+
         /// <summary>
         /// lblCompany control.
         /// </summary>
@@ -938,7 +940,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblCompany;
-        
+
         /// <summary>
         /// txtContactName control.
         /// </summary>
@@ -947,7 +949,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtContactName;
-        
+
         /// <summary>
         /// txtContactTitle control.
         /// </summary>
@@ -956,7 +958,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtContactTitle;
-        
+
         /// <summary>
         /// txtContactEmail control.
         /// </summary>
@@ -965,7 +967,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtContactEmail;
-        
+
         /// <summary>
         /// txtContactOfficeNumber control.
         /// </summary>
@@ -974,7 +976,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtContactOfficeNumber;
-        
+
         /// <summary>
         /// txtContactMobileNumber control.
         /// </summary>
@@ -983,7 +985,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtContactMobileNumber;
-        
+
         /// <summary>
         /// txtCustomerContactNotes control.
         /// </summary>
@@ -992,7 +994,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtCustomerContactNotes;
-        
+
         /// <summary>
         /// btnNewCustomerContact control.
         /// </summary>
@@ -1001,7 +1003,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnNewCustomerContact;
-        
+
         /// <summary>
         /// txtVehicle control.
         /// </summary>
@@ -1010,7 +1012,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtVehicle;
-        
+
         /// <summary>
         /// btnNewVehicle control.
         /// </summary>
@@ -1019,7 +1021,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnNewVehicle;
-        
+
         /// <summary>
         /// txtNewProgram control.
         /// </summary>
@@ -1028,7 +1030,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtNewProgram;
-        
+
         /// <summary>
         /// btnNewProgram control.
         /// </summary>
@@ -1037,7 +1039,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnNewProgram;
-        
+
         /// <summary>
         /// deleteRFQButton control.
         /// </summary>
@@ -1046,7 +1048,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button deleteRFQButton;
-        
+
         /// <summary>
         /// lbCheckList control.
         /// </summary>
@@ -1055,7 +1057,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lbCheckList;
-        
+
         /// <summary>
         /// lblRFQCheckList control.
         /// </summary>
@@ -1064,7 +1066,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblRFQCheckList;
-        
+
         /// <summary>
         /// deleteButton control.
         /// </summary>
@@ -1073,7 +1075,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button deleteButton;
-        
+
         /// <summary>
         /// HiddenField1 control.
         /// </summary>
@@ -1082,7 +1084,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField HiddenField1;
-        
+
         /// <summary>
         /// txtAnnualVolume control.
         /// </summary>
@@ -1091,7 +1093,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtAnnualVolume;
-        
+
         /// <summary>
         /// txtProductionDaysPerYear control.
         /// </summary>
@@ -1100,7 +1102,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtProductionDaysPerYear;
-        
+
         /// <summary>
         /// txtShiftsPerDay control.
         /// </summary>
@@ -1109,7 +1111,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtShiftsPerDay;
-        
+
         /// <summary>
         /// txtHoursPerShift control.
         /// </summary>
@@ -1118,7 +1120,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtHoursPerShift;
-        
+
         /// <summary>
         /// txtOEE control.
         /// </summary>
@@ -1127,7 +1129,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtOEE;
-        
+
         /// <summary>
         /// txtAwardDate control.
         /// </summary>
@@ -1136,7 +1138,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtAwardDate;
-        
+
         /// <summary>
         /// txtRunoff control.
         /// </summary>
@@ -1145,7 +1147,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtRunoff;
-        
+
         /// <summary>
         /// txtDeliveryDate control.
         /// </summary>
@@ -1154,7 +1156,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtDeliveryDate;
-        
+
         /// <summary>
         /// txtPointOfInstallation control.
         /// </summary>
@@ -1163,7 +1165,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtPointOfInstallation;
-        
+
         /// <summary>
         /// txtUnionWorkplace control.
         /// </summary>
@@ -1172,7 +1174,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtUnionWorkplace;
-        
+
         /// <summary>
         /// txtAvailableData control.
         /// </summary>
@@ -1181,7 +1183,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtAvailableData;
-        
+
         /// <summary>
         /// txtAvailableGDT control.
         /// </summary>
@@ -1190,7 +1192,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtAvailableGDT;
-        
+
         /// <summary>
         /// txtControlsPLC control.
         /// </summary>
@@ -1199,7 +1201,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtControlsPLC;
-        
+
         /// <summary>
         /// txtRobots control.
         /// </summary>
@@ -1208,7 +1210,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtRobots;
-        
+
         /// <summary>
         /// txtWelders control.
         /// </summary>
@@ -1217,7 +1219,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtWelders;
-        
+
         /// <summary>
         /// txtPositioners control.
         /// </summary>
@@ -1226,7 +1228,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtPositioners;
-        
+
         /// <summary>
         /// txtCNCMachine control.
         /// </summary>
@@ -1235,7 +1237,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtCNCMachine;
-        
+
         /// <summary>
         /// lblSendNotificationsScript control.
         /// </summary>
@@ -1244,7 +1246,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblSendNotificationsScript;
-        
+
         /// <summary>
         /// lblReSendNotificationsScript control.
         /// </summary>
@@ -1253,7 +1255,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblReSendNotificationsScript;
-        
+
         /// <summary>
         /// hdnQuoteToDelete control.
         /// </summary>
@@ -1262,7 +1264,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnQuoteToDelete;
-        
+
         /// <summary>
         /// hdnCompanyID control.
         /// </summary>
@@ -1271,7 +1273,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnCompanyID;
-        
+
         /// <summary>
         /// btnDeleteQuote control.
         /// </summary>
@@ -1280,7 +1282,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnDeleteQuote;
-        
+
         /// <summary>
         /// hdnReservedPartIds control.
         /// </summary>
@@ -1289,7 +1291,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnReservedPartIds;
-        
+
         /// <summary>
         /// hdnAllPartIds control.
         /// </summary>
@@ -1298,7 +1300,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnAllPartIds;
-        
+
         /// <summary>
         /// litScript control.
         /// </summary>
@@ -1307,7 +1309,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litScript;
-        
+
         /// <summary>
         /// btnEdit control.
         /// </summary>
@@ -1316,7 +1318,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink btnEdit;
-        
+
         /// <summary>
         /// lblMessage control.
         /// </summary>
@@ -1325,7 +1327,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblMessage;
-        
+
         /// <summary>
         /// litPartScripts control.
         /// </summary>
@@ -1334,7 +1336,7 @@ namespace RFQ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litPartScripts;
-        
+
         /// <summary>
         /// litDownloadQuotes control.
         /// </summary>
