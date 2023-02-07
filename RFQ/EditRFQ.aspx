@@ -132,6 +132,55 @@
                 </td>
             </tr>
             <tr>
+                <td class="ui-widget"><b><u>Quote Type</u></b></td>
+                <td class="ui-widget"><b><u>Die Content</u></b></td>
+                <td class="ui-widget"><b><u>Additional items to quote</u></b></td>
+            </tr>
+
+            <tr>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbDies" Text="Dies" /></td>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbNaBuild" Text="NA Build" /></td>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbHomeLineSupport" Text="Home Line Support" /></td>
+            </tr>
+
+            <tr>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbCheckFixture" Text="Check Fixture" /></td>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbBlended" Text="Blended" /></td>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="CheckBox3" Text="Shipping to Plant" /></td>
+            </tr>
+            <tr>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbHydroformTooling" Text="Hydroform Tooling" /></td>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbKitDie" Text="Kit Die" /></td>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbFormSteelCoatings" Text="Form Steel Coatings" /></td>
+            </tr>
+            <tr>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbMoldToolingTubeDies" Text="Mold Tooling / Tube Dies" /></td>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbLcc" Text="LCC" /></td>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbSparePunchesButtons" Text="Spare Punches and Buttons" /></td>
+            </tr>
+            <tr>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbEngineeringChange" Text="Engineering Change" /></td>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbSeeDocumentFromCustomer" Text="See Document from Customer" /></td>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbIncludeEarlyParts" Text="Include early parts (see customer RFQ)" /></td>
+            </tr>
+            <tr>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbAssemblyToolingEquipment" Text="Assembly Tooling /  Equipment" /></td>
+                <td>&nbsp;</td>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbIncludeFinanceCost" Text="Include Finance cost" /></td>
+            </tr>
+
+            <tr>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbPrototypes" Text="Prototypes" /></td>
+                <td>&nbsp;</td>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbTsims" Text="T-sims" /></td>
+            </tr>
+            <tr>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbTurnkeySeeInternalTsgRfq" Text="Turnkey (See internal TSG RFQ)" /></td>
+                <td>&nbsp;</td>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbTransferFingers" Text="Transfer fingers" /></td>
+            </tr>
+
+            <tr>
                 <td valign="top" class="ui-widget">Notes:</td>
 
                 <td>
@@ -2276,25 +2325,25 @@
 
                     $.ajax({
                         url: '<%=ResolveUrl("~/EditRFQ.aspx/GetCustomers") %>',
-                    data: "{ 'prefix': '" + searchText + "' , 'rfq': '" + rfqid + "' }",
-                    dataType: "json",
-                    type: "POST",
-                    contentType: "application/json; charset=utf-8",
-                    success: function (data) {
-                        //response($.map(data.d, function (item) {
-                        //    return {
-                        //        label: item.split('-')[0]
-                        //    }
-                        //}))
-                        response(data.d);
-                    },
-                    error: function (response) {
-                        alert(response.responseText);
-                    },
-                    failure: function (response) {
-                        alert(response.responseText);
-                    }
-                });
+                        data: "{ 'prefix': '" + searchText + "' , 'rfq': '" + rfqid + "' }",
+                        dataType: "json",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            //response($.map(data.d, function (item) {
+                            //    return {
+                            //        label: item.split('-')[0]
+                            //    }
+                            //}))
+                            response(data.d);
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
                 }, focus: function () {
                     return false;
                 },
@@ -2330,25 +2379,25 @@
 
                     $.ajax({
                         url: '<%=ResolveUrl("~/EditRFQ.aspx/GetCustomers") %>',
-                    data: "{ 'prefix': '" + searchText + "' , 'rfq': '" + rfqid + "' }",
-                    dataType: "json",
-                    type: "POST",
-                    contentType: "application/json; charset=utf-8",
-                    success: function (data) {
-                        //response($.map(data.d, function (item) {
-                        //    return {
-                        //        label: item.split('-')[0]
-                        //    }
-                        //}))
-                        response(data.d);
-                    },
-                    error: function (response) {
-                        alert(response.responseText);
-                    },
-                    failure: function (response) {
-                        alert(response.responseText);
-                    }
-                });
+                        data: "{ 'prefix': '" + searchText + "' , 'rfq': '" + rfqid + "' }",
+                        dataType: "json",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            //response($.map(data.d, function (item) {
+                            //    return {
+                            //        label: item.split('-')[0]
+                            //    }
+                            //}))
+                            response(data.d);
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
                 }, focus: function () {
                     return false;
                 },
@@ -2384,25 +2433,25 @@
 
                     $.ajax({
                         url: '<%=ResolveUrl("~/EditRFQ.aspx/GetCustomers") %>',
-                    data: "{ 'prefix': '" + searchText + "' , 'rfq': '" + rfqid + "' }",
-                    dataType: "json",
-                    type: "POST",
-                    contentType: "application/json; charset=utf-8",
-                    success: function (data) {
-                        //response($.map(data.d, function (item) {
-                        //    return {
-                        //        label: item.split('-')[0]
-                        //    }
-                        //}))
-                        response(data.d);
-                    },
-                    error: function (response) {
-                        alert(response.responseText);
-                    },
-                    failure: function (response) {
-                        alert(response.responseText);
-                    }
-                });
+                        data: "{ 'prefix': '" + searchText + "' , 'rfq': '" + rfqid + "' }",
+                        dataType: "json",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            //response($.map(data.d, function (item) {
+                            //    return {
+                            //        label: item.split('-')[0]
+                            //    }
+                            //}))
+                            response(data.d);
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
                 }, focus: function () {
                     return false;
                 },
