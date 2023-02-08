@@ -19,7 +19,7 @@ namespace RFQ
 {
     public partial class Site : MasterPage
     {
-        public Boolean Testing = false;
+        public Boolean Testing = true;
         public Int64 UserID = 0;
         public Int64 UserCompanyID = 0;
         public Boolean CanAdmin = false;
@@ -27,6 +27,7 @@ namespace RFQ
         public String UserCompanyAbbrev = "";
         protected void Page_Load(object sender, EventArgs e)
         {
+            
             setGlobalVariables();
             SqlConnection sc = new SqlConnection(this.getConnectionString());
             sc.Open();
@@ -200,12 +201,12 @@ namespace RFQ
             String UserName = Context.User.Identity.Name;
             if (Context.User.Identity.Name == "")
             {
-                UserName = "dmaguire@toolingsystemsgroup.com";
+                UserName = "mcbailey@toolingsystemsgroup.com";
                 //UserName = "sking@toolingsystemsgroup.com";
             }
             if (Context.User.Identity.Name == null)
             {
-                UserName = "dmaguire@toolingsystemsgroup.com";
+                UserName = "mcbailey@toolingsystemsgroup.com";
                 //UserName = "sking@toolingsystemsgroup.com";
             }
             return UserName;
@@ -252,7 +253,7 @@ namespace RFQ
 
         public string getUserEmailAddress(string userid)
         {
-            String EmailAddress = "dmaguire@toolingsystemsgroup.com";
+            String EmailAddress = "mcbailey@toolingsystemsgroup.com";
             //String EmailAddress = "sking@toolingsystemsgroup.com";
             SqlConnection sc = new SqlConnection(this.getConnectionString());
             sc.Open();

@@ -142,8 +142,7 @@
                 <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbDies" Text="Dies" /></td>
                 <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbNaBuild" Text="NA Build" /></td>
                 <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbHomeLineSupport" Text="Home Line Support" /></td>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="CheckBox1" Text="Yes" /></td>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="CheckBox2" Text="No" /></td>
+                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbBundleQuotesYes" Text="Yes" /></td>
             </tr>
 
             <tr>
@@ -188,8 +187,8 @@
             <tr>
                 <td valign="top" class="ui-widget">Notes:</td>
 
-                <td>
-                    <asp:TextBox ID="txtNotes" runat="server" TextMode="MultiLine" Rows="20" Columns="20"></asp:TextBox>
+                <td colspan="3">
+                    <asp:TextBox ID="txtNotes" runat="server" TextMode="MultiLine" Rows="20" Columns="20" Width="100%"></asp:TextBox>
                 </td>
             </tr>
             <tr>

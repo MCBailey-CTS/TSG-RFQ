@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq; 
+using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -37,7 +37,7 @@ namespace RFQ
         protected void Page_Load(object sender, EventArgs e)
         {
             //hdnImportParts.Visible = false;
-            ClientScript.GetPostBackEventReference(this, string.Empty); 
+            ClientScript.GetPostBackEventReference(this, string.Empty);
             RFQID = System.Convert.ToInt64(Request["id"]);
             lblMessage.Text = "";
             if (!IsPostBack)
@@ -53,12 +53,20 @@ namespace RFQ
                 SqlCommand sql = new SqlCommand();
                 sql.Connection = connection;
 
+
+
+
+
+
+
+
                 var currentUser = master.getUserName();
                 cbSendAsMe.Visible = false;
-                if (currentUser != "pdavis@toolingsystemsgroup.com" || currentUser != "dmaguire@toolingsystemsgroup.com") {
+                if (currentUser != "pdavis@toolingsystemsgroup.com" || currentUser != "dmaguire@toolingsystemsgroup.com")
+                {
                     cbSendAsMe.Visible = true;
                 }
-                
+
                 if (currentUser != "rmumford@toolingsystemsgroup.com" && currentUser != "jdalman@toolingsystemsgroup.com" && currentUser != "bduemler@toolingsystemsgroup.com" && currentUser != "dmaguire@toolingsystemsgroup.com")
                 {
                     //btnSendNoQuotesToCustomer.Visible = false;
@@ -76,7 +84,7 @@ namespace RFQ
                 {
                     lblMessage.Text = "\n<script>$('#deleteRFQBut').hide();</script>";
                 }
-                if(master.getCompanyId() != 15)
+                if (master.getCompanyId() != 15)
                 {
                     lblMessage.Text += "<script>$('#btnUGSMultiQuote').hide();</script><script>$('#btnUGSSummary').hide();</script>";
                 }
@@ -117,7 +125,7 @@ namespace RFQ
                     sql.Parameters.Clear();
                     SqlDataReader cusDR = sql.ExecuteReader();
                     ddlCustomerContact.DataSource = cusDR;
-                    ddlCustomerContact.DataTextField= "Name";
+                    ddlCustomerContact.DataTextField = "Name";
                     ddlCustomerContact.DataValueField = "CustomerContactID";
                     ddlCustomerContact.SelectedValue = "1";
                     ddlCustomerContact.DataBind();
@@ -247,7 +255,7 @@ namespace RFQ
                     //textNoQuoteTXT.Text += Server.HtmlDecode("<div id='colorNotes'>");
                     sql.CommandText = "Select CONCAT(nqrNoQuoteReasonNumber, ' - ', nqrNoQuoteReason) from pktblNoQuoteReason where nqrActive = 1";
                     SqlDataReader nqrDR = sql.ExecuteReader();
-                    while(nqrDR.Read())
+                    while (nqrDR.Read())
                     {
                         //textNoQuoteTXT.Text += Server.HtmlDecode("< font color = 'Black' size = '2px' >" + nqrDR.GetValue(0).ToString() + "</ font >< br />");
                         txtNoQuoteText.Text += Server.HtmlDecode(nqrDR.GetValue(0).ToString() + "\n");
@@ -264,7 +272,7 @@ namespace RFQ
                     //ddlBlankInfo.SelectedValue = "11";
                     //bDR.Close();
                     sql.Parameters.Clear();
-                    
+
                     string emlCustomername = ddlCustomer.SelectedItem.ToString();
                     string emlSalesmanName = "";
                     string emlSalesmanEmail = "";
@@ -306,8 +314,39 @@ namespace RFQ
                     //}
                     //estdr.Close();
 
+
+
+
+                    //SqlCommand sql = new SqlCommand();
+                    //sql.Connection = connection;
+
+                    sql.CommandText = "";
+
+                    sql.CommandText = $"select cbDies, cbNaBuild, cbHomeLineSupport, cbCheckFixture, cbBlended from tblRFQ where rfqID = {RFQID}";
+
+                    using (var reader = sql.ExecuteReader())
+                    {
+                        reader.Read();
+                        //reader.GetSqlByte(0) =
+                        //var temp = ;
+                        cbDies.Checked = (bool)reader["cbDies"];
+                        cbNaBuild.Checked = (bool)reader["cbNaBuild"];
+                        cbHomeLineSupport.Checked = (bool)reader["cbHomeLineSupport"];
+                        cbCheckFixture.Checked = (bool)reader["cbCheckFixture"];
+                        cbBlended.Checked = (bool)reader["cbBlended"];
+                    }
+
+
+
                     connection.Close();
-                    if (UserCompanyID.Equals(13)) {
+
+                    //Temp();
+
+
+
+
+                    if (UserCompanyID.Equals(13))
+                    {
 
                         txtMessageText.Text = CusName;
 
@@ -371,8 +410,20 @@ namespace RFQ
 
                         txtMessageText.Text += "https://vimeo.com/user51659858";
 
+
+
+
+
+
+
+
+
+
+
+
                     }
-                    else {
+                    else
+                    {
                         txtMessageText.Text = "Thank you for your request for quote. The attached files contain our response.";
                     }
                     //txtMessageText.Text = "Thank you for your request for quote. The attached files contain our response.";
@@ -387,11 +438,11 @@ namespace RFQ
             if (RFQID == 0)
             {
                 rfqNumber.Text = "NEW RFQ";
-                if(calDueDate.Text == "")
+                if (calDueDate.Text == "")
                 {
                     calDueDate.Text = DateTime.Now.AddDays(14).ToString("d");
                 }
-                if(calReceivedDate.Text == "")
+                if (calReceivedDate.Text == "")
                 {
                     calReceivedDate.Text = DateTime.Now.ToString("d");
 
@@ -427,7 +478,7 @@ namespace RFQ
                     Site master = new RFQ.Site();
                     populate_Header();
                     populate_Parts();
-                    if(ddlStatus.SelectedValue != "11" && master.getUserRole() != 1 && master.getUserRole() != 5)
+                    if (ddlStatus.SelectedValue != "11" && master.getUserRole() != 1 && master.getUserRole() != 5)
                     {
                         btnImport.Visible = true;
                     }
@@ -443,6 +494,39 @@ namespace RFQ
 
             //}
 
+        }
+
+
+
+        public void SaveCheckBoxes(Int64 rfqID)
+        {
+            Site master = new RFQ.Site();
+            SqlConnection connection = new SqlConnection(master.getConnectionString());
+            connection.Open();
+            SqlCommand sql = new SqlCommand();
+            sql.Connection = connection;
+
+
+
+
+            sql.CommandText = $"update tblRFQ set ";
+
+            if (cbNaBuild.Checked)
+                sql.CommandText = $"cbNaBuild = 1 ";
+            else
+                sql.CommandText = $"cbNaBuild = 0 ";
+
+
+
+            sql.CommandText = $"where rfqID = {rfqID}";
+
+
+
+            //sql.CommandText = "update tblRFQ set cbLcc = 1 where rfqID = 24868";
+
+            sql.ExecuteNonQuery();
+
+            connection.Close();
         }
         // puts some colors in the list
         // you can just keep adding to this 
@@ -487,15 +571,15 @@ namespace RFQ
                 nextColor = ListOfColors[0];
                 ListOfColors.Remove(nextColor);
             }
-            else 
+            else
             {
- 
+
             }
             return nextColor;
         }
 
         //Removing all buttons that can modify the rfq to lock a quote
-        public void LockControlValues( )
+        public void LockControlValues()
         {
             //
             //viewAllQuotesButton.Visible = false;
@@ -612,7 +696,7 @@ namespace RFQ
             connection.Close();
         }
 
-        protected void deleteRFQ (object sender, EventArgs e)
+        protected void deleteRFQ(object sender, EventArgs e)
         {
             int rfqID = System.Convert.ToInt32(rfqNumber.Text);
             Site master = new RFQ.Site();
@@ -647,13 +731,13 @@ namespace RFQ
             {
                 sql.CommandText = "Select ptrPartID from linkPartToRFQ where ptrRFQID = @rfqID";
 
-                    dr = sql.ExecuteReader();
+                dr = sql.ExecuteReader();
 
-                    while (dr.Read())
-                    {
-                        partIDSList.Add(System.Convert.ToInt32(dr.GetValue(0)));
-                    }
-                    dr.Close();
+                while (dr.Read())
+                {
+                    partIDSList.Add(System.Convert.ToInt32(dr.GetValue(0)));
+                }
+                dr.Close();
 
                 sql.CommandText = "Delete from pktblNotifiedColor where ncoRFQID = @rfqID";
                 sql.Parameters.Clear();
@@ -903,7 +987,7 @@ namespace RFQ
                 sql.CommandText = "delete from linkAssemblyToQuote where atqQuoteId = @quoteID and atqSTS = 1";
                 sql.Parameters.Clear();
                 sql.Parameters.AddWithValue("@quoteID", quoteID);
-                master.ExecuteNonQuery(sql, "Edit RFQ");                
+                master.ExecuteNonQuery(sql, "Edit RFQ");
 
                 for (int i = 0; i < pwnIDs.Count; i++)
                 {
@@ -1037,18 +1121,18 @@ namespace RFQ
                 //if (reservedCount == 0 && quoteCount == 0)
                 //{
 
-                    sql.Parameters.Clear();
-                    List<int> partIDSList = new List<int>();
-                    sql.CommandText = "Select ptrPartID from linkPartToRFQ where ptrRFQID = @rfqID";
-                    sql.Parameters.AddWithValue("@rfqID", rfqID);
+                sql.Parameters.Clear();
+                List<int> partIDSList = new List<int>();
+                sql.CommandText = "Select ptrPartID from linkPartToRFQ where ptrRFQID = @rfqID";
+                sql.Parameters.AddWithValue("@rfqID", rfqID);
 
-                    dr = sql.ExecuteReader();
+                dr = sql.ExecuteReader();
 
-                    while (dr.Read())
-                    {
-                        partIDSList.Add(System.Convert.ToInt32(dr.GetValue(0)));
-                    }
-                    dr.Close();
+                while (dr.Read())
+                {
+                    partIDSList.Add(System.Convert.ToInt32(dr.GetValue(0)));
+                }
+                dr.Close();
 
                 sql.Parameters.Clear();
                 sql.CommandText = "Delete from linkPartReservedToCompany where prcRFQID = @id";
@@ -1062,74 +1146,74 @@ namespace RFQ
 
                 int ptpID = 0;
 
-                    for (int i = 0; i < partIDSList.Count; i++)
+                for (int i = 0; i < partIDSList.Count; i++)
+                {
+                    sql.Parameters.Clear();
+                    sql.CommandText = "Select ptrPartToRFQID from linkPartToRFQ where ptrPartID = @rfqID";
+                    sql.Parameters.Clear();
+                    sql.Parameters.AddWithValue("@rfqID", rfqID);
+                    dr = sql.ExecuteReader();
+                    int partToRFQID = 0;
+                    if (dr.Read())
                     {
-                        sql.Parameters.Clear();
-                        sql.CommandText = "Select ptrPartToRFQID from linkPartToRFQ where ptrPartID = @rfqID";
-                        sql.Parameters.Clear();
-                        sql.Parameters.AddWithValue("@rfqID", rfqID);
-                        dr = sql.ExecuteReader();
-                        int partToRFQID = 0;
-                        if (dr.Read())
-                        {
-                            partToRFQID = System.Convert.ToInt32(dr.GetValue(0));
-                        }
-                        dr.Close();
+                        partToRFQID = System.Convert.ToInt32(dr.GetValue(0));
+                    }
+                    dr.Close();
 
-                        sql.Parameters.Clear();
-                        sql.CommandText = "Delete from linkPartToRFQToRFQChecklist where prrPartToRFQID = @id";
-                        sql.Parameters.AddWithValue("@id", partToRFQID);
-                        master.ExecuteNonQuery(sql, "EditRFQ DeleteAllParts");
+                    sql.Parameters.Clear();
+                    sql.CommandText = "Delete from linkPartToRFQToRFQChecklist where prrPartToRFQID = @id";
+                    sql.Parameters.AddWithValue("@id", partToRFQID);
+                    master.ExecuteNonQuery(sql, "EditRFQ DeleteAllParts");
 
-                        sql.CommandText = "Delete from linkPartToOldNoQuote where onqPartID = @partID";
-                        sql.Parameters.Clear();
-                        sql.Parameters.AddWithValue("@partID", partIDSList[i]);
-                        master.ExecuteNonQuery(sql, "EditRFQ DeleteAllParts");
+                    sql.CommandText = "Delete from linkPartToOldNoQuote where onqPartID = @partID";
+                    sql.Parameters.Clear();
+                    sql.Parameters.AddWithValue("@partID", partIDSList[i]);
+                    master.ExecuteNonQuery(sql, "EditRFQ DeleteAllParts");
 
-                        sql.Parameters.Clear();
-                        sql.CommandText = "Delete from linkPartToRFQ where ptrPartID = @partID";
-                        sql.Parameters.AddWithValue("@partID", partIDSList[i]);
-                        master.ExecuteNonQuery(sql, "EditRFQ DeleteAllParts");
+                    sql.Parameters.Clear();
+                    sql.CommandText = "Delete from linkPartToRFQ where ptrPartID = @partID";
+                    sql.Parameters.AddWithValue("@partID", partIDSList[i]);
+                    master.ExecuteNonQuery(sql, "EditRFQ DeleteAllParts");
 
 
-                        sql.Parameters.Clear();
-                        
-                        sql.CommandText = "Select ppdPartToPartID from linkPartToPartDetail where ppdPartID = @partID";
-                        sql.Parameters.AddWithValue("@partID", partIDSList[i]);
-                        dr = sql.ExecuteReader();
-                        if (dr.Read())
-                        {
-                            ptpID = System.Convert.ToInt32(dr.GetValue(0));
-                        }
+                    sql.Parameters.Clear();
 
-                        dr.Close();
-
-                        sql.CommandText = "Delete from linkPartToPartDetail where ppdPartID = @partID";
-                        master.ExecuteNonQuery(sql, "EditRFQ DeleteAllParts");
-
-                        sql.CommandText = "Delete from linkPartToHistoricalQuote where phqPartID = @partID";
-                        master.ExecuteNonQuery(sql, "EditRFQ DeleteAllParts");
-                        sql.Parameters.Clear();
-
-                        sql.CommandText = "Delete from linkPartToQuotehistory where pqhPartID = @partID";
-                        sql.Parameters.AddWithValue("@partID", partIDSList[i]);
-                        master.ExecuteNonQuery(sql, "EditRFQ DeleteAllParts");
-
-                        sql.CommandText = "Delete from linkPartReservedToCompany where prcPartId = @partID";
-                        master.ExecuteNonQuery(sql, "EditRFQ DeleteAllParts");
-
-                        sql.CommandText = "Delete from tblPart where prtPARTID = @partID";
-                        master.ExecuteNonQuery(sql, "EditRFQ DeleteAllParts");
+                    sql.CommandText = "Select ppdPartToPartID from linkPartToPartDetail where ppdPartID = @partID";
+                    sql.Parameters.AddWithValue("@partID", partIDSList[i]);
+                    dr = sql.ExecuteReader();
+                    if (dr.Read())
+                    {
+                        ptpID = System.Convert.ToInt32(dr.GetValue(0));
                     }
 
-                    if (ptpID != 0)
-                    {
-                        sql.Parameters.Clear();
-                        sql.CommandText = "Delete from linkPartToPart where ptpPartToPartID = @ptpID";
-                        sql.Parameters.AddWithValue("ptpID", ptpID);
-                        master.ExecuteNonQuery(sql, "EditRFQ DeleteAllParts");
-                    }
-                    Response.Redirect(Request.RawUrl);
+                    dr.Close();
+
+                    sql.CommandText = "Delete from linkPartToPartDetail where ppdPartID = @partID";
+                    master.ExecuteNonQuery(sql, "EditRFQ DeleteAllParts");
+
+                    sql.CommandText = "Delete from linkPartToHistoricalQuote where phqPartID = @partID";
+                    master.ExecuteNonQuery(sql, "EditRFQ DeleteAllParts");
+                    sql.Parameters.Clear();
+
+                    sql.CommandText = "Delete from linkPartToQuotehistory where pqhPartID = @partID";
+                    sql.Parameters.AddWithValue("@partID", partIDSList[i]);
+                    master.ExecuteNonQuery(sql, "EditRFQ DeleteAllParts");
+
+                    sql.CommandText = "Delete from linkPartReservedToCompany where prcPartId = @partID";
+                    master.ExecuteNonQuery(sql, "EditRFQ DeleteAllParts");
+
+                    sql.CommandText = "Delete from tblPart where prtPARTID = @partID";
+                    master.ExecuteNonQuery(sql, "EditRFQ DeleteAllParts");
+                }
+
+                if (ptpID != 0)
+                {
+                    sql.Parameters.Clear();
+                    sql.CommandText = "Delete from linkPartToPart where ptpPartToPartID = @ptpID";
+                    sql.Parameters.AddWithValue("ptpID", ptpID);
+                    master.ExecuteNonQuery(sql, "EditRFQ DeleteAllParts");
+                }
+                Response.Redirect(Request.RawUrl);
                 //}
                 //else
                 //{
@@ -1154,7 +1238,7 @@ namespace RFQ
 
             long company = master.getCompanyId();
 
-            if(company == 9)
+            if (company == 9)
             {
                 sql.CommandText = "Select qtrQuoteID, qtrHTS, qtrSTS from linkQuoteToRFQ where qtrRFQID = @rfq and qtrHTS=1";
                 sql.Parameters.Clear();
@@ -1167,7 +1251,7 @@ namespace RFQ
                 }
                 dr.Close();
             }
-            else if(company == 13)
+            else if (company == 13)
             {
                 sql.CommandText = "Select qtrQuoteID, qtrHTS, qtrSTS from linkQuoteToRFQ where qtrRFQID = @rfq and qtrSTS=1";
                 sql.Parameters.Clear();
@@ -1180,7 +1264,7 @@ namespace RFQ
                 }
                 dr.Close();
             }
-            else if(company == 15)
+            else if (company == 15)
             {
                 sql.CommandText = "Select qtrQuoteID, qtrHTS, qtrSTS from linkQuoteToRFQ where qtrRFQID = @rfq and qtrUGS=1";
                 sql.Parameters.Clear();
@@ -1193,7 +1277,7 @@ namespace RFQ
                 }
                 dr.Close();
             }
-            else if(company == 1)
+            else if (company == 1)
             {
                 sql.CommandText = "Select qtrQuoteID, qtrHTS, qtrSTS, qtrUGS from linkQuoteToRFQ where qtrRFQID = @rfq and qtrHTS = 0 and qtrSTS = 0 and qtrUGS = 0";
                 sql.Parameters.Clear();
@@ -1252,13 +1336,13 @@ namespace RFQ
             sql.Parameters.AddWithValue("@rfq", RFQID);
             SqlDataReader dr = sql.ExecuteReader();
 
-            while(dr.Read())
+            while (dr.Read())
             {
-                if(dr.GetBoolean(1))
+                if (dr.GetBoolean(1))
                 {
                     litDownloadQuotes.Text += "<script>" + String.Format("window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={0}&quoteType={1}&individual=yes','_blank')", dr.GetValue(0).ToString(), 3) + "</Script>";
                 }
-                else if(dr.GetBoolean(2))
+                else if (dr.GetBoolean(2))
                 {
                     litDownloadQuotes.Text += "<script>" + String.Format("window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={0}&quoteType={1}&individual=yes','_blank')", dr.GetValue(0).ToString(), 4) + "</Script>";
                 }
@@ -1291,7 +1375,7 @@ namespace RFQ
 
             SqlDataReader dr = sql.ExecuteReader();
             int partID = 0;
-            if(dr.Read())
+            if (dr.Read())
             {
                 partID = System.Convert.ToInt32(dr.GetValue(0));
             }
@@ -1497,11 +1581,11 @@ namespace RFQ
             while (dr.Read())
             {
                 ddlStatus.SelectedValue = dr.GetValue(0).ToString();
-                if(ddlStatus.SelectedValue == "11" && master.getUserRole() != 1 && master.getUserRole() != 5)
+                if (ddlStatus.SelectedValue == "11" && master.getUserRole() != 1 && master.getUserRole() != 5)
                 {
                     LockControlValues();
                 }
-                if(ddlStatus.SelectedValue.ToString() == "11")
+                if (ddlStatus.SelectedValue.ToString() == "11")
                 {
                     btnUnlockRFQ.Visible = true;
                 }
@@ -1527,7 +1611,7 @@ namespace RFQ
                 }
                 try
                 {
-                    calReceivedDate.Text=System.Convert.ToDateTime(dr.GetValue(8)).ToString("d");
+                    calReceivedDate.Text = System.Convert.ToDateTime(dr.GetValue(8)).ToString("d");
                     dateRecieved = System.Convert.ToDateTime(dr.GetValue(8));
                 }
                 catch
@@ -1657,9 +1741,9 @@ namespace RFQ
             int count = 0;
             while (dr.Read())
             {
-                if(count == 0)
+                if (count == 0)
                 {
-                    lblNotified.Text = "Notifications sent: " + TimeZoneInfo.ConvertTimeFromUtc(System.Convert.ToDateTime(dr.GetValue(1)), TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time")) + 
+                    lblNotified.Text = "Notifications sent: " + TimeZoneInfo.ConvertTimeFromUtc(System.Convert.ToDateTime(dr.GetValue(1)), TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time")) +
                         " by: " + dr.GetValue(0).ToString() + " to " + dr.GetValue(2).ToString();
                 }
                 else
@@ -1701,7 +1785,7 @@ namespace RFQ
             sql.Parameters.Clear();
             sql.Parameters.AddWithValue("@contact", ddlCustomerContact.SelectedValue);
             dr = sql.ExecuteReader();
-            while(dr.Read())
+            while (dr.Read())
             {
                 txtExtraEmail.Text = dr.GetValue(0).ToString();
                 txtNoQuoteTo.Text = dr["Email"].ToString();
@@ -1771,7 +1855,7 @@ namespace RFQ
 
 
             //CustomerName = CustomerName.Replace(' ', '%');
-            String RFQdate = HttpUtility.HtmlEncode(calReceivedDate.Text.Replace('/','-'));
+            String RFQdate = HttpUtility.HtmlEncode(calReceivedDate.Text.Replace('/', '-'));
             string tempCustName = CustomerName;
             //if (CustomerName != "Challenge Mfg. Company")
             //{
@@ -1798,7 +1882,8 @@ namespace RFQ
                 //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
                 SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
             }
-            catch {
+            catch
+            {
                 // assume need to create
                 //lblMessage.Text += "Need to create customer folder";
                 mainfolder.Folders.Add(CustomerName);
@@ -1917,7 +2002,7 @@ namespace RFQ
             ClientContext ctx = new ClientContext("https://toolingsystemsgroup.sharepoint.com/sites/Estimating");
             ctx.Credentials = master.getSharePointCredentials();
             Web web = ctx.Web;
-            
+
 
             var rfqfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Shared Documents/RFQ Data/" + CustomerName + "/" + RFQdate + " " + txtCustomerRFQ.Text.Trim());
             ctx.Load(web);
@@ -1947,9 +2032,9 @@ namespace RFQ
             sql.Parameters.Clear();
             sql.Parameters.AddWithValue("@rfqID", RFQID);
             SqlDataReader dr = sql.ExecuteReader();
-            while(dr.Read())
+            while (dr.Read())
             {
-                if(count == 0)
+                if (count == 0)
                 {
                     companies = dr.GetValue(0).ToString();
                 }
@@ -1964,7 +2049,7 @@ namespace RFQ
             string notificationID = "";
             sql.CommandText = "select nreNotificationReasonID from pktblNotificationReason where nreNotificationReason='RFQ Updated'";
             dr = sql.ExecuteReader();
-            if(dr.Read())
+            if (dr.Read())
             {
                 notificationID = dr.GetValue(0).ToString();
             }
@@ -2064,7 +2149,7 @@ namespace RFQ
             //var blobs = client.GetContainerReference("partpictureblob").ListBlobs();
             //var urls
 
-            List <RFQPart> partList = new List<RFQPart>();
+            List<RFQPart> partList = new List<RFQPart>();
             List<RFQPart> orderedList = new List<RFQPart>();
             Site master = new RFQ.Site();
             SqlConnection connection = new SqlConnection(master.getConnectionString());
@@ -2160,7 +2245,7 @@ namespace RFQ
                 newPart.Length = System.Convert.ToDouble(dr.GetValue(3));
                 newPart.Width = System.Convert.ToDouble(dr.GetValue(4));
                 newPart.Height = System.Convert.ToDouble(dr.GetValue(5));
-                if(dr.GetValue(6).ToString() == "")
+                if (dr.GetValue(6).ToString() == "")
                 {
                     newPart.MaterialType = dr.GetValue(16).ToString();
                 }
@@ -2190,7 +2275,7 @@ namespace RFQ
             //This is different than just sticking all linked parts up top
             foreach (RFQPart thispart in partList)
             {
-                if(!orderedList.Contains(thispart))
+                if (!orderedList.Contains(thispart))
                 {
                     orderedList.Add(thispart);
 
@@ -2198,7 +2283,7 @@ namespace RFQ
                     {
                         for (int i = partList.Count - 1; i > -1; i--)
                         {
-                            if(thispart.LinkPart == "0")
+                            if (thispart.LinkPart == "0")
                             {
                                 break;
                             }
@@ -2211,7 +2296,7 @@ namespace RFQ
                 }
                 else
                 {
-                    
+
                 }
             }
 
@@ -2243,7 +2328,7 @@ namespace RFQ
                     }
                     rdr.Close();
                 }
-                
+
 
                 thispart.quotingHTML = "<div id='quoting" + thispart.PartId.ToString() + "'>";
 
@@ -2343,11 +2428,11 @@ namespace RFQ
             }
             dr.Close();
 
-            connection.Close();            
+            connection.Close();
             dgParts.DataSource = orderedList;
             dgParts.DataBind();
 
-            lblNumberOfParts.Text = orderedList.Count.ToString();            
+            lblNumberOfParts.Text = orderedList.Count.ToString();
         }
 
         protected void btnNewCustomerContact_click(object sender, EventArgs e)
@@ -2433,7 +2518,7 @@ namespace RFQ
             sql.Parameters.AddWithValue("@rfqID", RFQID);
             SqlDataReader dr = sql.ExecuteReader();
             int lineNum = 0;
-            if(dr.Read())
+            if (dr.Read())
             {
                 lineNum = System.Convert.ToInt32(dr.GetValue(0).ToString()) + 1;
             }
@@ -2444,7 +2529,7 @@ namespace RFQ
             sql.Parameters.AddWithValue("@partNum", partID);
             sql.Parameters.AddWithValue("@rfqID", RFQID);
             dr = sql.ExecuteReader();
-            if(dr.Read())
+            if (dr.Read())
             {
                 partID = dr.GetValue(0).ToString();
             }
@@ -2456,7 +2541,7 @@ namespace RFQ
             sql.Parameters.AddWithValue("@partID", partID);
             sql.Parameters.AddWithValue("@lineNum", lineNum);
             dr = sql.ExecuteReader();
-            if(dr.Read())
+            if (dr.Read())
             {
                 part.Add(dr.GetValue(0).ToString());
                 part.Add(dr.GetValue(1).ToString());
@@ -2485,7 +2570,7 @@ namespace RFQ
             sql.CommandText += "output inserted.prtPARTID ";
             sql.CommandText += "VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8, @9, @10, @11, @12, @13, @14, @15, @16, @17)";
             sql.Parameters.Clear();
-            for(int i = 0; i < part.Count; i++)
+            for (int i = 0; i < part.Count; i++)
             {
                 //if(i == 0)
                 //{
@@ -2493,7 +2578,7 @@ namespace RFQ
                 //}
                 //else
                 //{
-                    sql.Parameters.AddWithValue("@" + i.ToString(), part[i]);
+                sql.Parameters.AddWithValue("@" + i.ToString(), part[i]);
                 //}
             }
             partID = master.ExecuteScalar(sql, "Edit RFQ").ToString();
@@ -2525,13 +2610,13 @@ namespace RFQ
             sql.Parameters.Clear();
             sql.Parameters.AddWithValue("@rfqID", RFQID);
             SqlDataReader dr = sql.ExecuteReader();
-            while(dr.Read())
+            while (dr.Read())
             {
                 partID.Add(dr.GetValue(0).ToString());
             }
             dr.Close();
 
-            for(int i = 0; i < partID.Count; i++)
+            for (int i = 0; i < partID.Count; i++)
             {
                 sql.CommandText = "Delete from linkPartToQuotehistory where pqhPartId = @partID";
                 sql.Parameters.Clear();
@@ -2556,6 +2641,8 @@ namespace RFQ
 
             connection.Close();
         }
+
+
 
         protected void btnSave_Click_Click(object sender, EventArgs e)
         {
@@ -2588,13 +2675,13 @@ namespace RFQ
                     litScript.Text = "<script>alert('" + ddlCustomer.SelectedItem.ToString() + " is on the do not sell list.  You may not enter an RFQ for them.  This RFQ has not been saved.');</script>";
                     return;
                 }
-                
+
                 sql.CommandText = "Select TSGSalesmanID from CustomerLocation where CustomerLocationID = @plant";
                 sql.Parameters.Clear();
                 sql.Parameters.AddWithValue("@plant", ddlPlant.SelectedValue);
                 dr = sql.ExecuteReader();
                 int salesmanID = 0;
-                if(dr.Read())
+                if (dr.Read())
                 {
                     salesmanID = System.Convert.ToInt32(dr.GetValue(0));
                 }
@@ -2602,24 +2689,32 @@ namespace RFQ
                 dr.Close();
                 sql.Parameters.Clear();
                 int programID = System.Convert.ToInt32(ddlProgram.SelectedValue);
-                if(ddlProgram.SelectedValue == "0" && txtNewProgram.Text != "")
+                if (ddlProgram.SelectedValue == "0" && txtNewProgram.Text != "")
                 {
                     sql.CommandText = "insert into Program (ProgramName, proCreated, proCreatedBy) OUTPUT inserted.ProgramID Values (@program, GETDATE(), @createdBy )";
                     sql.Parameters.AddWithValue("@program", txtNewProgram.Text);
                     sql.Parameters.AddWithValue("@createdBy", master.getUserName());
-                    programID = System.Convert.ToInt32(master.ExecuteScalar(sql,"EditRFQ"));
+                    programID = System.Convert.ToInt32(master.ExecuteScalar(sql, "EditRFQ"));
                 }
 
 
                 sql.CommandText = "insert into tblRFQ ";
-                sql.CommandText += "( rfqStatus, rfqCustomerID, rfqPlantID, rfqCustomerRFQNumber, rfqProgramID, rfqOEMID, rfqVehicleID, rfqDueDate, rfqDateReceived, rfqEstimatedPODate, rfqBidDate, rfqToolCountryID, rfqEngineeringNumber, rfqProductTypeID, rfqNumberOfParts,  rfqNotes, rfqMeetingNotes, rfqCreated, rfqCreatedBy,  rfqLiveWork, rfqSourceID, rfqAdditionalSourceID, rfqSalesman, rfqInternalDueDate, rfqHandlingID, rfqCheckBit, rfqUseTSGLogo, rfqCustomerContact, rfqTurnkey, rfqGlobalProgram) ";
+                sql.CommandText += "( rfqStatus, rfqCustomerID, rfqPlantID, rfqCustomerRFQNumber," +
+                    " rfqProgramID, rfqOEMID, rfqVehicleID, rfqDueDate, rfqDateReceived, rfqEstimatedPODate, rfqBidDate, rfqToolCountryID," +
+                    " rfqEngineeringNumber, rfqProductTypeID, rfqNumberOfParts,  rfqNotes, " +
+                    "rfqMeetingNotes, rfqCreated, rfqCreatedBy,  rfqLiveWork, rfqSourceID, rfqAdditionalSourceID, " +
+                    "rfqSalesman, rfqInternalDueDate, rfqHandlingID, rfqCheckBit, rfqUseTSGLogo, " +
+                    "rfqCustomerContact, rfqTurnkey, rfqGlobalProgram, " +
+                    "cbDies, cbNaBuild, cbHomeLineSupport, cbCheckFixture, cbBlended, cbShippingToPlant) ";
                 //sql.CommandText += " rfqATSReady, rfqBTSReady, rfqDTSReady, rfqETSReady, rfqGTSReady, rfqHTSReady, rfqRTSReady, rfqSTSReady, rfqUGSReady, rfqSendTo, rfqCCTo, rfqBCCTo ) ";
                 sql.CommandText += " OUTPUT inserted.rfqID ";
                 sql.CommandText += " values ( @status, @customer, @plant, @rfq, @program, @oem, @vehicle, @due, @received, @podate, @biddate, ";
                 //sql.CommandText += " @country, @eng, @type, @parts, @notes, @meetingnotes, current_timestamp, @createdby,  @livework, @src, @srctwo, @salesman, DateAdd(DD, 7,GETDATE()), @handling, 1, @logo, @contact, @turnKey, @global, ";
-                sql.CommandText += " @country, @eng, @type, @parts, @notes, @meetingnotes, current_timestamp, @createdby,  @livework, @src, @srctwo, @salesman, @internalduedate, @handling, 1, @logo, @contact, @turnKey, @global) ";
+                sql.CommandText += " @country, @eng, @type, @parts, @notes, @meetingnotes, current_timestamp, @createdby, " +
+                    " @livework, @src, @srctwo, @salesman, @internalduedate, @handling, 1, @logo, @contact, @turnKey, @global, " +
+                    "@dies, @cbNaBuild, @cbHomeLineSupport, @cbCheckFixture, @cbBlended, @cbShippingToPlant ) ";
                 //sql.CommandText += "@ats, @bts, @dts, @ets, @gts, @hts, @rts, @sts, @ugs, @sendTo, @cc, @bcc ) ";
-                sql.Parameters.AddWithValue("@status", ddlStatus.SelectedValue ); 
+                sql.Parameters.AddWithValue("@status", ddlStatus.SelectedValue);
                 sql.Parameters.AddWithValue("@customer", ddlCustomer.SelectedValue);
                 sql.Parameters.AddWithValue("@plant", ddlPlant.SelectedValue);
                 sql.Parameters.AddWithValue("@rfq", txtCustomerRFQ.Text.Trim());
@@ -2638,11 +2733,14 @@ namespace RFQ
                 sql.Parameters.AddWithValue("@notes", txtNotes.Text.Trim());
                 sql.Parameters.AddWithValue("@meetingnotes", "");
                 //sql.Parameters.AddWithValue("@meetingnotes", txtMeetingNotes.Text.Trim());
-                sql.Parameters.AddWithValue("@src", ddlRFQSource.SelectedValue );
+                sql.Parameters.AddWithValue("@src", ddlRFQSource.SelectedValue);
                 sql.Parameters.AddWithValue("@srctwo", ddlRFQSource2.SelectedValue);
                 sql.Parameters.AddWithValue("@salesman", salesmanID);
                 sql.Parameters.AddWithValue("@handling", ddlHandling.SelectedValue);
                 sql.Parameters.AddWithValue("@contact", ddlCustomerContact.SelectedValue);
+
+
+
                 //sql.Parameters.AddWithValue("@ats", cbATSReady.Checked);
                 //sql.Parameters.AddWithValue("@bts", cbBTSReady.Checked);
                 //sql.Parameters.AddWithValue("@dts", cbDTSReady.Checked);
@@ -2665,7 +2763,7 @@ namespace RFQ
                 {
                     sql.Parameters.AddWithValue("@logo", 0);
                 }
-                if(cbTurnkey.Checked)
+                if (cbTurnkey.Checked)
                 {
                     sql.Parameters.AddWithValue("@turnkey", 1);
                 }
@@ -2690,11 +2788,27 @@ namespace RFQ
                 {
                     sql.Parameters.AddWithValue("@global", 0);
                 }
+
+                sql.Parameters.AddWithValue("@dies", cbDies.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@cbNaBuild", cbNaBuild.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@cbHomeLineSupport", cbHomeLineSupport.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@cbCheckFixture", cbCheckFixture.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@cbBlended", cbBlended.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@cbShippingToPlant", cbShippingToPlant.Checked ? 1 : 0);
+                
+
+
+
+
                 sql.Parameters.AddWithValue("@createdby", Context.User.Identity.Name);
                 try
                 {
-                    Int64 newID = System.Convert.ToInt64(master.ExecuteScalar(sql,"editRFQ"));
+                    Int64 newID = System.Convert.ToInt64(master.ExecuteScalar(sql, "editRFQ"));
                     connection.Close();
+
+                    //SaveCheckBoxes(newID);
+
+
                     Response.Redirect("~/EditRFQ?id=" + newID);
                 }
                 catch (Exception ex)
@@ -2704,6 +2818,9 @@ namespace RFQ
                     lblMessage.Text += sql.CommandText;
                     connection.Close();
                 }
+
+
+
             }
             else
             {
@@ -2717,10 +2834,10 @@ namespace RFQ
                     sql.CommandText = "insert int Program (ProgramName, proCreated, proCreatedBy) OUTPUT inserted.ProgramID Values(@program, GETDATE(), @createdBy )";
                     sql.Parameters.AddWithValue("@program", txtNewProgram.Text);
                     sql.Parameters.AddWithValue("@createdBy", master.getUserName());
-                    programID = System.Convert.ToInt32(master.ExecuteScalar(sql,"EditRFQ"));
+                    programID = System.Convert.ToInt32(master.ExecuteScalar(sql, "EditRFQ"));
                 }
 
-                sql.Connection = connection;               
+                sql.Connection = connection;
                 sql.CommandText = "update tblRFQ set ";
                 sql.CommandText += "rfqStatus = @status, rfqCustomerID=@customer,  rfqCustomerRFQNumber=@rfq, rfqProgramID=@program, rfqOEMID=@oem, rfqVehicleID=@vehicle, rfqDueDate=@due, rfqDateReceived=@received, rfqEstimatedPODate=@podate, rfqBidDate=@biddate, ";
                 sql.CommandText += "rfqToolCountryID=@country, rfqEngineeringNumber=@eng, rfqProductTypeID=@type, rfqNumberOfParts=@parts,  rfqNotes=@notes, rfqMeetingNotes=@meetingnotes, rfqModified=current_timestamp, rfqModifiedBy=@modby,  rfqLiveWork =@livework, ";
@@ -2728,7 +2845,7 @@ namespace RFQ
                 //sql.CommandText += "rfqATSReady = @ats, rfqBTSReady = @bts, rfqDTSReady = @dts, rfqETSReady = @ets, rfqGTSReady = @gts, rfqHTSReady = @hts, rfqRTSReady = @rts, rfqSTSReady = @sts, rfqUGSReady = @ugs, rfqSendTo = @sendTo, rfqCCTo = @cc, rfqBCCTo = @bcc, ";
                 sql.CommandText += " rfqInternalDueDate = @internalduedate ";
                 sql.CommandText += " where rfqID=@id ";
-                sql.Parameters.AddWithValue("@status", ddlStatus.SelectedValue ); // Received
+                sql.Parameters.AddWithValue("@status", ddlStatus.SelectedValue); // Received
                 sql.Parameters.AddWithValue("@customer", ddlCustomer.SelectedValue);
                 sql.Parameters.AddWithValue("@rfq", txtCustomerRFQ.Text.Trim());
                 sql.Parameters.AddWithValue("@program", programID);
@@ -2819,7 +2936,7 @@ namespace RFQ
         protected void importFiles_click(object sender, EventArgs e)
         {
             Site master = new Site();
-            if(attachmentUpload.HasFiles)
+            if (attachmentUpload.HasFiles)
             {
                 foreach (var attachment in attachmentUpload.PostedFiles)
                 {
@@ -2927,7 +3044,7 @@ namespace RFQ
                 Response.Write("<script>alert('Please enter a file to import!');</script>");
                 return;
             }
-            Site master = new RFQ.Site(); 
+            Site master = new RFQ.Site();
             lblMessage.Text = "";
             // Get The File that was uploaded.  Must be an Excel Workbook
             String FileName = fileUpload.PostedFile.FileName;
@@ -3008,7 +3125,7 @@ namespace RFQ
                         // Only Need To Link if there is an asterisk in the part number
                         Int32 LinkID = 0;
                         Boolean NeedToLink = (RawPartNumber.Split('*').Count() > 1);
-                        if(i == 1)
+                        if (i == 1)
                         {
                             minLineNum = System.Convert.ToInt32((count + CurrentMaxLineNumber).ToString()) - 1;
                         }
@@ -3026,17 +3143,17 @@ namespace RFQ
                             newPart.prtPartDescription = master.readCellString(sh.GetRow(i).GetCell(PictureColumn + 3));
                             newPart.LineNumber = (count + CurrentMaxLineNumber).ToString();
                             newPart.MaterialType = "";
-                            newPart.Length = master.readCellDouble(sh.GetRow(i).GetCell(PictureColumn + 4),0);                            
-                            newPart.Width = master.readCellDouble(sh.GetRow(i).GetCell(PictureColumn + 5),0);
-                            newPart.Height = master.readCellDouble(sh.GetRow(i).GetCell(PictureColumn + 6),0);
-                            newPart.MaterialThickness = master.readCellDouble(sh.GetRow(i).GetCell(PictureColumn + 8),0);
-                            newPart.Weight = master.readCellDouble(sh.GetRow(i).GetCell(PictureColumn + 9),0);
-                            newPart.annualVolume = master.readCellInt(sh.GetRow(i).GetCell(PictureColumn + 10),0);
+                            newPart.Length = master.readCellDouble(sh.GetRow(i).GetCell(PictureColumn + 4), 0);
+                            newPart.Width = master.readCellDouble(sh.GetRow(i).GetCell(PictureColumn + 5), 0);
+                            newPart.Height = master.readCellDouble(sh.GetRow(i).GetCell(PictureColumn + 6), 0);
+                            newPart.MaterialThickness = master.readCellDouble(sh.GetRow(i).GetCell(PictureColumn + 8), 0);
+                            newPart.Weight = master.readCellDouble(sh.GetRow(i).GetCell(PictureColumn + 9), 0);
+                            newPart.annualVolume = master.readCellInt(sh.GetRow(i).GetCell(PictureColumn + 10), 0);
                             newPart.MaterialType = master.readCellString(sh.GetRow(i).GetCell(PictureColumn + 7));
                             newPart.BlankDescription = newPart.Length + " x " + newPart.Width + " x " + newPart.Height;
                             newPart.ptyPartDescription = "";
                             string note = master.readCellString(sh.GetRow(i).GetCell(PictureColumn + 15));
-                            pictureName = "RFQ" + Request["id"] + "_" + newPart.LineNumber + "_" + newPart.prtPartNumber  + ".png";
+                            pictureName = "RFQ" + Request["id"] + "_" + newPart.LineNumber + "_" + newPart.prtPartNumber + ".png";
                             SqlConnection connection = new SqlConnection(master.getConnectionString());
                             connection.Open();
                             SqlCommand sql = new SqlCommand();
@@ -3048,7 +3165,7 @@ namespace RFQ
                             SqlDataReader dr = sql.ExecuteReader();
 
                             int materialID = 0;
-                            if(dr.Read())
+                            if (dr.Read())
                             {
                                 materialID = System.Convert.ToInt32(dr.GetValue(0));
                             }
@@ -3056,7 +3173,7 @@ namespace RFQ
                             sql.Parameters.Clear();
 
 
-                            if(materialID == 0)
+                            if (materialID == 0)
                             {
                                 sql.CommandText = "Insert into pktblMaterialType (mtyMaterialType, mtyCreated, mtyCreatedBy) ";
                                 sql.CommandText += "Output inserted.mtyMaterialTypeID ";
@@ -3087,7 +3204,7 @@ namespace RFQ
                             sql.Parameters.AddWithValue("@annualVolume", newPart.annualVolume.ToString());
                             try
                             {
-                                newID = System.Convert.ToInt64(master.ExecuteScalar(sql,"EditRFQ"));
+                                newID = System.Convert.ToInt64(master.ExecuteScalar(sql, "EditRFQ"));
                             }
                             catch (Exception ex)
                             {
@@ -3128,7 +3245,7 @@ namespace RFQ
                                     sql.CommandText += " values (current_timestamp, @user, current_timestamp, @user) ";
                                     sql.Parameters.Clear();
                                     sql.Parameters.AddWithValue("@user", master.getUserName());
-                                    LinkID = (int)master.ExecuteScalar(sql,"EditRFQ");
+                                    LinkID = (int)master.ExecuteScalar(sql, "EditRFQ");
                                 }
                                 // we add each part to the detail table so that we know they are linked.
                                 sql.CommandText = "insert into linkPartToPartDetail (ppdPartToPartId, ppdPartID, ppdCreated, ppdCreatedBy, ppdModified, ppdModifiedBy) ";
@@ -3164,7 +3281,7 @@ namespace RFQ
                                             //break;
                                         }
                                     }
-                                    
+
                                     String PictureLineNumber = count.ToString();
                                     if ((PictureRawPartNumber == RawPartNumber) && (PictureLineNumber == (System.Convert.ToInt32(newPart.LineNumber) - minLineNum).ToString()))
                                     {
@@ -3211,7 +3328,7 @@ namespace RFQ
 
                                 }
                             }
-                            if(!uploadedPicture)
+                            if (!uploadedPicture)
                             {
                                 sql.CommandText = "update tblPart set prtPicture = @pic where prtPARTID = @id";
                                 sql.Parameters.Clear();
@@ -3255,7 +3372,7 @@ namespace RFQ
 
         public void linkPartToHistoryLucene(string partNum, string rfqID, string partID)
         {
-           
+
         }
 
         //Initial linking for the history
@@ -3278,9 +3395,9 @@ namespace RFQ
             String removedEndTag = "%";
             string partNumber = "";
             //removing all tokens are replacing with wildcard
-            for(int i = 0; i < tokens.Length; i++)
+            for (int i = 0; i < tokens.Length; i++)
             {
-                if(i != 0)
+                if (i != 0)
                 {
                     partNumber += "%" + tokens[i];
                 }
@@ -3327,7 +3444,7 @@ namespace RFQ
 
             for (int i = 0; i < search.Count; i++)
             {
-                if(search[i].Length < 7)
+                if (search[i].Length < 7)
                 {
                     continue;
                 }
@@ -3362,9 +3479,9 @@ namespace RFQ
                 dr = sql.ExecuteReader();
 
                 List<string> partsDeltWith = new List<string>();
-                while(dr.Read())
+                while (dr.Read())
                 {
-                    if(dr.GetValue(0).ToString() != "")
+                    if (dr.GetValue(0).ToString() != "")
                     {
                         if (!quoteID.Contains(dr.GetValue(0).ToString()))
                         {
@@ -3404,7 +3521,7 @@ namespace RFQ
                 sql.Parameters.Clear();
                 sql.Parameters.AddWithValue("@partNum", "%" + search[i] + "%");
                 dr = sql.ExecuteReader();
-                while(dr.Read())
+                while (dr.Read())
                 {
                     SA.Add(dr.GetValue(0).ToString());
                 }
@@ -3414,7 +3531,7 @@ namespace RFQ
                 sql.Parameters.Clear();
                 sql.Parameters.AddWithValue("@partNum", "%" + search[i] + "%");
                 dr = sql.ExecuteReader();
-                while(dr.Read())
+                while (dr.Read())
                 {
                     htsSA.Add(dr.GetValue(0).ToString());
                 }
@@ -3424,7 +3541,7 @@ namespace RFQ
                 sql.Parameters.Clear();
                 sql.Parameters.AddWithValue("@partNum", "%" + search[i] + "%");
                 dr = sql.ExecuteReader();
-                while(dr.Read())
+                while (dr.Read())
                 {
                     stsSA.Add(dr.GetValue(0).ToString());
                 }
@@ -3495,7 +3612,7 @@ namespace RFQ
 
                 master.ExecuteNonQuery(sql, "Edit RFQ");
             }
-            for(int i = 0; i < SA.Count; i++)
+            for (int i = 0; i < SA.Count; i++)
             {
                 sql.CommandText = "insert into linkPartToHistory (pthPartID, pthRFQID, pthHistoryID, pthMass, pthQuote, pthNoQuote, pthPart, pthCreated, pthCreatedBy, pthHTS, pthSTS, pthUGS, pthSA) ";
                 sql.CommandText += "values(@partID, @rfqID, @history, 0, 0, 0, 0, GETDATE(), @user, 0, 0, 0, 1)";
@@ -3618,7 +3735,7 @@ namespace RFQ
 
         protected void addNewCustomer_Click(object sender, EventArgs e)
         {
-            if(ddlCustomer.SelectedValue != "Please Select")
+            if (ddlCustomer.SelectedValue != "Please Select")
             {
                 Site master = new RFQ.Site();
                 SqlConnection connection = new SqlConnection(master.getConnectionString());
@@ -3694,7 +3811,8 @@ namespace RFQ
             sql.Parameters.Clear();
             sql.Parameters.AddWithValue("@MaterialType", txtMaterialType.Text);
             dr = sql.ExecuteReader();
-            if (dr.Read()){
+            if (dr.Read())
+            {
                 MaterialTypeId = dr["mtyMaterialTypeID"].ToString();
             }
             dr.Close();
@@ -3714,9 +3832,9 @@ namespace RFQ
                 sql.Parameters.AddWithValue("@rfq", RFQID);
                 dr = sql.ExecuteReader();
                 int maxLineNum = 0;
-                if(dr.Read())
+                if (dr.Read())
                 {
-                    if(dr.GetValue(0).ToString() != "")
+                    if (dr.GetValue(0).ToString() != "")
                     {
                         maxLineNum = System.Convert.ToInt32(dr.GetValue(0).ToString());
                     }
@@ -3735,24 +3853,29 @@ namespace RFQ
                 sql.Parameters.AddWithValue("@type", ddlPartType.SelectedValue);
                 //sql.Parameters.AddWithValue("@blank", ddlBlankInfo.SelectedValue);
                 sql.Parameters.AddWithValue("@by", Context.User.Identity.Name);
-                if (txtLength.Text.Trim()=="") {
-                    txtLength.Text="0";
+                if (txtLength.Text.Trim() == "")
+                {
+                    txtLength.Text = "0";
                 }
                 sql.Parameters.AddWithValue("@length", txtLength.Text.Trim());
-                if (txtWidth.Text.Trim()=="") {
-                    txtWidth.Text="0";
+                if (txtWidth.Text.Trim() == "")
+                {
+                    txtWidth.Text = "0";
                 }
                 sql.Parameters.AddWithValue("@width", txtWidth.Text.Trim());
-                if (txtHeight.Text.Trim()=="") {
-                    txtHeight.Text="0";
+                if (txtHeight.Text.Trim() == "")
+                {
+                    txtHeight.Text = "0";
                 }
                 sql.Parameters.AddWithValue("@height", txtHeight.Text.Trim());
-                if (txtWeight.Text.Trim()=="") {
-                    txtWeight.Text="0";
+                if (txtWeight.Text.Trim() == "")
+                {
+                    txtWeight.Text = "0";
                 }
                 sql.Parameters.AddWithValue("@weight", txtWeight.Text.Trim());
-                if (txtThickness.Text.Trim()=="") {
-                    txtThickness.Text="0";
+                if (txtThickness.Text.Trim() == "")
+                {
+                    txtThickness.Text = "0";
                 }
                 sql.Parameters.AddWithValue("@thick", txtThickness.Text.Trim());
                 sql.Parameters.AddWithValue("@material", MaterialTypeId);
@@ -3788,24 +3911,29 @@ namespace RFQ
                 //sql.Parameters.AddWithValue("@blank", ddlBlankInfo.SelectedValue);
                 sql.Parameters.AddWithValue("@by", Context.User.Identity.Name);
                 sql.Parameters.AddWithValue("@note", txtPartNotesDia.Text);
-                if (txtLength.Text.Trim()=="") {
-                    txtLength.Text="0";
+                if (txtLength.Text.Trim() == "")
+                {
+                    txtLength.Text = "0";
                 }
                 sql.Parameters.AddWithValue("@length", txtLength.Text.Trim());
-                if (txtWidth.Text.Trim()=="") {
-                    txtWidth.Text="0";
+                if (txtWidth.Text.Trim() == "")
+                {
+                    txtWidth.Text = "0";
                 }
                 sql.Parameters.AddWithValue("@width", txtWidth.Text.Trim());
-                if (txtHeight.Text.Trim()=="") {
-                    txtHeight.Text="0";
+                if (txtHeight.Text.Trim() == "")
+                {
+                    txtHeight.Text = "0";
                 }
                 sql.Parameters.AddWithValue("@height", txtHeight.Text.Trim());
-                if (txtWeight.Text.Trim()=="") {
-                    txtWeight.Text="0";
+                if (txtWeight.Text.Trim() == "")
+                {
+                    txtWeight.Text = "0";
                 }
                 sql.Parameters.AddWithValue("@weight", txtWeight.Text.Trim());
-                if (txtThickness.Text.Trim()=="") {
-                    txtThickness.Text="0";
+                if (txtThickness.Text.Trim() == "")
+                {
+                    txtThickness.Text = "0";
                 }
                 sql.Parameters.AddWithValue("@thick", txtThickness.Text.Trim());
                 sql.Parameters.AddWithValue("@material", MaterialTypeId);
@@ -3817,7 +3945,7 @@ namespace RFQ
 
                 master.ExecuteNonQuery(sql, "EditRFQ");
             }
-                                                // Upload image into SharePoint
+            // Upload image into SharePoint
             String FileName = "";
             try
             {
@@ -3827,7 +3955,8 @@ namespace RFQ
             {
 
             }
-            if (FileName != "") {
+            if (FileName != "")
+            {
                 ClientContext ctx = new ClientContext("https://toolingsystemsgroup.sharepoint.com/sites/Estimating");
                 ctx.Credentials = master.getSharePointCredentials();
                 Web web = ctx.Web;
@@ -3889,15 +4018,15 @@ namespace RFQ
         // Need to put a unique ID on each TR element so that I can place another TR element underneath it via jQuery
         protected void dgParts_ItemDataBound(object sender, DataGridItemEventArgs e)
         {
-          if ((e.Item.ItemType == ListItemType.AlternatingItem ) || (e.Item.ItemType == ListItemType.Item))
-          {
-              // get the Part Number, that will make the id unique
-              Label BackGroundColor = (Label)e.Item.FindControl("lblBackGroundColor");
-              e.Item.BackColor = System.Drawing.Color.FromName(BackGroundColor.Text.Trim());
-              Label PartID = (Label)e.Item.FindControl("PartID");
-              DataGridItem row = e.Item;
-              row.Attributes["id"] = "line" + PartID.Text.ToString();
-          }
+            if ((e.Item.ItemType == ListItemType.AlternatingItem) || (e.Item.ItemType == ListItemType.Item))
+            {
+                // get the Part Number, that will make the id unique
+                Label BackGroundColor = (Label)e.Item.FindControl("lblBackGroundColor");
+                e.Item.BackColor = System.Drawing.Color.FromName(BackGroundColor.Text.Trim());
+                Label PartID = (Label)e.Item.FindControl("PartID");
+                DataGridItem row = e.Item;
+                row.Attributes["id"] = "line" + PartID.Text.ToString();
+            }
         }
 
         protected void ddlPlant_SelectedIndexChanged(object sender, EventArgs e)
@@ -3924,7 +4053,7 @@ namespace RFQ
             sql.CommandText += "left outer join TSGSalesman ss on ss.TSGSalesmanID = lstcl.sclSalesmanId ";
             sql.CommandText += "where cl.CustomerLocationID = @plant";
             sql.Parameters.AddWithValue("@plant", ddlPlant.SelectedValue);
-            SqlDataReader  dr = sql.ExecuteReader();
+            SqlDataReader dr = sql.ExecuteReader();
             while (dr.Read())
             {
                 lblRank.Text = dr["Rank"].ToString();
@@ -3980,15 +4109,16 @@ namespace RFQ
             sql.CommandText += "select Email from TSGSalesman ";
             sql.CommandText += "where Name = @name";
 
-                foreach (var name in salesman) {
-                    sql.Parameters.AddWithValue("@name", name);
-                    SqlDataReader dr = sql.ExecuteReader();
-                    while (dr.Read())
-                    {
-                        mail.CC.Add(new MailAddress(dr["Email"].ToString()));
-                    }
-                    dr.Close();
+            foreach (var name in salesman)
+            {
+                sql.Parameters.AddWithValue("@name", name);
+                SqlDataReader dr = sql.ExecuteReader();
+                while (dr.Read())
+                {
+                    mail.CC.Add(new MailAddress(dr["Email"].ToString()));
                 }
+                dr.Close();
+            }
 
             connection.Close();
 
@@ -4011,7 +4141,7 @@ namespace RFQ
         public byte[] PictureData { get; set; }
         public String MimeType { get; set; }
         public String LineNumber { get; set; }
-        public String prtPartNumber { get; set;}
+        public String prtPartNumber { get; set; }
         public String prtPartDescription { get; set; }
         public String ptyPartDescription { get; set; }
         public Double Length { get; set; }
@@ -4020,8 +4150,8 @@ namespace RFQ
         public String MaterialType { get; set; }
         public Double MaterialThickness { get; set; }
         public Double Weight { get; set; }
-        public String BlankDescription { get; set;}
-        public String LinkPart { get; set;  }
+        public String BlankDescription { get; set; }
+        public String LinkPart { get; set; }
         public String BackGroundColor { get; set; }
         public String NQRHTML { get; set; }
         public String checklistHTML { get; set; }
