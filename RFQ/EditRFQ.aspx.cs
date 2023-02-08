@@ -322,18 +322,43 @@ namespace RFQ
 
                     sql.CommandText = "";
 
-                    sql.CommandText = $"select cbDies, cbNaBuild, cbHomeLineSupport, cbCheckFixture, cbBlended from tblRFQ where rfqID = {RFQID}";
+                    sql.CommandText = $"select " +
+                        $"cbDies, cbNaBuild, cbHomeLineSupport, cbCheckFixture, cbBlended, cbShippingToPlant, cbHydroformTooling, cbKitDie, cbFormSteelCoatings, " +
+                        $"cbMoldToolingTubeDies, cbLcc, cbSparePunchesButtons, cbEngineeringChange, cbSeeDocumentFromCustomer, cbIncludeEarlyParts, cbAssemblyToolingEquipment," +
+                        $"cbIncludeFinanceCost, cbPrototypes, cbTsims, cbTurnkeySeeInternalTsgRfq, cbTransferFingers, cbBundleQuotesYes " +
+                        $"from tblRFQ where rfqID = {RFQID}";
+
+                    sql.Parameters.AddWithValue("@cbHydroformTooling", cbHydroformTooling.Checked ? 1 : 0);
+                    sql.Parameters.AddWithValue("@cbKitDie", cbKitDie.Checked ? 1 : 0);
+                    sql.Parameters.AddWithValue("@cbFormSteelCoatings", cbFormSteelCoatings.Checked ? 1 : 0);
 
                     using (var reader = sql.ExecuteReader())
                     {
                         reader.Read();
-                        //reader.GetSqlByte(0) =
-                        //var temp = ;
                         cbDies.Checked = (bool)reader["cbDies"];
                         cbNaBuild.Checked = (bool)reader["cbNaBuild"];
                         cbHomeLineSupport.Checked = (bool)reader["cbHomeLineSupport"];
                         cbCheckFixture.Checked = (bool)reader["cbCheckFixture"];
                         cbBlended.Checked = (bool)reader["cbBlended"];
+                        cbShippingToPlant.Checked = (bool)reader["cbShippingToPlant"];
+                        cbHydroformTooling.Checked = (bool)reader["cbHydroformTooling"];
+                        cbKitDie.Checked = (bool)reader["cbKitDie"];
+                        cbFormSteelCoatings.Checked = (bool)reader["cbFormSteelCoatings"];
+
+                        cbMoldToolingTubeDies.Checked = (bool)reader["cbMoldToolingTubeDies"];
+                        cbSparePunchesButtons.Checked = (bool)reader["cbSparePunchesButtons"];
+                        cbLcc.Checked = (bool)reader["cbLcc"];
+                        cbEngineeringChange.Checked = (bool)reader["cbEngineeringChange"];
+                        cbSeeDocumentFromCustomer.Checked = (bool)reader["cbSeeDocumentFromCustomer"];
+                        cbIncludeEarlyParts.Checked = (bool)reader["cbIncludeEarlyParts"];
+                        cbAssemblyToolingEquipment.Checked = (bool)reader["cbAssemblyToolingEquipment"];
+
+                        cbIncludeFinanceCost.Checked = (bool)reader["cbIncludeFinanceCost"];
+                        cbPrototypes.Checked = (bool)reader["cbPrototypes"];
+                        cbTsims.Checked = (bool)reader["cbTsims"];
+                        cbTurnkeySeeInternalTsgRfq.Checked = (bool)reader["cbTurnkeySeeInternalTsgRfq"];
+                        cbTransferFingers.Checked = (bool)reader["cbTransferFingers"];
+                        cbBundleQuotesYes.Checked = (bool)reader["cbBundleQuotesYes"];
                     }
 
 
@@ -2705,14 +2730,23 @@ namespace RFQ
                     "rfqMeetingNotes, rfqCreated, rfqCreatedBy,  rfqLiveWork, rfqSourceID, rfqAdditionalSourceID, " +
                     "rfqSalesman, rfqInternalDueDate, rfqHandlingID, rfqCheckBit, rfqUseTSGLogo, " +
                     "rfqCustomerContact, rfqTurnkey, rfqGlobalProgram, " +
-                    "cbDies, cbNaBuild, cbHomeLineSupport, cbCheckFixture, cbBlended, cbShippingToPlant) ";
+                    "cbDies, cbNaBuild, cbHomeLineSupport, cbCheckFixture, cbBlended, cbShippingToPlant," +
+                    "cbHydroformTooling, cbKitDie, cbFormSteelCoatings," +
+                    "cbMoldToolingTubeDies, cbLcc, cbSparePunchesButtons, cbEngineeringChange, cbSeeDocumentFromCustomer, cbIncludeEarlyParts, cbAssemblyToolingEquipment," +
+                    "cbIncludeFinanceCost, cbPrototypes, cbTsims, cbTurnkeySeeInternalTsgRfq, cbTransferFingers, cbBundleQuotesYes ) ";
                 //sql.CommandText += " rfqATSReady, rfqBTSReady, rfqDTSReady, rfqETSReady, rfqGTSReady, rfqHTSReady, rfqRTSReady, rfqSTSReady, rfqUGSReady, rfqSendTo, rfqCCTo, rfqBCCTo ) ";
                 sql.CommandText += " OUTPUT inserted.rfqID ";
                 sql.CommandText += " values ( @status, @customer, @plant, @rfq, @program, @oem, @vehicle, @due, @received, @podate, @biddate, ";
                 //sql.CommandText += " @country, @eng, @type, @parts, @notes, @meetingnotes, current_timestamp, @createdby,  @livework, @src, @srctwo, @salesman, DateAdd(DD, 7,GETDATE()), @handling, 1, @logo, @contact, @turnKey, @global, ";
                 sql.CommandText += " @country, @eng, @type, @parts, @notes, @meetingnotes, current_timestamp, @createdby, " +
                     " @livework, @src, @srctwo, @salesman, @internalduedate, @handling, 1, @logo, @contact, @turnKey, @global, " +
-                    "@dies, @cbNaBuild, @cbHomeLineSupport, @cbCheckFixture, @cbBlended, @cbShippingToPlant ) ";
+                    "@dies, @cbNaBuild, @cbHomeLineSupport, @cbCheckFixture, @cbBlended, @cbShippingToPlant, " +
+                    "@cbHydroformTooling, @cbKitDie, @cbFormSteelCoatings," +
+                    "@cbMoldToolingTubeDies, @cbLcc, @cbSparePunchesButtons, @cbEngineeringChange, @cbSeeDocumentFromCustomer, @cbIncludeEarlyParts, @cbAssemblyToolingEquipment," +
+                    "@cbIncludeFinanceCost, @cbPrototypes, @cbTsims, @cbTurnkeySeeInternalTsgRfq, @cbTransferFingers, @cbBundleQuotesYes ) ";
+
+                
+
                 //sql.CommandText += "@ats, @bts, @dts, @ets, @gts, @hts, @rts, @sts, @ugs, @sendTo, @cc, @bcc ) ";
                 sql.Parameters.AddWithValue("@status", ddlStatus.SelectedValue);
                 sql.Parameters.AddWithValue("@customer", ddlCustomer.SelectedValue);
@@ -2795,8 +2829,25 @@ namespace RFQ
                 sql.Parameters.AddWithValue("@cbCheckFixture", cbCheckFixture.Checked ? 1 : 0);
                 sql.Parameters.AddWithValue("@cbBlended", cbBlended.Checked ? 1 : 0);
                 sql.Parameters.AddWithValue("@cbShippingToPlant", cbShippingToPlant.Checked ? 1 : 0);
-                
 
+                sql.Parameters.AddWithValue("@cbHydroformTooling", cbHydroformTooling.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@cbKitDie", cbKitDie.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@cbFormSteelCoatings", cbFormSteelCoatings.Checked ? 1 : 0);
+
+                sql.Parameters.AddWithValue("@cbMoldToolingTubeDies", cbMoldToolingTubeDies.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@cbLcc", cbLcc.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@cbSparePunchesButtons", cbSparePunchesButtons.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@cbEngineeringChange", cbEngineeringChange.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@cbSeeDocumentFromCustomer", cbSeeDocumentFromCustomer.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@cbIncludeEarlyParts", cbIncludeEarlyParts.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@cbAssemblyToolingEquipment", cbAssemblyToolingEquipment.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@cbIncludeFinanceCost", cbIncludeFinanceCost.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@cbPrototypes", cbPrototypes.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@cbTsims", cbTsims.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@cbTurnkeySeeInternalTsgRfq", cbTurnkeySeeInternalTsgRfq.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@cbTransferFingers", cbTransferFingers.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@cbBundleQuotesYes", cbBundleQuotesYes.Checked ? 1 : 0);
+                
 
 
 
