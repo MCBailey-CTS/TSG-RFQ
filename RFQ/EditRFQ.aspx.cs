@@ -323,7 +323,8 @@ namespace RFQ
                     sql.CommandText = "";
 
                     sql.CommandText = $"select " +
-                        $"cbDies, cbNaBuild, cbHomeLineSupport, cbCheckFixture, cbBlended, cbShippingToPlant, cbHydroformTooling, cbKitDie, cbFormSteelCoatings, " +
+                        //$"cbDies, " +
+                        $"cbNaBuild, cbHomeLineSupport, cbCheckFixture, cbBlended, cbShippingToPlant, cbHydroformTooling, cbKitDie, cbFormSteelCoatings, " +
                         $"cbMoldToolingTubeDies, cbLcc, cbSparePunchesButtons, cbEngineeringChange, cbSeeDocumentFromCustomer, cbIncludeEarlyParts, cbAssemblyToolingEquipment," +
                         $"cbIncludeFinanceCost, cbPrototypes, cbTsims, cbTurnkeySeeInternalTsgRfq, cbTransferFingers, cbBundleQuotesYes " +
                         $"from tblRFQ where rfqID = {RFQID}";
@@ -335,7 +336,7 @@ namespace RFQ
                     using (var reader = sql.ExecuteReader())
                     {
                         reader.Read();
-                        cbDies.Checked = (bool)reader["cbDies"];
+                        //cbDies.Checked = (bool)reader["cbDies"];
                         cbNaBuild.Checked = (bool)reader["cbNaBuild"];
                         cbHomeLineSupport.Checked = (bool)reader["cbHomeLineSupport"];
                         cbCheckFixture.Checked = (bool)reader["cbCheckFixture"];
@@ -2730,7 +2731,8 @@ namespace RFQ
                     "rfqMeetingNotes, rfqCreated, rfqCreatedBy,  rfqLiveWork, rfqSourceID, rfqAdditionalSourceID, " +
                     "rfqSalesman, rfqInternalDueDate, rfqHandlingID, rfqCheckBit, rfqUseTSGLogo, " +
                     "rfqCustomerContact, rfqTurnkey, rfqGlobalProgram, " +
-                    "cbDies, cbNaBuild, cbHomeLineSupport, cbCheckFixture, cbBlended, cbShippingToPlant," +
+                    //"cbDies, " +
+                    "cbNaBuild, cbHomeLineSupport, cbCheckFixture, cbBlended, cbShippingToPlant," +
                     "cbHydroformTooling, cbKitDie, cbFormSteelCoatings," +
                     "cbMoldToolingTubeDies, cbLcc, cbSparePunchesButtons, cbEngineeringChange, cbSeeDocumentFromCustomer, cbIncludeEarlyParts, cbAssemblyToolingEquipment," +
                     "cbIncludeFinanceCost, cbPrototypes, cbTsims, cbTurnkeySeeInternalTsgRfq, cbTransferFingers, cbBundleQuotesYes ) ";
@@ -2740,7 +2742,8 @@ namespace RFQ
                 //sql.CommandText += " @country, @eng, @type, @parts, @notes, @meetingnotes, current_timestamp, @createdby,  @livework, @src, @srctwo, @salesman, DateAdd(DD, 7,GETDATE()), @handling, 1, @logo, @contact, @turnKey, @global, ";
                 sql.CommandText += " @country, @eng, @type, @parts, @notes, @meetingnotes, current_timestamp, @createdby, " +
                     " @livework, @src, @srctwo, @salesman, @internalduedate, @handling, 1, @logo, @contact, @turnKey, @global, " +
-                    "@dies, @cbNaBuild, @cbHomeLineSupport, @cbCheckFixture, @cbBlended, @cbShippingToPlant, " +
+                    //"@cbDies, " +
+                    "@cbNaBuild, @cbHomeLineSupport, @cbCheckFixture, @cbBlended, @cbShippingToPlant, " +
                     "@cbHydroformTooling, @cbKitDie, @cbFormSteelCoatings," +
                     "@cbMoldToolingTubeDies, @cbLcc, @cbSparePunchesButtons, @cbEngineeringChange, @cbSeeDocumentFromCustomer, @cbIncludeEarlyParts, @cbAssemblyToolingEquipment," +
                     "@cbIncludeFinanceCost, @cbPrototypes, @cbTsims, @cbTurnkeySeeInternalTsgRfq, @cbTransferFingers, @cbBundleQuotesYes ) ";
@@ -2823,7 +2826,7 @@ namespace RFQ
                     sql.Parameters.AddWithValue("@global", 0);
                 }
 
-                sql.Parameters.AddWithValue("@dies", cbDies.Checked ? 1 : 0);
+                //sql.Parameters.AddWithValue("@cbDies", cbDies.Checked ? 1 : 0);
                 sql.Parameters.AddWithValue("@cbNaBuild", cbNaBuild.Checked ? 1 : 0);
                 sql.Parameters.AddWithValue("@cbHomeLineSupport", cbHomeLineSupport.Checked ? 1 : 0);
                 sql.Parameters.AddWithValue("@cbCheckFixture", cbCheckFixture.Checked ? 1 : 0);
