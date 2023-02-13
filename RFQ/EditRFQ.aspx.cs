@@ -2669,6 +2669,10 @@ namespace RFQ
         }
 
 
+        //protected string Get(CheckBox chk)
+        //{
+        //    return $"{chk.nam}"cbNaBuild ={ (cbNaBuild.Checked ? 1 : 0)}
+        //}
 
         protected void btnSave_Click_Click(object sender, EventArgs e)
         {
@@ -2895,8 +2899,40 @@ namespace RFQ
                 sql.CommandText = "update tblRFQ set ";
                 sql.CommandText += "rfqStatus = @status, rfqCustomerID=@customer,  rfqCustomerRFQNumber=@rfq, rfqProgramID=@program, rfqOEMID=@oem, rfqVehicleID=@vehicle, rfqDueDate=@due, rfqDateReceived=@received, rfqEstimatedPODate=@podate, rfqBidDate=@biddate, ";
                 sql.CommandText += "rfqToolCountryID=@country, rfqEngineeringNumber=@eng, rfqProductTypeID=@type, rfqNumberOfParts=@parts,  rfqNotes=@notes, rfqMeetingNotes=@meetingnotes, rfqModified=current_timestamp, rfqModifiedBy=@modby,  rfqLiveWork =@livework, ";
-                sql.CommandText += "rfqNumberOfQuotes=@quote, rfqSourceID=@src, rfqAdditionalSourceID=@srctwo, rfqHandlingID = @handling, rfqCheckBit = 1, rfqUseTSGLogo = @logo, rfqTurnkey = @turnkey, rfqGlobalProgram = @global, rfqCustomerContact = @custContact, rfqPlantID = @plant, ";
-                //sql.CommandText += "rfqATSReady = @ats, rfqBTSReady = @bts, rfqDTSReady = @dts, rfqETSReady = @ets, rfqGTSReady = @gts, rfqHTSReady = @hts, rfqRTSReady = @rts, rfqSTSReady = @sts, rfqUGSReady = @ugs, rfqSendTo = @sendTo, rfqCCTo = @cc, rfqBCCTo = @bcc, ";
+                sql.CommandText += $"rfqNumberOfQuotes=@quote, " +
+                    $"rfqSourceID=@src, " +
+                    $"rfqAdditionalSourceID=@srctwo, " +
+                    $"rfqHandlingID = @handling, " +
+                    $"rfqCheckBit = 1, " +
+                    $"rfqUseTSGLogo = @logo, " +
+                    $"rfqTurnkey = @turnkey, " +
+                    $"rfqGlobalProgram = @global, " +
+                    $"rfqCustomerContact = @custContact, " +
+                    $"rfqPlantID = @plant, " +
+                    $"cbNaBuild={(cbNaBuild.Checked ? 1 : 0)}, " +
+                    $"cbHomeLineSupport={(cbHomeLineSupport.Checked ? 1 : 0)}, " +
+                    $"cbCheckFixture={(cbCheckFixture.Checked ? 1 : 0)}, " +
+                    $"cbBlended={(cbBlended.Checked ? 1 : 0)}, " +
+                    $"cbShippingToPlant={(cbShippingToPlant.Checked ? 1 : 0)}, " +
+                    $"cbHydroformTooling={(cbHydroformTooling.Checked ? 1 : 0)}, " +
+                    $"cbKitDie={(cbKitDie.Checked ? 1 : 0)}, " +
+                    $"cbFormSteelCoatings={(cbFormSteelCoatings.Checked ? 1 : 0)}, " +
+                    $"cbMoldToolingTubeDies={(cbMoldToolingTubeDies.Checked ? 1 : 0)}, " +
+                    $"cbLcc={(cbLcc.Checked ? 1 : 0)}, " +
+                    $"cbSparePunchesButtons={(cbSparePunchesButtons.Checked ? 1 : 0)}, " +
+                    $"cbEngineeringChange={(cbEngineeringChange.Checked ? 1 : 0)}, " +
+                    $"cbSeeDocumentFromCustomer={(cbSeeDocumentFromCustomer.Checked ? 1 : 0)}, " +
+                    $"cbIncludeEarlyParts={(cbIncludeEarlyParts.Checked ? 1 : 0)}, " +
+                    $"cbAssemblyToolingEquipment={(cbAssemblyToolingEquipment.Checked ? 1 : 0)}, " +
+                    $"cbIncludeFinanceCost={(cbIncludeFinanceCost.Checked ? 1 : 0)}, " +
+                    $"cbPrototypes={(cbPrototypes.Checked ? 1 : 0)}, " +
+                    $"cbTsims={(cbTsims.Checked ? 1 : 0)}, " +
+                    $"cbTurnkeySeeInternalTsgRfq={(cbTurnkeySeeInternalTsgRfq.Checked ? 1 : 0)}, " +
+                    $"cbTransferFingers={(cbTransferFingers.Checked ? 1 : 0)}, " +
+                    $"cbBundleQuotesYes={(cbBundleQuotesYes.Checked ? 1 : 0)}, ";
+
+
+
                 sql.CommandText += " rfqInternalDueDate = @internalduedate ";
                 sql.CommandText += " where rfqID=@id ";
                 sql.Parameters.AddWithValue("@status", ddlStatus.SelectedValue); // Received
@@ -2970,6 +3006,15 @@ namespace RFQ
                 {
                     sql.Parameters.AddWithValue("@global", 0);
                 }
+
+                //if (cbNaBuild.Checked)
+                //{
+                //    sql.Parameters.AddWithValue("@cbNaBuild", 1);
+                //}
+                //else
+                //{
+                //    sql.Parameters.AddWithValue("@cbNaBuild", 0);
+                //}
                 sql.Parameters.AddWithValue("@modby", Context.User.Identity.Name);
                 sql.Parameters.AddWithValue("@id", RFQID);
                 try
