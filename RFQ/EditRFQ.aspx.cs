@@ -34,6 +34,19 @@ namespace RFQ
         public Boolean IsMasterCompany = false;
         public long UserCompanyID = 0;
 
+        protected static void AddDropDownListValues(SqlCommand sql, DropDownList ddlVehicle, string textField, string valueField, string selected_value = null)
+        {
+            using (SqlDataReader vDR = sql.ExecuteReader())
+            {
+                ddlVehicle.DataSource = vDR;
+                ddlVehicle.DataTextField = "vehVehicleName";
+                ddlVehicle.DataValueField = "vehVehicleID";
+                if (!(selected_value is null))
+                    ddlVehicle.SelectedValue = selected_value;
+                ddlVehicle.DataBind();
+            }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             //hdnImportParts.Visible = false;
@@ -54,223 +67,194 @@ namespace RFQ
                 sql.Connection = connection;
 
 
-
-
-
-
-
-
                 var currentUser = master.getUserName();
-                cbSendAsMe.Visible = false;
-                if (currentUser != "pdavis@toolingsystemsgroup.com" || currentUser != "dmaguire@toolingsystemsgroup.com")
-                {
-                    cbSendAsMe.Visible = true;
-                }
+                cbSendAsMe.Visible = currentUser != "pdavis@toolingsystemsgroup.com" || currentUser != "dmaguire@toolingsystemsgroup.com";
+                
 
                 if (currentUser != "rmumford@toolingsystemsgroup.com" && currentUser != "jdalman@toolingsystemsgroup.com" && currentUser != "bduemler@toolingsystemsgroup.com" && currentUser != "dmaguire@toolingsystemsgroup.com")
-                {
-                    //btnSendNoQuotesToCustomer.Visible = false;
-                    //litScript.Text = "<script>alert('" + ddlCustomer.SelectedItem.ToString() + " is on the do not sell list.  You may not enter an RFQ for them.  This RFQ has not been saved.');</script>";
                     litScript.Text = "<script>document.getElementById('btnSendNoQuoteDialog').style.visibility = 'hidden';</script>";
-                }
 
                 if (currentUser != "dparker@toolingsystemsgroup.com" && currentUser != "jdalman@toolingsystemsgroup.com")
-                {
-                    //calIntDueDate.ReadOnly = true;
                     calIntDueDate.Enabled = false;
-                }
 
                 if (master.getCompanyId() != 1)
-                {
                     lblMessage.Text = "\n<script>$('#deleteRFQBut').hide();</script>";
-                }
+                
                 if (master.getCompanyId() != 15)
-                {
                     lblMessage.Text += "<script>$('#btnUGSMultiQuote').hide();</script><script>$('#btnUGSSummary').hide();</script>";
-                }
+                
                 try
                 {
+
                     sql.CommandText = "select ProgramID, ProgramName from Program where ProgramName not in ('0','  ADD NEW') order by ProgramName";
                     sql.Parameters.Clear();
-                    SqlDataReader progDR = sql.ExecuteReader();
-                    ddlProgram.DataSource = progDR;
-                    ddlProgram.DataTextField = "ProgramName";
-                    ddlProgram.DataValueField = "ProgramID";
-                    ddlProgram.SelectedValue = "2062";
-                    ddlProgram.DataBind();
-                    progDR.Close();
-                    ddlProgram.SelectedValue = "2206";
+                    using (SqlDataReader progDR = sql.ExecuteReader())
+                    {
+                        ddlProgram.DataSource = progDR;
+                        ddlProgram.DataTextField = "ProgramName";
+                        ddlProgram.DataValueField = "ProgramID";
+                        ddlProgram.SelectedValue = "2206";
+                        ddlProgram.DataBind();
+                    }
 
                     sql.CommandText = "select OEMID, OEMName from OEM where OEMName not in ('nul;','undefined') order by OEMName";
                     sql.Parameters.Clear();
-                    SqlDataReader oemDR = sql.ExecuteReader();
-                    ddlOEM.DataSource = oemDR;
-                    ddlOEM.DataTextField = "OEMName";
-                    ddlOEM.DataValueField = "OEMID";
-                    ddlOEM.SelectedValue = "39";
-                    ddlOEM.DataBind();
-                    oemDR.Close();
+
+                    using (SqlDataReader oemDR = sql.ExecuteReader())
+                    {
+                        ddlOEM.DataSource = oemDR;
+                        ddlOEM.DataTextField = "OEMName";
+                        ddlOEM.DataValueField = "OEMID";
+                        ddlOEM.SelectedValue = "39";
+                        ddlOEM.DataBind();
+                    }
 
                     sql.CommandText = "Select rhaRFQHandlingDescription, rhaRFQHandlingID from pktblRFQHandling";
                     sql.Parameters.Clear();
-                    SqlDataReader hanDR = sql.ExecuteReader();
-                    ddlHandling.DataSource = hanDR;
-                    ddlHandling.DataTextField = "rhaRFQHandlingDescription";
-                    ddlHandling.DataValueField = "rhaRFQHandlingID";
-                    ddlHandling.SelectedValue = "4";
-                    ddlHandling.DataBind();
-                    hanDR.Close();
+                    using (SqlDataReader hanDR = sql.ExecuteReader())
+                    {
+                        ddlHandling.DataSource = hanDR;
+                        ddlHandling.DataTextField = "rhaRFQHandlingDescription";
+                        ddlHandling.DataValueField = "rhaRFQHandlingID";
+                        ddlHandling.SelectedValue = "4";
+                        ddlHandling.DataBind();
+                    }
 
                     sql.CommandText = "Select CustomerContactID, Name from CustomerContact where (ccoInactive = 0 or ccoInactive is null) order by Name";
                     sql.Parameters.Clear();
-                    SqlDataReader cusDR = sql.ExecuteReader();
-                    ddlCustomerContact.DataSource = cusDR;
-                    ddlCustomerContact.DataTextField = "Name";
-                    ddlCustomerContact.DataValueField = "CustomerContactID";
-                    ddlCustomerContact.SelectedValue = "1";
-                    ddlCustomerContact.DataBind();
-                    cusDR.Close();
+                    using (SqlDataReader cusDR = sql.ExecuteReader())
+                    {
+                        ddlCustomerContact.DataSource = cusDR;
+                        ddlCustomerContact.DataTextField = "Name";
+                        ddlCustomerContact.DataValueField = "CustomerContactID";
+                        ddlCustomerContact.SelectedValue = "1";
+                        ddlCustomerContact.DataBind();
+                    }
 
                     sql.CommandText = "select vehVehicleID, vehVehicleName from pktblVehicle order by vehVehicleName";
                     sql.Parameters.Clear();
-                    SqlDataReader vDR = sql.ExecuteReader();
-                    ddlVehicle.DataSource = vDR;
-                    ddlVehicle.DataTextField = "vehVehicleName";
-                    ddlVehicle.DataValueField = "vehVehicleID";
-                    ddlVehicle.DataBind();
-                    vDR.Close();
-                    ddlVehicle.SelectedValue = "1";
+
+                    AddDropDownListValues(sql, ddlVehicle, "vehVehicleName", "vehVehicleID", "1");
+
 
                     sql.CommandText = "Select astAssemblyTypeId, astAssemblyType from  pktblAssemblyType order by astAssemblyType ";
                     sql.Parameters.Clear();
-                    SqlDataReader assDr = sql.ExecuteReader();
-                    ddlAssemblyType.DataSource = assDr;
-                    ddlAssemblyType.DataTextField = "astAssemblyType";
-                    ddlAssemblyType.DataValueField = "astAssemblyTypeId";
-                    ddlAssemblyType.DataBind();
-                    assDr.Close();
+
+                    AddDropDownListValues(sql, ddlAssemblyType, "astAssemblyType", "astAssemblyTypeId");
+
+
+                    
 
                     sql.CommandText = "select tcyToolCountryID, tcyToolCountry from pktblToolCountry order by tcyToolCountry";
                     sql.Parameters.Clear();
-                    SqlDataReader tcDR = sql.ExecuteReader();
-                    ddlToolCountry.DataSource = tcDR;
-                    ddlToolCountry.DataTextField = "tcyToolCountry";
-                    ddlToolCountry.DataValueField = "tcyToolCountryID";
-                    ddlToolCountry.SelectedValue = "2";
-                    ddlToolCountry.DataBind();
-                    tcDR.Close();
+                    using (SqlDataReader tcDR = sql.ExecuteReader())
+                    {
+                        ddlToolCountry.DataSource = tcDR;
+                        ddlToolCountry.DataTextField = "tcyToolCountry";
+                        ddlToolCountry.DataValueField = "tcyToolCountryID";
+                        ddlToolCountry.SelectedValue = "2";
+                        ddlToolCountry.DataBind();
+                    }
 
                     sql.CommandText = "select rstRFQStatusID, rstRFQStatusDescription from pktblRFQStatus order by iif(rstRFQStatusDescription = 'RFQ Received',0,1), rstRFQStatusDescription";
                     sql.Parameters.Clear();
-                    SqlDataReader statusDR = sql.ExecuteReader();
-                    ddlStatus.DataSource = statusDR;
-                    ddlStatus.DataTextField = "rstRFQStatusDescription";
-                    ddlStatus.DataValueField = "rstRFQStatusID";
-                    ddlStatus.SelectedValue = "2";
-                    ddlStatus.DataBind();
-                    statusDR.Close();
+                    using (SqlDataReader statusDR = sql.ExecuteReader())
+                    {
+                        ddlStatus.DataSource = statusDR;
+                        ddlStatus.DataTextField = "rstRFQStatusDescription";
+                        ddlStatus.DataValueField = "rstRFQStatusID";
+                        ddlStatus.SelectedValue = "2";
+                        ddlStatus.DataBind();
+                    }
 
                     sql.CommandText = "select ptyProductTypeID, ptyProductType from pktblProductType order by ptyProductType";
                     sql.Parameters.Clear();
-                    SqlDataReader ptDR = sql.ExecuteReader();
-                    ddlProductType.DataSource = ptDR;
-                    ddlProductType.DataTextField = "ptyProductType";
-                    ddlProductType.DataValueField = "ptyProductTypeID";
-                    ddlProductType.SelectedValue = "2";
-                    ddlProductType.DataBind();
-                    ptDR.Close();
+                    using (SqlDataReader ptDR = sql.ExecuteReader())
+                    {
+                        ddlProductType.DataSource = ptDR;
+                        ddlProductType.DataTextField = "ptyProductType";
+                        ddlProductType.DataValueField = "ptyProductTypeID";
+                        ddlProductType.SelectedValue = "2";
+                        ddlProductType.DataBind();
+                    }
 
                     sql.CommandText = "select rchRFQcheckListID, rchRFQCheckListItemText from pktblRFQCheckList where rchRFQorPart='Part' order by rchRFQCheckListID";
                     sql.Parameters.Clear();
-                    SqlDataReader PartCheckListDR = sql.ExecuteReader();
-                    lbCheckList.Text = "<div align='left'>Select From the Following<BR>";
-                    while (PartCheckListDR.Read())
+
+                    using (SqlDataReader PartCheckListDR = sql.ExecuteReader())
                     {
-                        lbCheckList.Text += "<div align='left'><input type='checkbox' class='lbCheckListOption' value='" + PartCheckListDR.GetValue(0).ToString() + "'> ";
-                        lbCheckList.Text += "&nbsp;" + PartCheckListDR.GetValue(1).ToString().Trim() + "</div>";
+                        lbCheckList.Text = "<div align='left'>Select From the Following<BR>";
+                        while (PartCheckListDR.Read())
+                        {
+                            lbCheckList.Text += $"<div align='left'><input type='checkbox' class='lbCheckListOption' value='{PartCheckListDR.GetValue(0).ToString()}'> ";
+                            lbCheckList.Text += $"&nbsp;{PartCheckListDR.GetValue(1).ToString().Trim()}</div>";
+                        }
                     }
-                    PartCheckListDR.Close();
                     lbCheckList.Text += "</div>";
                     lblRFQCheckList.Text = "<div align='left'>Select From the Following<BR>";
                     sql.CommandText = "select rchRFQCheckListID, rchRFQCheckListItemText from pktblRFQCheckList where rchRFQorPart='RFQ' order by rchRFQCheckListID";
                     sql.Parameters.Clear();
-                    SqlDataReader RFQCheckListDR = sql.ExecuteReader();
-                    while (RFQCheckListDR.Read())
+                    using (SqlDataReader RFQCheckListDR = sql.ExecuteReader())
                     {
-                        lblRFQCheckList.Text += "<div align='left'><input type='checkbox' class='lbRFQCheckListOption' value='" + RFQCheckListDR.GetValue(0).ToString() + "'> ";
-                        lblRFQCheckList.Text += "&nbsp;" + RFQCheckListDR.GetValue(1).ToString().Trim() + "</div>";
+                        while (RFQCheckListDR.Read())
+                        {
+                            lblRFQCheckList.Text += "<div align='left'><input type='checkbox' class='lbRFQCheckListOption' value='" + RFQCheckListDR.GetValue(0).ToString() + "'> ";
+                            lblRFQCheckList.Text += $"&nbsp;{RFQCheckListDR.GetValue(1).ToString().Trim()}</div>";
+                        }
                     }
-                    RFQCheckListDR.Close();
 
                     sql.CommandText = "select CustomerID, concat(CustomerName,' (',CustomerNumber,')') as Name from Customer where cusInactive <> 1 or cusInactive is null order by CustomerName ";
-                    SqlDataReader CustomerDR = sql.ExecuteReader();
-                    ddlCustomer.DataSource = CustomerDR;
-                    ddlCustomer.DataTextField = "Name";
-                    ddlCustomer.DataValueField = "CustomerID";
-                    ddlCustomer.DataBind();
-                    if (RFQID == 0)
+                    using (SqlDataReader CustomerDR = sql.ExecuteReader())
                     {
-                        ddlCustomer.Items.Insert(0, "Please Select");
+                        ddlCustomer.DataSource = CustomerDR;
+                        ddlCustomer.DataTextField = "Name";
+                        ddlCustomer.DataValueField = "CustomerID";
+                        ddlCustomer.DataBind();
+                        
                     }
-                    CustomerDR.Close();
+
+                    if (RFQID == 0)
+                        ddlCustomer.Items.Insert(0, "Please Select");
 
                     sql.CommandText = "select rsoSourceID, rsoSourceName from pktblRFQSource order by rsoSourceName";
-                    SqlDataReader sourceDR = sql.ExecuteReader();
-                    ddlRFQSource.DataSource = sourceDR;
-                    ddlRFQSource.DataTextField = "rsoSourceName";
-                    ddlRFQSource.DataValueField = "rsoSourceID";
-                    ddlRFQSource.SelectedValue = "24";
-                    ddlRFQSource.DataBind();
-                    sourceDR.Close();
+                    using (SqlDataReader sourceDR = sql.ExecuteReader())
+                    {
+                        ddlRFQSource.DataSource = sourceDR;
+                        ddlRFQSource.DataTextField = "rsoSourceName";
+                        ddlRFQSource.DataValueField = "rsoSourceID";
+                        ddlRFQSource.SelectedValue = "24";
+                        ddlRFQSource.DataBind();
+                    }
 
                     sql.CommandText = "select rsoSourceID, rsoSourceName from pktblRFQSource order by rsoSourceName";
-                    SqlDataReader sourceDR2 = sql.ExecuteReader();
-                    ddlRFQSource2.DataSource = sourceDR2;
-                    ddlRFQSource2.DataTextField = "rsoSourceName";
-                    ddlRFQSource2.DataValueField = "rsoSourceID";
-                    ddlRFQSource2.SelectedValue = "24";
-                    ddlRFQSource2.DataBind();
-                    sourceDR2.Close();
+                    using (SqlDataReader sourceDR2 = sql.ExecuteReader())
+                    {
+                        ddlRFQSource2.DataSource = sourceDR2;
+                        ddlRFQSource2.DataTextField = "rsoSourceName";
+                        ddlRFQSource2.DataValueField = "rsoSourceID";
+                        ddlRFQSource2.SelectedValue = "24";
+                        ddlRFQSource2.DataBind();
+                    }
 
                     sql.CommandText = "select ptyPartTypeID, ptyPartTypeDescription from pktblPartType order by ptyPartTypeDescription";
-                    SqlDataReader partTypeDR = sql.ExecuteReader();
-                    ddlPartType.DataSource = partTypeDR;
-                    ddlPartType.DataTextField = "ptyPartTypeDescription";
-                    ddlPartType.DataValueField = "ptyPartTypeID";
-                    ddlPartType.DataBind();
-                    ddlPartType.SelectedValue = "33";
-                    partTypeDR.Close();
+                    using (SqlDataReader partTypeDR = sql.ExecuteReader())
+                    {
+                        ddlPartType.DataSource = partTypeDR;
+                        ddlPartType.DataTextField = "ptyPartTypeDescription";
+                        ddlPartType.DataValueField = "ptyPartTypeID";
+                        ddlPartType.SelectedValue = "33";
+                        ddlPartType.DataBind();
+                    }
 
-                    //sql.CommandText = "select mtyMaterialTypeID, mtyMaterialType from pktblMaterialType order by mtyMaterialType";
-                    //SqlDataReader mtDR = sql.ExecuteReader();
-                    //ddlMaterialType.DataSource = mtDR;
-                    //ddlMaterialType.DataTextField = "mtyMaterialType";
-                    //ddlMaterialType.DataValueField = "mtyMaterialTypeID";
-                    //ddlMaterialType.DataBind();
-                    //ddlMaterialType.SelectedValue = "75";
-                    //mtDR.Close();
+                   
 
                     sql.Parameters.Clear();
 
-                    //textNoQuoteTXT.Text += Server.HtmlDecode("<div id='colorNotes'>");
                     sql.CommandText = "Select CONCAT(nqrNoQuoteReasonNumber, ' - ', nqrNoQuoteReason) from pktblNoQuoteReason where nqrActive = 1";
-                    SqlDataReader nqrDR = sql.ExecuteReader();
-                    while (nqrDR.Read())
-                    {
-                        //textNoQuoteTXT.Text += Server.HtmlDecode("< font color = 'Black' size = '2px' >" + nqrDR.GetValue(0).ToString() + "</ font >< br />");
-                        txtNoQuoteText.Text += Server.HtmlDecode(nqrDR.GetValue(0).ToString() + "\n");
-                        //textNoQuoteTXT.Text += ;
-                    }
-                    nqrDR.Close();
-                    //textNoQuoteTXT.Text += Server.HtmlDecode("</ div>");
-                    //sql.CommandText = "select binBlankInfoID, concat(mtyMaterialType,' ',binMaterialThicknessEnglish,' ',binMaterialPitchEnglish,' ',binMaterialWidthEnglish, ' ', binMaterialWeightEnglish) as BlankInfo from pktblBlankInfo, pktblMaterialType where binBlankMaterialTypeID=mtyMaterialTypeID ";
-                    //SqlDataReader bDR = sql.ExecuteReader();
-                    //ddlBlankInfo.DataSource = bDR;
-                    //ddlBlankInfo.DataTextField = "BlankInfo";
-                    //ddlBlankInfo.DataValueField = "binBlankInfoID";
-                    //ddlBlankInfo.DataBind();
-                    //ddlBlankInfo.SelectedValue = "11";
-                    //bDR.Close();
+                    using (SqlDataReader nqrDR = sql.ExecuteReader())
+                        while (nqrDR.Read())
+                            txtNoQuoteText.Text += Server.HtmlDecode(nqrDR.GetValue(0).ToString() + "\n");
+                    
                     sql.Parameters.Clear();
 
                     string emlCustomername = ddlCustomer.SelectedItem.ToString();
@@ -289,36 +273,17 @@ namespace RFQ
                     sql.CommandText += "join pktblEstimators est on est.estEstimatorID = stsquo.squEstimatorID ";
                     sql.CommandText += "where stsquo.squRfqNum = @rfqid ";
                     sql.Parameters.AddWithValue("@rfqid", RFQID.ToString());
-                    SqlDataReader salesdr = sql.ExecuteReader();
-                    while (salesdr.Read())
-                    {
-                        emlSalesmanName = salesdr["Name"].ToString();
-                        emlSalesmanEmail = salesdr["Email"].ToString();
-                        emlSalesmanPhone = salesdr["MobilePhone"].ToString();
-                        CusName = salesdr["CustomerName"].ToString();
-                        emlEstEmail = salesdr["estEmail"].ToString();
-                        emlEstPhone = salesdr["estOfficePhone"].ToString();
-                        emlEstName = salesdr["estname"].ToString();
-                    }
-                    salesdr.Close();
-
-                    //sql.CommandText = "Select PerName, EmailAddress, PhoneNumber from permissions where UID = @userId";
-                    //sql.Parameters.Clear();
-                    //sql.Parameters.AddWithValue("@userId", master.getUserID().ToString());
-                    //SqlDataReader estdr = sql.ExecuteReader();
-                    //while (estdr.Read())
-                    //{
-                    //    emlEstEmail = estdr["EmailAddress"].ToString();
-                    //    emlEstPhone = estdr["PhoneNumber"].ToString();
-                    //    emlEstName = estdr["PerName"].ToString();
-                    //}
-                    //estdr.Close();
-
-
-
-
-                    //SqlCommand sql = new SqlCommand();
-                    //sql.Connection = connection;
+                    using (SqlDataReader salesdr = sql.ExecuteReader())
+                        while (salesdr.Read())
+                        {
+                            emlSalesmanName = salesdr["Name"].ToString();
+                            emlSalesmanEmail = salesdr["Email"].ToString();
+                            emlSalesmanPhone = salesdr["MobilePhone"].ToString();
+                            CusName = salesdr["CustomerName"].ToString();
+                            emlEstEmail = salesdr["estEmail"].ToString();
+                            emlEstPhone = salesdr["estOfficePhone"].ToString();
+                            emlEstName = salesdr["estname"].ToString();
+                        }                    
 
                     sql.CommandText = "";
 
