@@ -326,7 +326,7 @@ namespace RFQ
                         //$"cbDies, " +
                         $"cbNaBuild, cbHomeLineSupport, cbCheckFixture, cbBlended, cbShippingToPlant, cbHydroformTooling, cbKitDie, cbFormSteelCoatings, " +
                         $"cbMoldToolingTubeDies, cbLcc, cbSparePunchesButtons, cbEngineeringChange, cbSeeDocumentFromCustomer, cbIncludeEarlyParts, cbAssemblyToolingEquipment," +
-                        $"cbIncludeFinanceCost, cbPrototypes, cbTsims, cbTurnkeySeeInternalTsgRfq, cbTransferFingers, cbBundleQuotesYes " +
+                        $"cbIncludeFinanceCost, cbPrototypes, cbTsims, cbTurnkeySeeInternalTsgRfq, cbTransferFingers, cbBundleQuotesYes, txtSendQuotes " +
                         $"from tblRFQ where rfqID = {RFQID}";
 
                     sql.Parameters.AddWithValue("@cbHydroformTooling", cbHydroformTooling.Checked ? 1 : 0);
@@ -360,6 +360,16 @@ namespace RFQ
                         cbTurnkeySeeInternalTsgRfq.Checked = (bool)reader["cbTurnkeySeeInternalTsgRfq"];
                         cbTransferFingers.Checked = (bool)reader["cbTransferFingers"];
                         cbBundleQuotesYes.Checked = (bool)reader["cbBundleQuotesYes"];
+
+
+                        var temp = reader["txtSendQuotes"];
+
+
+                        txtSendQuotes.Enabled = cbBundleQuotesYes.Checked;
+
+                        if (temp is string text)
+                            txtSendQuotes.Text = text;
+
                     }
 
 
@@ -461,26 +471,18 @@ namespace RFQ
                     connection.Close();
                 }
             }
+
             if (RFQID == 0)
             {
                 rfqNumber.Text = "NEW RFQ";
                 if (calDueDate.Text == "")
-                {
                     calDueDate.Text = DateTime.Now.AddDays(14).ToString("d");
-                }
+
                 if (calReceivedDate.Text == "")
-                {
                     calReceivedDate.Text = DateTime.Now.ToString("d");
 
-                }
-                //if(lblIntDueDate.Text == "")
-                //{
-                //    lblIntDueDate.Text = DateTime.Now.AddDays(7).ToString("d");
-                //}
                 if (calIntDueDate.Text == "")
-                {
                     calIntDueDate.Text = DateTime.Now.AddDays(14).ToString("d");
-                }
 
                 btnImport.Visible = false;
                 btnSavePart.Visible = false;
@@ -2669,6 +2671,12 @@ namespace RFQ
         }
 
 
+        protected void cbBundleQuotesYes_Checked_Clicked(Object sender, EventArgs e)
+        {
+            txtSendQuotes.Enabled = cbBundleQuotesYes.Checked;
+        }
+
+
         //protected string Get(CheckBox chk)
         //{
         //    return $"{chk.nam}"cbNaBuild ={ (cbNaBuild.Checked ? 1 : 0)}
@@ -2725,6 +2733,7 @@ namespace RFQ
                     sql.Parameters.AddWithValue("@program", txtNewProgram.Text);
                     sql.Parameters.AddWithValue("@createdBy", master.getUserName());
                     programID = System.Convert.ToInt32(master.ExecuteScalar(sql, "EditRFQ"));
+                    //txts
                 }
 
 
@@ -2739,7 +2748,7 @@ namespace RFQ
                     "cbNaBuild, cbHomeLineSupport, cbCheckFixture, cbBlended, cbShippingToPlant," +
                     "cbHydroformTooling, cbKitDie, cbFormSteelCoatings," +
                     "cbMoldToolingTubeDies, cbLcc, cbSparePunchesButtons, cbEngineeringChange, cbSeeDocumentFromCustomer, cbIncludeEarlyParts, cbAssemblyToolingEquipment," +
-                    "cbIncludeFinanceCost, cbPrototypes, cbTsims, cbTurnkeySeeInternalTsgRfq, cbTransferFingers, cbBundleQuotesYes ) ";
+                    "cbIncludeFinanceCost, cbPrototypes, cbTsims, cbTurnkeySeeInternalTsgRfq, cbTransferFingers, cbBundleQuotesYes, txtSendQuotes ) ";
                 //sql.CommandText += " rfqATSReady, rfqBTSReady, rfqDTSReady, rfqETSReady, rfqGTSReady, rfqHTSReady, rfqRTSReady, rfqSTSReady, rfqUGSReady, rfqSendTo, rfqCCTo, rfqBCCTo ) ";
                 sql.CommandText += " OUTPUT inserted.rfqID ";
                 sql.CommandText += " values ( @status, @customer, @plant, @rfq, @program, @oem, @vehicle, @due, @received, @podate, @biddate, ";
@@ -2750,9 +2759,9 @@ namespace RFQ
                     "@cbNaBuild, @cbHomeLineSupport, @cbCheckFixture, @cbBlended, @cbShippingToPlant, " +
                     "@cbHydroformTooling, @cbKitDie, @cbFormSteelCoatings," +
                     "@cbMoldToolingTubeDies, @cbLcc, @cbSparePunchesButtons, @cbEngineeringChange, @cbSeeDocumentFromCustomer, @cbIncludeEarlyParts, @cbAssemblyToolingEquipment," +
-                    "@cbIncludeFinanceCost, @cbPrototypes, @cbTsims, @cbTurnkeySeeInternalTsgRfq, @cbTransferFingers, @cbBundleQuotesYes ) ";
+                    "@cbIncludeFinanceCost, @cbPrototypes, @cbTsims, @cbTurnkeySeeInternalTsgRfq, @cbTransferFingers, @cbBundleQuotesYes, @txtSendQuotes ) ";
 
-                
+
 
                 //sql.CommandText += "@ats, @bts, @dts, @ets, @gts, @hts, @rts, @sts, @ugs, @sendTo, @cc, @bcc ) ";
                 sql.Parameters.AddWithValue("@status", ddlStatus.SelectedValue);
@@ -2854,7 +2863,8 @@ namespace RFQ
                 sql.Parameters.AddWithValue("@cbTurnkeySeeInternalTsgRfq", cbTurnkeySeeInternalTsgRfq.Checked ? 1 : 0);
                 sql.Parameters.AddWithValue("@cbTransferFingers", cbTransferFingers.Checked ? 1 : 0);
                 sql.Parameters.AddWithValue("@cbBundleQuotesYes", cbBundleQuotesYes.Checked ? 1 : 0);
-                
+                sql.Parameters.AddWithValue("@txtSendQuotes", txtSendQuotes.Text);
+
 
 
 
@@ -2929,9 +2939,11 @@ namespace RFQ
                     $"cbTsims={(cbTsims.Checked ? 1 : 0)}, " +
                     $"cbTurnkeySeeInternalTsgRfq={(cbTurnkeySeeInternalTsgRfq.Checked ? 1 : 0)}, " +
                     $"cbTransferFingers={(cbTransferFingers.Checked ? 1 : 0)}, " +
-                    $"cbBundleQuotesYes={(cbBundleQuotesYes.Checked ? 1 : 0)}, ";
+                    $"cbBundleQuotesYes={(cbBundleQuotesYes.Checked ? 1 : 0)}, " +
+                    //$"txtSendQuotes={txtSendQuotes.Text}, ";
+                    $"txtSendQuotes=@txtSendQuotes, ";
 
-
+                sql.Parameters.AddWithValue("@txtSendQuotes", txtSendQuotes.Text);
 
                 sql.CommandText += " rfqInternalDueDate = @internalduedate ";
                 sql.CommandText += " where rfqID=@id ";
@@ -2957,22 +2969,10 @@ namespace RFQ
                 sql.Parameters.AddWithValue("@quote", quoteCount);
                 sql.Parameters.AddWithValue("@notes", txtNotes.Text.Trim());
                 sql.Parameters.AddWithValue("@meetingnotes", "");
-                //sql.Parameters.AddWithValue("@meetingnotes", txtMeetingNotes.Text.Trim());
                 sql.Parameters.AddWithValue("@handling", ddlHandling.SelectedValue);
                 sql.Parameters.AddWithValue("@custContact", ddlCustomerContact.SelectedValue);
                 sql.Parameters.AddWithValue("@plant", ddlPlant.SelectedValue);
-                //sql.Parameters.AddWithValue("@ats", cbATSReady.Checked);
-                //sql.Parameters.AddWithValue("@bts", cbBTSReady.Checked);
-                //sql.Parameters.AddWithValue("@dts", cbDTSReady.Checked);
-                //sql.Parameters.AddWithValue("@ets", cbETSReady.Checked);
-                //sql.Parameters.AddWithValue("@gts", cbGTSReady.Checked);
-                //sql.Parameters.AddWithValue("@hts", cbHTSReady.Checked);
-                //sql.Parameters.AddWithValue("@rts", cbRTSReady.Checked);
-                //sql.Parameters.AddWithValue("@sts", cbSTSReady.Checked);
-                //sql.Parameters.AddWithValue("@ugs", cbUGSReady.Checked);
-                //sql.Parameters.AddWithValue("@sendTo", txtSendBundledTo.Text);
-                //sql.Parameters.AddWithValue("@cc", txtCCBundledTo.Text);
-                //sql.Parameters.AddWithValue("@bcc", txtBCCBundledTo.Text);
+
 
                 if (cbLiveWork.Checked)
                 {
@@ -3007,14 +3007,6 @@ namespace RFQ
                     sql.Parameters.AddWithValue("@global", 0);
                 }
 
-                //if (cbNaBuild.Checked)
-                //{
-                //    sql.Parameters.AddWithValue("@cbNaBuild", 1);
-                //}
-                //else
-                //{
-                //    sql.Parameters.AddWithValue("@cbNaBuild", 0);
-                //}
                 sql.Parameters.AddWithValue("@modby", Context.User.Identity.Name);
                 sql.Parameters.AddWithValue("@id", RFQID);
                 try
