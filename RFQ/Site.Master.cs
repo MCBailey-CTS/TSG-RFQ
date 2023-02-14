@@ -39,6 +39,7 @@ namespace RFQ
             {
                 A8.Visible = false;
             }
+
             if (!IsPostBack)
             {
                 A5.Visible = false;

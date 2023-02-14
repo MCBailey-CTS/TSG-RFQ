@@ -133,17 +133,26 @@ namespace RFQ
 
                     sql.CommandText = "select vehVehicleID, vehVehicleName from pktblVehicle order by vehVehicleName";
                     sql.Parameters.Clear();
-
-                    AddDropDownListValues(sql, ddlVehicle, "vehVehicleName", "vehVehicleID", "1");
+                    SqlDataReader vDR = sql.ExecuteReader();
+                    ddlVehicle.DataSource = vDR;
+                    ddlVehicle.DataTextField = "vehVehicleName";
+                    ddlVehicle.DataValueField = "vehVehicleID";
+                    ddlVehicle.DataBind();
+                    vDR.Close();
+                    ddlVehicle.SelectedValue = "1";
 
 
                     sql.CommandText = "Select astAssemblyTypeId, astAssemblyType from  pktblAssemblyType order by astAssemblyType ";
                     sql.Parameters.Clear();
+                    SqlDataReader assDr = sql.ExecuteReader();
+                    ddlAssemblyType.DataSource = assDr;
+                    ddlAssemblyType.DataTextField = "astAssemblyType";
+                    ddlAssemblyType.DataValueField = "astAssemblyTypeId";
+                    ddlAssemblyType.DataBind();
+                    assDr.Close();
 
-                    AddDropDownListValues(sql, ddlAssemblyType, "astAssemblyType", "astAssemblyTypeId");
 
 
-                    
 
                     sql.CommandText = "select tcyToolCountryID, tcyToolCountry from pktblToolCountry order by tcyToolCountry";
                     sql.Parameters.Clear();
@@ -2834,6 +2843,17 @@ namespace RFQ
 
 
                 sql.Parameters.AddWithValue("@createdby", Context.User.Identity.Name);
+
+
+
+                //if(cbBundleQuotesYes.Checked && txtSendQuotes.Text.Length == 0)
+                //{
+                //    ScriptManager.RegisterClientScriptBlock
+                //}
+
+                //ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Insert is successfull')", true);
+
+
                 try
                 {
                     Int64 newID = System.Convert.ToInt64(master.ExecuteScalar(sql, "editRFQ"));
@@ -3848,7 +3868,7 @@ namespace RFQ
             Int64 UpdateRecord = 0;
             lblMessage.Text = sql.CommandText.Replace("@rfq", RFQID.ToString()).Replace("@part", txtPart.Text);
             string lineNumber = "";
-            String pictureName = "RFQ" + RFQID + "_" + lineNumber + "_" + txtPart.Text.Trim() + ".png";
+            String pictureName = $"RFQ{RFQID}_{lineNumber}_{txtPart.Text.Trim()}.png";
 
             while (dr.Read())
             {
@@ -3859,7 +3879,7 @@ namespace RFQ
                 pictureName = dr.GetValue(3).ToString();
             }
             dr.Close();
-            pictureName = "RFQ" + RFQID + "_" + lineNumber + "_" + txtPart.Text.Trim() + ".png";
+            pictureName = $"RFQ{RFQID}_{lineNumber}_{txtPart.Text.Trim()}.png";
 
 
             string MaterialTypeId = "";
