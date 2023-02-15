@@ -69,7 +69,7 @@ namespace RFQ
 
                 var currentUser = master.getUserName();
                 cbSendAsMe.Visible = currentUser != "pdavis@toolingsystemsgroup.com" || currentUser != "dmaguire@toolingsystemsgroup.com";
-                
+
 
                 if (currentUser != "rmumford@toolingsystemsgroup.com" && currentUser != "jdalman@toolingsystemsgroup.com" && currentUser != "bduemler@toolingsystemsgroup.com" && currentUser != "dmaguire@toolingsystemsgroup.com")
                     litScript.Text = "<script>document.getElementById('btnSendNoQuoteDialog').style.visibility = 'hidden';</script>";
@@ -79,10 +79,10 @@ namespace RFQ
 
                 if (master.getCompanyId() != 1)
                     lblMessage.Text = "\n<script>$('#deleteRFQBut').hide();</script>";
-                
+
                 if (master.getCompanyId() != 15)
                     lblMessage.Text += "<script>$('#btnUGSMultiQuote').hide();</script><script>$('#btnUGSSummary').hide();</script>";
-                
+
                 try
                 {
 
@@ -219,7 +219,7 @@ namespace RFQ
                         ddlCustomer.DataTextField = "Name";
                         ddlCustomer.DataValueField = "CustomerID";
                         ddlCustomer.DataBind();
-                        
+
                     }
 
                     if (RFQID == 0)
@@ -255,7 +255,7 @@ namespace RFQ
                         ddlPartType.DataBind();
                     }
 
-                   
+
 
                     sql.Parameters.Clear();
 
@@ -263,7 +263,7 @@ namespace RFQ
                     using (SqlDataReader nqrDR = sql.ExecuteReader())
                         while (nqrDR.Read())
                             txtNoQuoteText.Text += Server.HtmlDecode(nqrDR.GetValue(0).ToString() + "\n");
-                    
+
                     sql.Parameters.Clear();
 
                     string emlCustomername = ddlCustomer.SelectedItem.ToString();
@@ -292,7 +292,7 @@ namespace RFQ
                             emlEstEmail = salesdr["estEmail"].ToString();
                             emlEstPhone = salesdr["estOfficePhone"].ToString();
                             emlEstName = salesdr["estname"].ToString();
-                        }                    
+                        }
 
                     sql.CommandText = "";
 
@@ -309,40 +309,47 @@ namespace RFQ
 
                     using (var reader = sql.ExecuteReader())
                     {
-                        reader.Read();
-                        cbDies.Checked = (bool)reader["cbDies"];
-                        cbNaBuild.Checked = (bool)reader["cbNaBuild"];
-                        cbHomeLineSupport.Checked = (bool)reader["cbHomeLineSupport"];
-                        cbCheckFixture.Checked = (bool)reader["cbCheckFixture"];
-                        cbBlended.Checked = (bool)reader["cbBlended"];
-                        cbShippingToPlant.Checked = (bool)reader["cbShippingToPlant"];
-                        cbHydroformTooling.Checked = (bool)reader["cbHydroformTooling"];
-                        cbKitDie.Checked = (bool)reader["cbKitDie"];
-                        cbFormSteelCoatings.Checked = (bool)reader["cbFormSteelCoatings"];
+                        if (reader.Read())
+                        {
+                            cbDies.Checked = (bool)reader["cbDies"];
 
-                        cbMoldToolingTubeDies.Checked = (bool)reader["cbMoldToolingTubeDies"];
-                        cbSparePunchesButtons.Checked = (bool)reader["cbSparePunchesButtons"];
-                        cbLcc.Checked = (bool)reader["cbLcc"];
-                        cbEngineeringChange.Checked = (bool)reader["cbEngineeringChange"];
-                        cbSeeDocumentFromCustomer.Checked = (bool)reader["cbSeeDocumentFromCustomer"];
-                        cbIncludeEarlyParts.Checked = (bool)reader["cbIncludeEarlyParts"];
-                        cbAssemblyToolingEquipment.Checked = (bool)reader["cbAssemblyToolingEquipment"];
-
-                        cbIncludeFinanceCost.Checked = (bool)reader["cbIncludeFinanceCost"];
-                        cbPrototypes.Checked = (bool)reader["cbPrototypes"];
-                        cbTsims.Checked = (bool)reader["cbTsims"];
-                        cbTurnkeySeeInternalTsgRfq.Checked = (bool)reader["cbTurnkeySeeInternalTsgRfq"];
-                        cbTransferFingers.Checked = (bool)reader["cbTransferFingers"];
-                        cbBundleQuotesYes.Checked = (bool)reader["cbBundleQuotesYes"];
+                            //var tem1p = reader["cbDies"];
 
 
-                        var temp = reader["txtSendQuotes"];
+
+                            cbNaBuild.Checked = (bool)reader["cbNaBuild"];
+                            cbHomeLineSupport.Checked = (bool)reader["cbHomeLineSupport"];
+                            cbCheckFixture.Checked = (bool)reader["cbCheckFixture"];
+                            cbBlended.Checked = (bool)reader["cbBlended"];
+                            cbShippingToPlant.Checked = (bool)reader["cbShippingToPlant"];
+                            cbHydroformTooling.Checked = (bool)reader["cbHydroformTooling"];
+                            cbKitDie.Checked = (bool)reader["cbKitDie"];
+                            cbFormSteelCoatings.Checked = (bool)reader["cbFormSteelCoatings"];
+
+                            cbMoldToolingTubeDies.Checked = (bool)reader["cbMoldToolingTubeDies"];
+                            cbSparePunchesButtons.Checked = (bool)reader["cbSparePunchesButtons"];
+                            cbLcc.Checked = (bool)reader["cbLcc"];
+                            cbEngineeringChange.Checked = (bool)reader["cbEngineeringChange"];
+                            cbSeeDocumentFromCustomer.Checked = (bool)reader["cbSeeDocumentFromCustomer"];
+                            cbIncludeEarlyParts.Checked = (bool)reader["cbIncludeEarlyParts"];
+                            cbAssemblyToolingEquipment.Checked = (bool)reader["cbAssemblyToolingEquipment"];
+
+                            cbIncludeFinanceCost.Checked = (bool)reader["cbIncludeFinanceCost"];
+                            cbPrototypes.Checked = (bool)reader["cbPrototypes"];
+                            cbTsims.Checked = (bool)reader["cbTsims"];
+                            cbTurnkeySeeInternalTsgRfq.Checked = (bool)reader["cbTurnkeySeeInternalTsgRfq"];
+                            cbTransferFingers.Checked = (bool)reader["cbTransferFingers"];
+                            cbBundleQuotesYes.Checked = (bool)reader["cbBundleQuotesYes"];
 
 
-                        txtSendQuotes.Enabled = cbBundleQuotesYes.Checked;
+                            var temp = reader["txtSendQuotes"];
 
-                        if (temp is string text)
-                            txtSendQuotes.Text = text;
+
+                            txtSendQuotes.Enabled = cbBundleQuotesYes.Checked;
+
+                            if (temp is string text)
+                                txtSendQuotes.Text = text;
+                        }
 
                     }
 
@@ -2881,7 +2888,7 @@ namespace RFQ
 
                 //
 
-            
+
 
 
 
