@@ -2892,8 +2892,25 @@ namespace RFQ
 
                 sql.Connection = connection;
                 sql.CommandText = "update tblRFQ set ";
-                sql.CommandText += "rfqStatus = @status, rfqCustomerID=@customer,  rfqCustomerRFQNumber=@rfq, rfqProgramID=@program, rfqOEMID=@oem, rfqVehicleID=@vehicle, rfqDueDate=@due, rfqDateReceived=@received, rfqEstimatedPODate=@podate, rfqBidDate=@biddate, ";
-                sql.CommandText += "rfqToolCountryID=@country, rfqEngineeringNumber=@eng, rfqProductTypeID=@type, rfqNumberOfParts=@parts,  rfqNotes=@notes, rfqMeetingNotes=@meetingnotes, rfqModified=current_timestamp, rfqModifiedBy=@modby,  rfqLiveWork =@livework, ";
+                sql.CommandText += "rfqStatus = @status, " +
+                    "rfqCustomerID=@customer,  " +
+                    "rfqCustomerRFQNumber=@rfq, " +
+                    "rfqProgramID=@program, " +
+                    "rfqOEMID=@oem, " +
+                    "rfqVehicleID=@vehicle, " +
+                    "rfqDueDate=@due, " +
+                    "rfqDateReceived=@received, " +
+                    "rfqEstimatedPODate=@podate, " +
+                    "rfqBidDate=@biddate, ";
+                sql.CommandText += "rfqToolCountryID=@country, " +
+                    "rfqEngineeringNumber=@eng, " +
+                    "rfqProductTypeID=@type, " +
+                    "rfqNumberOfParts=@parts,  " +
+                    "rfqNotes=@notes, " +
+                    "rfqMeetingNotes=@meetingnotes, " +
+                    "rfqModified=current_timestamp, " +
+                    "rfqModifiedBy=@modby,  " +
+                    "rfqLiveWork =@livework, ";
                 sql.CommandText += $"rfqNumberOfQuotes=@quote, " +
                     $"rfqSourceID=@src, " +
                     $"rfqAdditionalSourceID=@srctwo, " +
@@ -2926,7 +2943,6 @@ namespace RFQ
                     $"cbTransferFingers={(cbTransferFingers.Checked ? 1 : 0)}, " +
                     $"cbBundleQuotesYes={(cbBundleQuotesYes.Checked ? 1 : 0)}, " +
                     $"cbDies={(cbDies.Checked ? 1 : 0)}, " +
-                    //$"txtSendQuotes={txtSendQuotes.Text}, ";
                     $"txtSendQuotes=@txtSendQuotes, ";
 
                 sql.Parameters.AddWithValue("@txtSendQuotes", txtSendQuotes.Text);
