@@ -2,47 +2,32 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data.SqlClient;
-using NPOI.XSSF;
 using NPOI.XSSF.UserModel;
-using System.Net;
-using System.Security;
 using Microsoft.SharePoint.Client;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
 using System.IO;
-using System.Drawing;
 using System.Net.Mail;
-//using Microsoft.WindowsAzure;
-//using Microsoft.WindowsAzure.Storage;
-//using Microsoft.WindowsAzure.Storage.Auth;
-//using Microsoft.WindowsAzure.Storage.Blob;
-using System.Web.Services;
-using System.Configuration;
-using Lucene.Net;
-using Lucene.Net.Store;
-using Lucene.Net.Documents;
+using File = Microsoft.SharePoint.Client.File;
 
 namespace RFQ
 {
     public partial class EditRFQ : System.Web.UI.Page
     {
-        public Int64 RFQID = 0;
-        public List<String> ListOfColors = new List<String>();
-        public Boolean IsMasterCompany = false;
-        public long UserCompanyID = 0;
+        public long RFQID;
+        public List<string> ListOfColors = new List<string>();
+        public bool IsMasterCompany;
+        public long UserCompanyID;
 
-        protected static void AddDropDownListValues(SqlCommand sql, DropDownList ddlVehicle, string textField, string valueField, string selected_value = null)
+        protected static void AddDropDownListValues(SqlCommand sql, DropDownList ddlVehicle, string textField, string valueField, string selectedValue = null)
         {
-            using (SqlDataReader vDR = sql.ExecuteReader())
+            using (SqlDataReader vDr = sql.ExecuteReader())
             {
-                ddlVehicle.DataSource = vDR;
+                ddlVehicle.DataSource = vDr;
                 ddlVehicle.DataTextField = "vehVehicleName";
                 ddlVehicle.DataValueField = "vehVehicleID";
-                if (!(selected_value is null))
-                    ddlVehicle.SelectedValue = selected_value;
+                if (!(selectedValue is null))
+                    ddlVehicle.SelectedValue = selectedValue;
                 ddlVehicle.DataBind();
             }
         }
@@ -51,23 +36,22 @@ namespace RFQ
         {
             //hdnImportParts.Visible = false;
             ClientScript.GetPostBackEventReference(this, string.Empty);
-            RFQID = System.Convert.ToInt64(Request["id"]);
+            RFQID = Convert.ToInt64(Request["id"]);
             lblMessage.Text = "";
             if (!IsPostBack)
             {
                 btnUnlockRFQ.Visible = false;
                 populate_ListOfColors();
-                Site master = new RFQ.Site();
+                Site master = new Site();
                 hdnCompanyID.Value = master.getCompanyId().ToString();
                 IsMasterCompany = master.getMasterCompany();
                 UserCompanyID = master.getCompanyId();
                 SqlConnection connection = new SqlConnection(master.getConnectionString());
                 connection.Open();
-                SqlCommand sql = new SqlCommand();
-                sql.Connection = connection;
+                SqlCommand sql = new SqlCommand {Connection = connection};
 
 
-                var currentUser = master.getUserName();
+                string currentUser = master.getUserName();
                 cbSendAsMe.Visible = currentUser != "pdavis@toolingsystemsgroup.com" || currentUser != "dmaguire@toolingsystemsgroup.com";
 
 
@@ -88,9 +72,9 @@ namespace RFQ
 
                     sql.CommandText = "select ProgramID, ProgramName from Program where ProgramName not in ('0','  ADD NEW') order by ProgramName";
                     sql.Parameters.Clear();
-                    using (SqlDataReader progDR = sql.ExecuteReader())
+                    using (SqlDataReader progDr = sql.ExecuteReader())
                     {
-                        ddlProgram.DataSource = progDR;
+                        ddlProgram.DataSource = progDr;
                         ddlProgram.DataTextField = "ProgramName";
                         ddlProgram.DataValueField = "ProgramID";
                         ddlProgram.SelectedValue = "2206";
@@ -100,9 +84,9 @@ namespace RFQ
                     sql.CommandText = "select OEMID, OEMName from OEM where OEMName not in ('nul;','undefined') order by OEMName";
                     sql.Parameters.Clear();
 
-                    using (SqlDataReader oemDR = sql.ExecuteReader())
+                    using (SqlDataReader oemDr = sql.ExecuteReader())
                     {
-                        ddlOEM.DataSource = oemDR;
+                        ddlOEM.DataSource = oemDr;
                         ddlOEM.DataTextField = "OEMName";
                         ddlOEM.DataValueField = "OEMID";
                         ddlOEM.SelectedValue = "39";
@@ -133,23 +117,26 @@ namespace RFQ
 
                     sql.CommandText = "select vehVehicleID, vehVehicleName from pktblVehicle order by vehVehicleName";
                     sql.Parameters.Clear();
-                    SqlDataReader vDR = sql.ExecuteReader();
-                    ddlVehicle.DataSource = vDR;
-                    ddlVehicle.DataTextField = "vehVehicleName";
-                    ddlVehicle.DataValueField = "vehVehicleID";
-                    ddlVehicle.DataBind();
-                    vDR.Close();
+                    using (SqlDataReader vDR = sql.ExecuteReader())
+                    {
+                        ddlVehicle.DataSource = vDR;
+                        ddlVehicle.DataTextField = "vehVehicleName";
+                        ddlVehicle.DataValueField = "vehVehicleID";
+                        ddlVehicle.DataBind();
+                    }
+
                     ddlVehicle.SelectedValue = "1";
 
 
                     sql.CommandText = "Select astAssemblyTypeId, astAssemblyType from  pktblAssemblyType order by astAssemblyType ";
                     sql.Parameters.Clear();
-                    SqlDataReader assDr = sql.ExecuteReader();
-                    ddlAssemblyType.DataSource = assDr;
-                    ddlAssemblyType.DataTextField = "astAssemblyType";
-                    ddlAssemblyType.DataValueField = "astAssemblyTypeId";
-                    ddlAssemblyType.DataBind();
-                    assDr.Close();
+                    using (SqlDataReader assDr = sql.ExecuteReader())
+                    {
+                        ddlAssemblyType.DataSource = assDr;
+                        ddlAssemblyType.DataTextField = "astAssemblyType";
+                        ddlAssemblyType.DataValueField = "astAssemblyTypeId";
+                        ddlAssemblyType.DataBind();
+                    }
 
 
 
@@ -190,32 +177,32 @@ namespace RFQ
                     sql.CommandText = "select rchRFQcheckListID, rchRFQCheckListItemText from pktblRFQCheckList where rchRFQorPart='Part' order by rchRFQCheckListID";
                     sql.Parameters.Clear();
 
-                    using (SqlDataReader PartCheckListDR = sql.ExecuteReader())
+                    using (SqlDataReader partCheckListDR = sql.ExecuteReader())
                     {
                         lbCheckList.Text = "<div align='left'>Select From the Following<BR>";
-                        while (PartCheckListDR.Read())
+                        while (partCheckListDR.Read())
                         {
-                            lbCheckList.Text += $"<div align='left'><input type='checkbox' class='lbCheckListOption' value='{PartCheckListDR.GetValue(0).ToString()}'> ";
-                            lbCheckList.Text += $"&nbsp;{PartCheckListDR.GetValue(1).ToString().Trim()}</div>";
+                            lbCheckList.Text += $"<div align='left'><input type='checkbox' class='lbCheckListOption' value='{partCheckListDR.GetValue(0)}'> ";
+                            lbCheckList.Text += $"&nbsp;{partCheckListDR.GetValue(1).ToString().Trim()}</div>";
                         }
                     }
                     lbCheckList.Text += "</div>";
                     lblRFQCheckList.Text = "<div align='left'>Select From the Following<BR>";
                     sql.CommandText = "select rchRFQCheckListID, rchRFQCheckListItemText from pktblRFQCheckList where rchRFQorPart='RFQ' order by rchRFQCheckListID";
                     sql.Parameters.Clear();
-                    using (SqlDataReader RFQCheckListDR = sql.ExecuteReader())
+                    using (SqlDataReader rfqCheckListDR = sql.ExecuteReader())
                     {
-                        while (RFQCheckListDR.Read())
+                        while (rfqCheckListDR.Read())
                         {
-                            lblRFQCheckList.Text += "<div align='left'><input type='checkbox' class='lbRFQCheckListOption' value='" + RFQCheckListDR.GetValue(0).ToString() + "'> ";
-                            lblRFQCheckList.Text += $"&nbsp;{RFQCheckListDR.GetValue(1).ToString().Trim()}</div>";
+                            lblRFQCheckList.Text += $"<div align=\'left\'><input type=\'checkbox\' class=\'lbRFQCheckListOption\' value=\'{rfqCheckListDR.GetValue(0)}\'> ";
+                            lblRFQCheckList.Text += $"&nbsp;{rfqCheckListDR.GetValue(1).ToString().Trim()}</div>";
                         }
                     }
 
                     sql.CommandText = "select CustomerID, concat(CustomerName,' (',CustomerNumber,')') as Name from Customer where cusInactive <> 1 or cusInactive is null order by CustomerName ";
-                    using (SqlDataReader CustomerDR = sql.ExecuteReader())
+                    using (SqlDataReader customerDR = sql.ExecuteReader())
                     {
-                        ddlCustomer.DataSource = CustomerDR;
+                        ddlCustomer.DataSource = customerDR;
                         ddlCustomer.DataTextField = "Name";
                         ddlCustomer.DataValueField = "CustomerID";
                         ddlCustomer.DataBind();
@@ -262,18 +249,18 @@ namespace RFQ
                     sql.CommandText = "Select CONCAT(nqrNoQuoteReasonNumber, ' - ', nqrNoQuoteReason) from pktblNoQuoteReason where nqrActive = 1";
                     using (SqlDataReader nqrDR = sql.ExecuteReader())
                         while (nqrDR.Read())
-                            txtNoQuoteText.Text += Server.HtmlDecode(nqrDR.GetValue(0).ToString() + "\n");
+                            txtNoQuoteText.Text += Server.HtmlDecode($"{nqrDR.GetValue(0)}\n");
 
                     sql.Parameters.Clear();
 
-                    string emlCustomername = ddlCustomer.SelectedItem.ToString();
+                    
                     string emlSalesmanName = "";
                     string emlSalesmanEmail = "";
                     string emlSalesmanPhone = "";
                     string emlEstEmail = "";
                     string emlEstPhone = "";
                     string emlEstName = "";
-                    string CusName = "";
+                    string cusName = "";
 
                     sql.CommandText = "Select ps.Name, ps.Email, ps.MobilePhone, cus.CustomerName, est.estEmail, est.estOfficePhone, CONCAT (est.estFirstName, est.estLastName) as estname from TSGSalesman ps ";
                     sql.CommandText += "join tblRFQ rfq on rfq.rfqSalesman = ps.TSGSalesmanID ";
@@ -282,16 +269,16 @@ namespace RFQ
                     sql.CommandText += "join pktblEstimators est on est.estEstimatorID = stsquo.squEstimatorID ";
                     sql.CommandText += "where stsquo.squRfqNum = @rfqid ";
                     sql.Parameters.AddWithValue("@rfqid", RFQID.ToString());
-                    using (SqlDataReader salesdr = sql.ExecuteReader())
-                        while (salesdr.Read())
+                    using (SqlDataReader salesDR = sql.ExecuteReader())
+                        while (salesDR.Read())
                         {
-                            emlSalesmanName = salesdr["Name"].ToString();
-                            emlSalesmanEmail = salesdr["Email"].ToString();
-                            emlSalesmanPhone = salesdr["MobilePhone"].ToString();
-                            CusName = salesdr["CustomerName"].ToString();
-                            emlEstEmail = salesdr["estEmail"].ToString();
-                            emlEstPhone = salesdr["estOfficePhone"].ToString();
-                            emlEstName = salesdr["estname"].ToString();
+                            emlSalesmanName = salesDR["Name"].ToString();
+                            emlSalesmanEmail = salesDR["Email"].ToString();
+                            emlSalesmanPhone = salesDR["MobilePhone"].ToString();
+                            cusName = salesDR["CustomerName"].ToString();
+                            emlEstEmail = salesDR["estEmail"].ToString();
+                            emlEstPhone = salesDR["estOfficePhone"].ToString();
+                            emlEstName = salesDR["estname"].ToString();
                         }
 
                     sql.CommandText = "";
@@ -307,42 +294,33 @@ namespace RFQ
                     sql.Parameters.AddWithValue("@cbKitDie", cbKitDie.Checked ? 1 : 0);
                     sql.Parameters.AddWithValue("@cbFormSteelCoatings", cbFormSteelCoatings.Checked ? 1 : 0);
 
-                    using (var reader = sql.ExecuteReader())
-                    {
+                    using (SqlDataReader reader = sql.ExecuteReader())
                         if (reader.Read())
                         {
-                            cbDies.Checked = (bool)reader["cbDies"];
+                            cbDies.Checked = (bool) reader["cbDies"];
+                            cbNaBuild.Checked = (bool) reader["cbNaBuild"];
+                            cbHomeLineSupport.Checked = (bool) reader["cbHomeLineSupport"];
+                            cbCheckFixture.Checked = (bool) reader["cbCheckFixture"];
+                            cbBlended.Checked = (bool) reader["cbBlended"];
+                            cbShippingToPlant.Checked = (bool) reader["cbShippingToPlant"];
+                            cbHydroformTooling.Checked = (bool) reader["cbHydroformTooling"];
+                            cbKitDie.Checked = (bool) reader["cbKitDie"];
+                            cbFormSteelCoatings.Checked = (bool) reader["cbFormSteelCoatings"];
+                            cbMoldToolingTubeDies.Checked = (bool) reader["cbMoldToolingTubeDies"];
+                            cbSparePunchesButtons.Checked = (bool) reader["cbSparePunchesButtons"];
+                            cbLcc.Checked = (bool) reader["cbLcc"];
+                            cbEngineeringChange.Checked = (bool) reader["cbEngineeringChange"];
+                            cbSeeDocumentFromCustomer.Checked = (bool) reader["cbSeeDocumentFromCustomer"];
+                            cbIncludeEarlyParts.Checked = (bool) reader["cbIncludeEarlyParts"];
+                            cbAssemblyToolingEquipment.Checked = (bool) reader["cbAssemblyToolingEquipment"];
+                            cbIncludeFinanceCost.Checked = (bool) reader["cbIncludeFinanceCost"];
+                            cbPrototypes.Checked = (bool) reader["cbPrototypes"];
+                            cbTsims.Checked = (bool) reader["cbTsims"];
+                            cbTurnkeySeeInternalTsgRfq.Checked = (bool) reader["cbTurnkeySeeInternalTsgRfq"];
+                            cbTransferFingers.Checked = (bool) reader["cbTransferFingers"];
+                            cbBundleQuotesYes.Checked = (bool) reader["cbBundleQuotesYes"];
 
-                            //var tem1p = reader["cbDies"];
-
-
-
-                            cbNaBuild.Checked = (bool)reader["cbNaBuild"];
-                            cbHomeLineSupport.Checked = (bool)reader["cbHomeLineSupport"];
-                            cbCheckFixture.Checked = (bool)reader["cbCheckFixture"];
-                            cbBlended.Checked = (bool)reader["cbBlended"];
-                            cbShippingToPlant.Checked = (bool)reader["cbShippingToPlant"];
-                            cbHydroformTooling.Checked = (bool)reader["cbHydroformTooling"];
-                            cbKitDie.Checked = (bool)reader["cbKitDie"];
-                            cbFormSteelCoatings.Checked = (bool)reader["cbFormSteelCoatings"];
-
-                            cbMoldToolingTubeDies.Checked = (bool)reader["cbMoldToolingTubeDies"];
-                            cbSparePunchesButtons.Checked = (bool)reader["cbSparePunchesButtons"];
-                            cbLcc.Checked = (bool)reader["cbLcc"];
-                            cbEngineeringChange.Checked = (bool)reader["cbEngineeringChange"];
-                            cbSeeDocumentFromCustomer.Checked = (bool)reader["cbSeeDocumentFromCustomer"];
-                            cbIncludeEarlyParts.Checked = (bool)reader["cbIncludeEarlyParts"];
-                            cbAssemblyToolingEquipment.Checked = (bool)reader["cbAssemblyToolingEquipment"];
-
-                            cbIncludeFinanceCost.Checked = (bool)reader["cbIncludeFinanceCost"];
-                            cbPrototypes.Checked = (bool)reader["cbPrototypes"];
-                            cbTsims.Checked = (bool)reader["cbTsims"];
-                            cbTurnkeySeeInternalTsgRfq.Checked = (bool)reader["cbTurnkeySeeInternalTsgRfq"];
-                            cbTransferFingers.Checked = (bool)reader["cbTransferFingers"];
-                            cbBundleQuotesYes.Checked = (bool)reader["cbBundleQuotesYes"];
-
-
-                            var temp = reader["txtSendQuotes"];
+                            object temp = reader["txtSendQuotes"];
 
 
                             txtSendQuotes.Enabled = cbBundleQuotesYes.Checked;
@@ -350,9 +328,6 @@ namespace RFQ
                             if (temp is string text)
                                 txtSendQuotes.Text = text;
                         }
-
-                    }
-
 
 
                     connection.Close();
@@ -365,7 +340,7 @@ namespace RFQ
                     if (UserCompanyID.Equals(13))
                     {
 
-                        txtMessageText.Text = CusName;
+                        txtMessageText.Text = cusName;
 
                         txtMessageText.Text += Environment.NewLine;
                         txtMessageText.Text += " ";
@@ -484,7 +459,7 @@ namespace RFQ
             {
                 if (!IsPostBack)
                 {
-                    Site master = new RFQ.Site();
+                    Site master = new Site();
                     populate_Header();
                     populate_Parts();
                     if (ddlStatus.SelectedValue != "11" && master.getUserRole() != 1 && master.getUserRole() != 5)
@@ -507,9 +482,9 @@ namespace RFQ
 
 
 
-        public void SaveCheckBoxes(Int64 rfqID)
+        public void SaveCheckBoxes(long rfqID)
         {
-            Site master = new RFQ.Site();
+            Site master = new Site();
             SqlConnection connection = new SqlConnection(master.getConnectionString());
             connection.Open();
             SqlCommand sql = new SqlCommand();
@@ -619,7 +594,7 @@ namespace RFQ
 
         protected void unlockRFQ(object sender, EventArgs e)
         {
-            Site master = new RFQ.Site();
+            Site master = new Site();
             SqlConnection connection = new SqlConnection(master.getConnectionString());
             connection.Open();
             SqlCommand sql = new SqlCommand();
@@ -650,7 +625,7 @@ namespace RFQ
 
         protected void removeAllReservations(object sender, EventArgs e)
         {
-            Site master = new RFQ.Site();
+            Site master = new Site();
             SqlConnection connection = new SqlConnection(master.getConnectionString());
             connection.Open();
             SqlCommand sql = new SqlCommand();
@@ -673,7 +648,7 @@ namespace RFQ
                 partIDs.Add(dr["prcPartID"].ToString());
                 try
                 {
-                    reservedDate.Add(System.Convert.ToDateTime(dr["prcCreated"].ToString()).ToShortDateString());
+                    reservedDate.Add(Convert.ToDateTime(dr["prcCreated"].ToString()).ToShortDateString());
                 }
                 catch
                 {
@@ -707,8 +682,8 @@ namespace RFQ
 
         protected void deleteRFQ(object sender, EventArgs e)
         {
-            int rfqID = System.Convert.ToInt32(rfqNumber.Text);
-            Site master = new RFQ.Site();
+            int rfqID = Convert.ToInt32(rfqNumber.Text);
+            Site master = new Site();
             SqlConnection connection = new SqlConnection(master.getConnectionString());
             connection.Open();
             SqlCommand sql = new SqlCommand();
@@ -724,8 +699,8 @@ namespace RFQ
 
             if (dr.Read())
             {
-                reservedCount = System.Convert.ToInt32(dr.GetValue(0));
-                quoteCount = System.Convert.ToInt32(dr.GetValue(1));
+                reservedCount = Convert.ToInt32(dr.GetValue(0));
+                quoteCount = Convert.ToInt32(dr.GetValue(1));
             }
             dr.Close();
             //sql.CommandText = "Select count(qtrQuoteID) from linkQuoteToRFQ where qtrRFQID = @rfqID";
@@ -744,7 +719,7 @@ namespace RFQ
 
                 while (dr.Read())
                 {
-                    partIDSList.Add(System.Convert.ToInt32(dr.GetValue(0)));
+                    partIDSList.Add(Convert.ToInt32(dr.GetValue(0)));
                 }
                 dr.Close();
 
@@ -768,7 +743,7 @@ namespace RFQ
                     int partToRFQID = 0;
                     if (dr.Read())
                     {
-                        partToRFQID = System.Convert.ToInt32(dr.GetValue(0));
+                        partToRFQID = Convert.ToInt32(dr.GetValue(0));
                     }
                     dr.Close();
 
@@ -790,7 +765,7 @@ namespace RFQ
                     dr = sql.ExecuteReader();
                     if (dr.Read())
                     {
-                        ptpID = System.Convert.ToInt32(dr.GetValue(0));
+                        ptpID = Convert.ToInt32(dr.GetValue(0));
                     }
 
                     dr.Close();
@@ -842,7 +817,7 @@ namespace RFQ
 
         protected void deleteQuote_click(object sender, EventArgs e)
         {
-            Site master = new RFQ.Site();
+            Site master = new Site();
             SqlConnection connection = new SqlConnection(master.getConnectionString());
             connection.Open();
             SqlCommand sql = new SqlCommand();
@@ -851,7 +826,7 @@ namespace RFQ
             if (master.getCompanyId() != 9 && master.getCompanyId() != 13 && master.getCompanyId() != 15)
             {
                 List<string> preWordedNotes = new List<string>();
-                string quoteID = hdnQuoteToDelete.Value.ToString();
+                string quoteID = hdnQuoteToDelete.Value;
                 sql.CommandText = "Select pwqPreWordedNoteID from linkPWNToQuote where pwqQuoteID = @quote";
                 sql.Parameters.AddWithValue("@quote", quoteID);
                 SqlDataReader dr = sql.ExecuteReader();
@@ -884,8 +859,8 @@ namespace RFQ
                 int blankInfoID = 0;
                 if (dr.Read())
                 {
-                    dieInfoID = System.Convert.ToInt32(dr.GetValue(0));
-                    blankInfoID = System.Convert.ToInt32(dr.GetValue(1));
+                    dieInfoID = Convert.ToInt32(dr.GetValue(0));
+                    blankInfoID = Convert.ToInt32(dr.GetValue(1));
                 }
                 dr.Close();
 
@@ -927,7 +902,7 @@ namespace RFQ
             else if (master.getCompanyId() == 9)
             {
                 List<string> pwn = new List<string>();
-                string quoteID = hdnQuoteToDelete.Value.ToString();
+                string quoteID = hdnQuoteToDelete.Value;
                 sql.CommandText = "Select hpwHTSPreWordedNoteID from pktblHTSPreWordedNote, linkHTSPWNToHTSQuote ";
                 sql.CommandText += "where hpwHTSPreWordedNoteID = pthHTSPWNID and pthHTSQuoteID = @quoteID ";
                 sql.Parameters.Clear();
@@ -976,7 +951,7 @@ namespace RFQ
             }
             else if (master.getCompanyId() == 13)
             {
-                String quoteID = hdnQuoteToDelete.Value.ToString();
+                string quoteID = hdnQuoteToDelete.Value;
                 List<string> pwnIDs = new List<string>();
 
                 sql.CommandText = "Select psqPreWordedNoteID from linkPWNToSTSQuote where psqSTSQuoteID = @quoteID";
@@ -1030,7 +1005,7 @@ namespace RFQ
             }
             else if (master.getCompanyId() == 15)
             {
-                string quoteID = hdnQuoteToDelete.Value.ToString();
+                string quoteID = hdnQuoteToDelete.Value;
                 List<string> pwnID = new List<string>();
                 sql.CommandText = "Select pwnPreWordedNoteID from pktblPreWordedNote, linkPWNToUGSQuote where puqPreWordedNoteID = pwnPreWordedNoteID and puqUGSQuoteID = @id ";
                 sql.Parameters.Clear();
@@ -1084,12 +1059,12 @@ namespace RFQ
 
         protected void deleteAllParts_click(object sender, EventArgs e)
         {
-            deleteAllParts(System.Convert.ToInt32(this.RFQID));
+            deleteAllParts(Convert.ToInt32(RFQID));
         }
 
         protected void deleteAllParts(int rfqID)
         {
-            Site master = new RFQ.Site();
+            Site master = new Site();
             SqlConnection connection = new SqlConnection(master.getConnectionString());
             connection.Open();
             SqlCommand sql = new SqlCommand();
@@ -1103,7 +1078,7 @@ namespace RFQ
 
             if (dr.Read())
             {
-                reservedCount = System.Convert.ToInt32(dr.GetValue(0));
+                reservedCount = Convert.ToInt32(dr.GetValue(0));
             }
             dr.Close();
             sql.CommandText = "Select count(qtrQuoteID) from linkQuoteToRFQ where qtrRFQID = @rfqID";
@@ -1111,7 +1086,7 @@ namespace RFQ
 
             if (dr.Read())
             {
-                quoteCount = System.Convert.ToInt32(dr.GetValue(0));
+                quoteCount = Convert.ToInt32(dr.GetValue(0));
             }
 
             dr.Close();
@@ -1121,7 +1096,7 @@ namespace RFQ
 
             if (dr.Read())
             {
-                partCount = System.Convert.ToInt32(dr.GetValue(0));
+                partCount = Convert.ToInt32(dr.GetValue(0));
             }
             dr.Close();
 
@@ -1139,7 +1114,7 @@ namespace RFQ
 
                 while (dr.Read())
                 {
-                    partIDSList.Add(System.Convert.ToInt32(dr.GetValue(0)));
+                    partIDSList.Add(Convert.ToInt32(dr.GetValue(0)));
                 }
                 dr.Close();
 
@@ -1165,7 +1140,7 @@ namespace RFQ
                     int partToRFQID = 0;
                     if (dr.Read())
                     {
-                        partToRFQID = System.Convert.ToInt32(dr.GetValue(0));
+                        partToRFQID = Convert.ToInt32(dr.GetValue(0));
                     }
                     dr.Close();
 
@@ -1192,7 +1167,7 @@ namespace RFQ
                     dr = sql.ExecuteReader();
                     if (dr.Read())
                     {
-                        ptpID = System.Convert.ToInt32(dr.GetValue(0));
+                        ptpID = Convert.ToInt32(dr.GetValue(0));
                     }
 
                     dr.Close();
@@ -1239,7 +1214,7 @@ namespace RFQ
 
         protected void btnDownloadCompanyQuotes_Click(object sender, EventArgs e)
         {
-            Site master = new RFQ.Site();
+            Site master = new Site();
             SqlConnection connection = new SqlConnection(master.getConnectionString());
             connection.Open();
             SqlCommand sql = new SqlCommand();
@@ -1256,7 +1231,7 @@ namespace RFQ
 
                 while (dr.Read())
                 {
-                    litDownloadQuotes.Text += "<script>" + String.Format("window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={0}&quoteType={1}&individual=yes','_blank')", dr.GetValue(0).ToString(), 3) + "</Script>";
+                    litDownloadQuotes.Text += "<script>" + $"window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={dr.GetValue(0)}&quoteType={3}&individual=yes','_blank')" + "</Script>";
                 }
                 dr.Close();
             }
@@ -1269,7 +1244,7 @@ namespace RFQ
 
                 while (dr.Read())
                 {
-                    litDownloadQuotes.Text += "<script>" + String.Format("window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={0}&quoteType={1}&individual=yes','_blank')", dr.GetValue(0).ToString(), 4) + "</Script>";
+                    litDownloadQuotes.Text += "<script>" + $"window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={dr.GetValue(0)}&quoteType={4}&individual=yes','_blank')" + "</Script>";
                 }
                 dr.Close();
             }
@@ -1282,7 +1257,7 @@ namespace RFQ
 
                 while (dr.Read())
                 {
-                    litDownloadQuotes.Text += "<script>" + String.Format("window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={0}&quoteType={1}&individual=yes','_blank')", dr.GetValue(0).ToString(), 5) + "</Script>";
+                    litDownloadQuotes.Text += "<script>" + $"window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={dr.GetValue(0)}&quoteType={5}&individual=yes','_blank')" + "</Script>";
                 }
                 dr.Close();
             }
@@ -1297,19 +1272,19 @@ namespace RFQ
                 {
                     if (dr.GetBoolean(1))
                     {
-                        litDownloadQuotes.Text += "<script>" + String.Format("window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={0}&quoteType={1}&individual=yes','_blank')", dr.GetValue(0).ToString(), 3) + "</Script>";
+                        litDownloadQuotes.Text += "<script>" + $"window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={dr.GetValue(0)}&quoteType={3}&individual=yes','_blank')" + "</Script>";
                     }
                     else if (dr.GetBoolean(2))
                     {
-                        litDownloadQuotes.Text += "<script>" + String.Format("window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={0}&quoteType={1}&individual=yes','_blank')", dr.GetValue(0).ToString(), 4) + "</Script>";
+                        litDownloadQuotes.Text += "<script>" + $"window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={dr.GetValue(0)}&quoteType={4}&individual=yes','_blank')" + "</Script>";
                     }
                     else if (dr.GetBoolean(3))
                     {
-                        litDownloadQuotes.Text += "<script>" + String.Format("window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={0}&quoteType={1}&individual=yes','_blank')", dr.GetValue(0).ToString(), 5) + "</Script>";
+                        litDownloadQuotes.Text += "<script>" + $"window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={dr.GetValue(0)}&quoteType={5}&individual=yes','_blank')" + "</Script>";
                     }
                     else
                     {
-                        litDownloadQuotes.Text += "<script>" + String.Format("window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={0}&quoteType={1}&individual=yes','_blank')", dr.GetValue(0).ToString(), 2) + "</Script>";
+                        litDownloadQuotes.Text += "<script>" + $"window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={dr.GetValue(0)}&quoteType={2}&individual=yes','_blank')" + "</Script>";
                     }
                 }
                 dr.Close();
@@ -1324,7 +1299,7 @@ namespace RFQ
 
                 while (dr.Read())
                 {
-                    litDownloadQuotes.Text += "<script>" + String.Format("window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={0}&quoteType={1}&individual=yes','_blank')", dr.GetValue(0).ToString(), 2) + "</Script>";
+                    litDownloadQuotes.Text += "<script>" + $"window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={dr.GetValue(0)}&quoteType={2}&individual=yes','_blank')" + "</Script>";
                 }
                 dr.Close();
             }
@@ -1334,7 +1309,7 @@ namespace RFQ
 
         protected void btnDownloadQuotes_Click(object sender, EventArgs e)
         {
-            Site master = new RFQ.Site();
+            Site master = new Site();
             SqlConnection connection = new SqlConnection(master.getConnectionString());
             connection.Open();
             SqlCommand sql = new SqlCommand();
@@ -1349,15 +1324,15 @@ namespace RFQ
             {
                 if (dr.GetBoolean(1))
                 {
-                    litDownloadQuotes.Text += "<script>" + String.Format("window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={0}&quoteType={1}&individual=yes','_blank')", dr.GetValue(0).ToString(), 3) + "</Script>";
+                    litDownloadQuotes.Text += "<script>" + $"window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={dr.GetValue(0)}&quoteType={3}&individual=yes','_blank')" + "</Script>";
                 }
                 else if (dr.GetBoolean(2))
                 {
-                    litDownloadQuotes.Text += "<script>" + String.Format("window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={0}&quoteType={1}&individual=yes','_blank')", dr.GetValue(0).ToString(), 4) + "</Script>";
+                    litDownloadQuotes.Text += "<script>" + $"window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={dr.GetValue(0)}&quoteType={4}&individual=yes','_blank')" + "</Script>";
                 }
                 else
                 {
-                    litDownloadQuotes.Text += "<script>" + String.Format("window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={0}&quoteType={1}&individual=yes','_blank')", dr.GetValue(0).ToString(), 2) + "</Script>";
+                    litDownloadQuotes.Text += "<script>" + $"window.open('https://tsgrfq.azurewebsites.net/CreateQuote?quoteNumber={dr.GetValue(0)}&quoteType={2}&individual=yes','_blank')" + "</Script>";
                 }
             }
             dr.Close();
@@ -1371,7 +1346,7 @@ namespace RFQ
 
         protected void deletePart_click(object sender, EventArgs e)
         {
-            Site master = new RFQ.Site();
+            Site master = new Site();
             SqlConnection connection = new SqlConnection(master.getConnectionString());
             connection.Open();
             SqlCommand sql = new SqlCommand();
@@ -1379,14 +1354,14 @@ namespace RFQ
             //delete out no quotes or stop it from deleting if there are no quotes
 
             sql.CommandText = "Select prtPARTID from tblPart, linkPartToRFQ where ptrRFQID = @rfqID and ptrPartID = prtPARTID and prtPartNumber = @partNum";
-            sql.Parameters.AddWithValue("@rfqID", this.RFQID);
+            sql.Parameters.AddWithValue("@rfqID", RFQID);
             sql.Parameters.AddWithValue("@partNum", txtPart.Text);
 
             SqlDataReader dr = sql.ExecuteReader();
             int partID = 0;
             if (dr.Read())
             {
-                partID = System.Convert.ToInt32(dr.GetValue(0));
+                partID = Convert.ToInt32(dr.GetValue(0));
             }
             dr.Close();
 
@@ -1400,7 +1375,7 @@ namespace RFQ
 
             if (dr.Read())
             {
-                quoteCount = System.Convert.ToInt32(dr.GetValue(0));
+                quoteCount = Convert.ToInt32(dr.GetValue(0));
             }
             dr.Close();
 
@@ -1426,12 +1401,12 @@ namespace RFQ
             {
                 sql.CommandText = "Select ptrPartToRFQID from linkPartToRFQ where ptrPartID = @rfqID";
                 sql.Parameters.Clear();
-                sql.Parameters.AddWithValue("@rfqID", this.RFQID);
+                sql.Parameters.AddWithValue("@rfqID", RFQID);
                 dr = sql.ExecuteReader();
                 int partToRFQID = 0;
                 if (dr.Read())
                 {
-                    partToRFQID = System.Convert.ToInt32(dr.GetValue(0));
+                    partToRFQID = Convert.ToInt32(dr.GetValue(0));
                 }
                 dr.Close();
 
@@ -1458,7 +1433,7 @@ namespace RFQ
                 dr = sql.ExecuteReader();
                 if (dr.Read())
                 {
-                    ptpID = System.Convert.ToInt32(dr.GetValue(0));
+                    ptpID = Convert.ToInt32(dr.GetValue(0));
                 }
                 dr.Close();
 
@@ -1495,7 +1470,7 @@ namespace RFQ
 
             sql.Parameters.Clear();
             sql.CommandText = "Update tblRFQ set rfqCheckBit = 1 where rfqID = @rfq";
-            sql.Parameters.AddWithValue("@rfq", this.RFQID);
+            sql.Parameters.AddWithValue("@rfq", RFQID);
 
             master.ExecuteNonQuery(sql, "EditRFQ");
 
@@ -1511,7 +1486,7 @@ namespace RFQ
         {
             string customerid = "";
             List<string> customers = new List<string>();
-            Site master = new RFQ.Site();
+            Site master = new Site();
 
             SqlConnection connection = new SqlConnection(master.getConnectionString());
             connection.Open();
@@ -1557,9 +1532,9 @@ namespace RFQ
 
         protected void populate_Header()
         {
-            String CustomerID = "";
+            string CustomerID = "";
             rfqNumber.Text = RFQID.ToString().Trim();
-            Site master = new RFQ.Site();
+            Site master = new Site();
 
             if (ddlStatus.SelectedValue == "11" && master.getUserRole() != 1 && master.getUserRole() != 5)
             {
@@ -1594,7 +1569,7 @@ namespace RFQ
                 {
                     LockControlValues();
                 }
-                if (ddlStatus.SelectedValue.ToString() == "11")
+                if (ddlStatus.SelectedValue == "11")
                 {
                     btnUnlockRFQ.Visible = true;
                 }
@@ -1612,7 +1587,7 @@ namespace RFQ
                 ddlVehicle.SelectedValue = dr.GetValue(6).ToString();
                 try
                 {
-                    calDueDate.Text = System.Convert.ToDateTime(dr.GetValue(7)).ToString("d");
+                    calDueDate.Text = Convert.ToDateTime(dr.GetValue(7)).ToString("d");
                 }
                 catch
                 {
@@ -1620,8 +1595,8 @@ namespace RFQ
                 }
                 try
                 {
-                    calReceivedDate.Text = System.Convert.ToDateTime(dr.GetValue(8)).ToString("d");
-                    dateRecieved = System.Convert.ToDateTime(dr.GetValue(8));
+                    calReceivedDate.Text = Convert.ToDateTime(dr.GetValue(8)).ToString("d");
+                    dateRecieved = Convert.ToDateTime(dr.GetValue(8));
                 }
                 catch
                 {
@@ -1629,13 +1604,13 @@ namespace RFQ
                 }
                 try
                 {
-                    if (System.Convert.ToDateTime(dr.GetValue(9)).ToString("d").Equals("1/1/1900"))
+                    if (Convert.ToDateTime(dr.GetValue(9)).ToString("d").Equals("1/1/1900"))
                     {
                         calBidDate.Text = "";
                     }
                     else
                     {
-                        calBidDate.Text = System.Convert.ToDateTime(dr.GetValue(9)).ToString("d");
+                        calBidDate.Text = Convert.ToDateTime(dr.GetValue(9)).ToString("d");
                     }
                 }
                 catch
@@ -1644,13 +1619,13 @@ namespace RFQ
                 }
                 try
                 {
-                    if (System.Convert.ToDateTime(dr.GetValue(10)).ToString("d").Equals("1/1/1900"))
+                    if (Convert.ToDateTime(dr.GetValue(10)).ToString("d").Equals("1/1/1900"))
                     {
                         calPODate.Text = "";
                     }
                     else
                     {
-                        calPODate.Text = System.Convert.ToDateTime(dr.GetValue(10)).ToString("d");
+                        calPODate.Text = Convert.ToDateTime(dr.GetValue(10)).ToString("d");
                     }
                 }
                 catch
@@ -1663,10 +1638,10 @@ namespace RFQ
                 // calculate num    ber of parts
                 txtNotes.Text = dr.GetValue(17).ToString();
                 //txtMeetingNotes.Text = dr.GetValue(18).ToString();
-                create.Text = dr.GetValue(20).ToString() + " " + TimeZoneInfo.ConvertTimeFromUtc(System.Convert.ToDateTime(dr.GetValue(19)), TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"));
+                create.Text = dr.GetValue(20) + " " + TimeZoneInfo.ConvertTimeFromUtc(Convert.ToDateTime(dr.GetValue(19)), TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"));
                 try
                 {
-                    modify.Text = dr.GetValue(22).ToString() + " " + TimeZoneInfo.ConvertTimeFromUtc(System.Convert.ToDateTime(dr.GetValue(21)), TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"));
+                    modify.Text = dr.GetValue(22) + " " + TimeZoneInfo.ConvertTimeFromUtc(Convert.ToDateTime(dr.GetValue(21)), TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"));
                 }
                 catch
                 {
@@ -1699,7 +1674,7 @@ namespace RFQ
                 //}
                 try
                 {
-                    calIntDueDate.Text = System.Convert.ToDateTime(dr.GetValue(27)).ToString("d");
+                    calIntDueDate.Text = Convert.ToDateTime(dr.GetValue(27)).ToString("d");
                 }
                 catch
                 {
@@ -1752,8 +1727,8 @@ namespace RFQ
             {
                 if (count == 0)
                 {
-                    lblNotified.Text = "Notifications sent: " + TimeZoneInfo.ConvertTimeFromUtc(System.Convert.ToDateTime(dr.GetValue(1)), TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time")) +
-                        " by: " + dr.GetValue(0).ToString() + " to " + dr.GetValue(2).ToString();
+                    lblNotified.Text = "Notifications sent: " + TimeZoneInfo.ConvertTimeFromUtc(Convert.ToDateTime(dr.GetValue(1)), TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time")) +
+                        " by: " + dr.GetValue(0) + " to " + dr.GetValue(2);
                 }
                 else
                 {
@@ -1768,7 +1743,7 @@ namespace RFQ
             dr = sql.ExecuteReader();
             while (dr.Read())
             {
-                ddlNoQuoteReason.Items.Add(new System.Web.UI.WebControls.ListItem((dr.GetValue(2).ToString() + " - " + dr.GetValue(1).ToString()), dr.GetValue(0).ToString()));
+                ddlNoQuoteReason.Items.Add(new System.Web.UI.WebControls.ListItem(dr.GetValue(2) + " - " + dr.GetValue(1), dr.GetValue(0).ToString()));
             }
             dr.Close();
 
@@ -1778,7 +1753,7 @@ namespace RFQ
                 setSalesmanAndRank();
             }
 
-            String CustomerName = "0";
+            string CustomerName = "0";
             sql.CommandText = "select CustomerName, CustomerContactID from customer, CustomerContact where customer.customerId = @customer and customer.CustomerID = CustomerContact.CustomerID";
             sql.Parameters.Clear();
             sql.Parameters.AddWithValue("@customer", CustomerID);
@@ -1818,7 +1793,7 @@ namespace RFQ
             while (dr.Read())
             {
                 lblNotificationCheckList.Text += dr.GetValue(0).ToString();
-                lblNotificationCheckList.Text += " <input type=checkbox id='notify" + dr.GetValue(0).ToString() + "' value='" + dr.GetValue(1).ToString() + "' ";
+                lblNotificationCheckList.Text += " <input type=checkbox id='notify" + dr.GetValue(0) + "' value='" + dr.GetValue(1) + "' ";
                 //if (dr.GetValue(2).ToString() != "")
                 //{
                 //    lblNotificationCheckList.Text += " checked='checked'  ";
@@ -1830,26 +1805,26 @@ namespace RFQ
                 if (dr.GetValue(2).ToString() != "")
                 {
                     lblNotificationCheckList.Text += " checked='checked'  ";
-                    lblSendNotificationsScript.Text += "    if (! document.getElementById('notify" + dr.GetValue(0).ToString() + "').checked) {\n";
+                    lblSendNotificationsScript.Text += "    if (! document.getElementById('notify" + dr.GetValue(0) + "').checked) {\n";
                     lblSendNotificationsScript.Text += "    }\n";
                 }
                 else
                 {
-                    lblSendNotificationsScript.Text += "    if (document.getElementById('notify" + dr.GetValue(0).ToString() + "').checked) {\n";
-                    lblSendNotificationsScript.Text += "        colist=colist + ',' + '" + dr.GetValue(1).ToString() + "';\n";
+                    lblSendNotificationsScript.Text += "    if (document.getElementById('notify" + dr.GetValue(0) + "').checked) {\n";
+                    lblSendNotificationsScript.Text += "        colist=colist + ',' + '" + dr.GetValue(1) + "';\n";
                     lblSendNotificationsScript.Text += "    }\n";
                 }
-                lblReSendNotificationsScript.Text += "    if (document.getElementById('notify" + dr.GetValue(0).ToString() + "').checked) {\n";
-                lblReSendNotificationsScript.Text += "        colist=colist + ',' + '" + dr.GetValue(1).ToString() + "';\n";
+                lblReSendNotificationsScript.Text += "    if (document.getElementById('notify" + dr.GetValue(0) + "').checked) {\n";
+                lblReSendNotificationsScript.Text += "        colist=colist + ',' + '" + dr.GetValue(1) + "';\n";
                 lblReSendNotificationsScript.Text += "    }\n";
                 // This will open up the STS dialog for the data cordinator to enter extra info for STS
                 if (dr["TSGCompanyID"].ToString() == "13" || dr["TSGCompanyID"].ToString() == "20")
                 {
-                    lblNotificationCheckList.Text += "  onclick=\"removeNotification('" + dr.GetValue(1).ToString() + "','" + RFQID + "');populateSTSRFQDialog();\" \n";
+                    lblNotificationCheckList.Text += "  onclick=\"removeNotification('" + dr.GetValue(1) + "','" + RFQID + "');populateSTSRFQDialog();\" \n";
                 }
                 else
                 {
-                    lblNotificationCheckList.Text += "  onclick=\"removeNotification('" + dr.GetValue(1).ToString() + "','" + RFQID + "');\" \n";
+                    lblNotificationCheckList.Text += "  onclick=\"removeNotification('" + dr.GetValue(1) + "','" + RFQID + "');\" \n";
                 }
                 lblNotificationCheckList.Text += ">&nbsp;&nbsp;";
             }
@@ -1864,7 +1839,7 @@ namespace RFQ
 
 
             //CustomerName = CustomerName.Replace(' ', '%');
-            String RFQdate = HttpUtility.HtmlEncode(calReceivedDate.Text.Replace('/', '-'));
+            string RFQdate = HttpUtility.HtmlEncode(calReceivedDate.Text.Replace('/', '-'));
             string tempCustName = CustomerName;
             //if (CustomerName != "Challenge Mfg. Company")
             //{
@@ -1880,16 +1855,16 @@ namespace RFQ
             ctx.Credentials = master.getSharePointCredentials();
             Web web = ctx.Web;
             // if this does not exist we will get an error 
-            var mainfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Shared Documents/RFQ Data");
+            Folder mainfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Shared Documents/RFQ Data");
             ctx.Load(web);
             //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-            SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-            var customerfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Shared Documents/RFQ Data/" + tempCustName.Trim());
+            ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
+            Folder customerfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Shared Documents/RFQ Data/" + tempCustName.Trim());
             ctx.Load(web);
             try
             {
                 //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
             }
             catch
             {
@@ -1899,22 +1874,22 @@ namespace RFQ
                 ctx.Credentials = master.getSharePointCredentials();
                 ctx.Load(web);
                 //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
                 customerfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Shared Documents/RFQ Data/" + tempCustName.Trim());
                 ctx.Load(web);
                 //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
             }
-            var sharepointUrl = "https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Shared%20Documents/RFQ%20Data/" + tempCustName.Trim() + "/" + dateRecieved.ToString("MM-dd-yyyy") + " " + txtCustomerRFQ.Text.Trim();
+            string sharepointUrl = "https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Shared%20Documents/RFQ%20Data/" + tempCustName.Trim() + "/" + dateRecieved.ToString("MM-dd-yyyy") + " " + txtCustomerRFQ.Text.Trim();
             if (!CheckSharePointFolder(CustomerName, dateRecieved.ToString("MM-dd-yyyy")))
             {
                 sharepointUrl = "https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Shared Documents/RFQ Data/" + tempCustName.Trim() + "/" + dateRecieved.ToString("yyyy-MM-dd") + " " + txtCustomerRFQ.Text.Trim();
-                var rfqfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Shared Documents/RFQ Data/" + tempCustName.Trim() + "/" + dateRecieved.ToString("yyyy-MM-dd") + " " + txtCustomerRFQ.Text.Trim());
+                Folder rfqfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Shared Documents/RFQ Data/" + tempCustName.Trim() + "/" + dateRecieved.ToString("yyyy-MM-dd") + " " + txtCustomerRFQ.Text.Trim());
                 ctx.Load(web);
                 try
                 {
                     //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                    SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                    ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
                 }
                 catch
                 {
@@ -1924,12 +1899,12 @@ namespace RFQ
                     customerfolder.Folders.Add(dateRecieved.ToString("yyyy-MM-dd") + " " + txtCustomerRFQ.Text.Trim());
                     ctx.Load(web);
                     //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                    SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                    ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
                     ctx.Credentials = master.getSharePointCredentials();
                     rfqfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Shared Documents/RFQ Data/" + CustomerName + "/" + dateRecieved.ToString("yyyy-MM-dd") + " " + txtCustomerRFQ.Text.Trim());
                     ctx.Load(web);
                     //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                    SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                    ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
                 }
 
             }
@@ -1951,7 +1926,7 @@ namespace RFQ
             mainfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/sites/Estimating/RFQ%20Email%20Attachments/");
             ctx.Load(web);
             //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-            SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+            ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
             customerfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/sites/Estimating/RFQ%20Email%20Attachments/" + RFQID);
             ctx.Load(web);
             ctx.Load(customerfolder);
@@ -1959,8 +1934,8 @@ namespace RFQ
             try
             {
                 //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                foreach (var file in customerfolder.Files)
+                ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
+                foreach (File file in customerfolder.Files)
                 {
                     if (lblUploadsToEmail.Text != "")
                     {
@@ -1981,11 +1956,11 @@ namespace RFQ
                 ctx.Credentials = master.getSharePointCredentials();
                 ctx.Load(web);
                 //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
                 customerfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/sites/Estimating/RFQ%20Email%20Attachments/" + RFQID);
                 ctx.Load(web);
                 //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
             }
 
             string retval = "checklist.png";
@@ -2005,7 +1980,7 @@ namespace RFQ
         }
 
 
-        private Boolean CheckSharePointFolder(string CustomerName, string RFQdate)
+        private bool CheckSharePointFolder(string CustomerName, string RFQdate)
         {
             Site master = new Site();
             ClientContext ctx = new ClientContext("https://toolingsystemsgroup.sharepoint.com/sites/Estimating");
@@ -2013,11 +1988,11 @@ namespace RFQ
             Web web = ctx.Web;
 
 
-            var rfqfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Shared Documents/RFQ Data/" + CustomerName + "/" + RFQdate + " " + txtCustomerRFQ.Text.Trim());
+            Folder rfqfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Shared Documents/RFQ Data/" + CustomerName + "/" + RFQdate + " " + txtCustomerRFQ.Text.Trim());
             ctx.Load(web);
             try
             {
-                SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
                 return true;
             }
             catch
@@ -2028,7 +2003,7 @@ namespace RFQ
 
         protected void sendUpdateNotification(object sender, EventArgs e)
         {
-            Site master = new RFQ.Site();
+            Site master = new Site();
             SqlConnection connection = new SqlConnection(master.getConnectionString());
             connection.Open();
             SqlCommand sql = new SqlCommand();
@@ -2049,7 +2024,7 @@ namespace RFQ
                 }
                 else
                 {
-                    companies += ", " + dr.GetValue(0).ToString();
+                    companies += ", " + dr.GetValue(0);
                 }
                 count++;
             }
@@ -2064,7 +2039,7 @@ namespace RFQ
             }
             dr.Close();
 
-            RFQ.Models.Notification notification = new Models.Notification();
+            Models.Notification notification = new Models.Notification();
             notification.SendNotifications(companies, RFQID.ToString(), notificationID, master.getUserName());
 
             connection.Close();
@@ -2072,7 +2047,7 @@ namespace RFQ
 
         protected void populate_Plants()
         {
-            Site master = new RFQ.Site();
+            Site master = new Site();
             SqlConnection connection = new SqlConnection(master.getConnectionString());
             connection.Open();
             SqlCommand sql = new SqlCommand();
@@ -2160,7 +2135,7 @@ namespace RFQ
 
             List<RFQPart> partList = new List<RFQPart>();
             List<RFQPart> orderedList = new List<RFQPart>();
-            Site master = new RFQ.Site();
+            Site master = new Site();
             SqlConnection connection = new SqlConnection(master.getConnectionString());
             connection.Open();
             SqlCommand sql = new SqlCommand();
@@ -2184,40 +2159,28 @@ namespace RFQ
             RFQPart newPart = new RFQPart();
             while (dr.Read())
             {
-                if (assId != dr["assAssemblyId"].ToString())
+                if (assId == dr["assAssemblyId"].ToString())
                 {
-                    assId = dr["assAssemblyId"].ToString();
-                    newPart = new RFQPart();
-                    newPart.prtPartNumber = dr["assNumber"].ToString() + "\n\nLinked Parts\n" + dr["prtRFQLineNumber"].ToString() + ": " + dr["prtPartNumber"].ToString();
-                    newPart.prtPartDescription = dr["assDescription"].ToString();
-                    if (dr["assPicture"].ToString() != "")
-                    {
-                        newPart.prtPicture = dr["assPicture"].ToString();
-                    }
-                    else
-                    {
-                        newPart.prtPicture = "https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Part%20Pictures/RFQ358_22_51326-45010.png";
-                    }
-                    newPart.prtNote = dr["assNotes"].ToString();
-                    newPart.MimeType = "image/png";
-                    newPart.ptyPartDescription = dr["astAssemblyType"].ToString();
-                    newPart.LineNumber = "A" + count.ToString();
-                    newPart.PartId = "A" + dr["assAssemblyId"].ToString();
-                    orderedList.Add(newPart);
-                    if (count > 0)
-                    {
-                        assemblyId += ", '" + newPart.PartId + "'";
-                    }
-                    else
-                    {
-                        assemblyId += "<script>assemblyIds = ['" + newPart.PartId + "'";
-                    }
-                    count++;
+                    newPart.prtPartNumber += $"\n{dr["prtRFQLineNumber"]}: {dr["prtPartNumber"]}";
+                    continue;
                 }
-                else
+
+                assId = dr["assAssemblyId"].ToString();
+                newPart = new RFQPart
                 {
-                    newPart.prtPartNumber += "\n" + dr["prtRFQLineNumber"].ToString() + ": " + dr["prtPartNumber"].ToString();
-                }
+                    prtPartNumber = $"{dr["assNumber"]}\n\nLinked Parts\n{dr["prtRFQLineNumber"]}: {dr["prtPartNumber"]}",
+                    prtPartDescription = dr["assDescription"].ToString(),
+                    prtPicture = dr["assPicture"].ToString() != "" ? dr["assPicture"].ToString() : "https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Part%20Pictures/RFQ358_22_51326-45010.png",
+                    prtNote = dr["assNotes"].ToString(),
+                    MimeType = "image/png",
+                    ptyPartDescription = dr["astAssemblyType"].ToString(),
+                    LineNumber = "A" + count,
+                    PartId = "A" + dr["assAssemblyId"]
+                };
+                orderedList.Add(newPart);
+                assemblyId += count > 0 ? $", \'{newPart.PartId}\'" : $"<script>assemblyIds = [\'{newPart.PartId}\'";
+
+                count++;
             }
             dr.Close();
 
@@ -2250,31 +2213,27 @@ namespace RFQ
                 GuidString = GuidString.Replace("=", "");
                 GuidString = GuidString.Replace("+", "");
 
-                newPart.prtPicture = "https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Part%20Pictures/" + dr.GetValue(2).ToString() + "?r=" + GuidString;
-                newPart.Length = System.Convert.ToDouble(dr.GetValue(3));
-                newPart.Width = System.Convert.ToDouble(dr.GetValue(4));
-                newPart.Height = System.Convert.ToDouble(dr.GetValue(5));
-                if (dr.GetValue(6).ToString() == "")
-                {
-                    newPart.MaterialType = dr.GetValue(16).ToString();
-                }
-                else
-                {
-                    newPart.MaterialType = dr.GetValue(6).ToString();
-                }
-                newPart.Weight = System.Convert.ToDouble(dr.GetValue(7));
-                newPart.MaterialThickness = System.Convert.ToDouble(dr.GetValue(8));
+                newPart.prtPicture = "https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Part%20Pictures/" + dr.GetValue(2) + "?r=" + GuidString;
+                newPart.Length = Convert.ToDouble(dr.GetValue(3));
+                newPart.Width = Convert.ToDouble(dr.GetValue(4));
+                newPart.Height = Convert.ToDouble(dr.GetValue(5));
+                newPart.MaterialType = dr.GetValue(6).ToString() == "" ? dr.GetValue(16).ToString() : dr.GetValue(6).ToString();
+                newPart.Weight = Convert.ToDouble(dr.GetValue(7));
+                newPart.MaterialThickness = Convert.ToDouble(dr.GetValue(8));
                 newPart.ptyPartDescription = dr.GetValue(9).ToString();
-                newPart.BlankDescription = dr.GetValue(10).ToString() + " - " + dr.GetValue(11).ToString();
+                newPart.BlankDescription = dr.GetValue(10) + " - " + dr.GetValue(11);
                 newPart.LinkPart = dr.GetValue(12).ToString();
                 newPart.BackGroundColor = "White";
                 newPart.MimeType = "image/png";
                 newPart.NQRHTML = "";
                 newPart.PartId = dr.GetValue(13).ToString();
-                litPartScripts.Text += "<script>url = 'GetHistory.aspx?create=&search=&part=" + newPart.prtPartNumber + "&partID=" + dr.GetValue(13).ToString() + "&rfq=" + RFQID + "&rand=' + Math.random();$.ajax({ url: url, success: function (data) { parseResults(data, 0, '" + newPart.prtPartNumber + "'); } });</script>\n";
+                litPartScripts.Text +=
+                    $"<script>" +
+                    $"url = \'GetHistory.aspx?create=&search=&part={newPart.prtPartNumber}&partID={dr.GetValue(13)}&rfq={RFQID}&rand=\' + Math.random();$.ajax({{ url: url, success: function (data) {{ parseResults(data, 0, \'{newPart.prtPartNumber}\'); }} }});" +
+                    $"</script>\n";
                 newPart.LineNumber = dr.GetValue(14).ToString();
                 newPart.prtNote = dr.GetValue(15).ToString();
-                newPart.annualVolume = System.Convert.ToInt32(dr["prtAnnualVolume"].ToString() == "" ? "0" : dr["prtAnnualVolume"].ToString());
+                newPart.annualVolume = Convert.ToInt32(dr["prtAnnualVolume"].ToString() == "" ? "0" : dr["prtAnnualVolume"].ToString());
                 partList.Add(newPart);
             }
             dr.Close();
@@ -2284,28 +2243,17 @@ namespace RFQ
             //This is different than just sticking all linked parts up top
             foreach (RFQPart thispart in partList)
             {
-                if (!orderedList.Contains(thispart))
-                {
-                    orderedList.Add(thispart);
+                if (orderedList.Contains(thispart)) continue;
+                orderedList.Add(thispart);
 
-                    if (thispart.LinkPart != "")
-                    {
-                        for (int i = partList.Count - 1; i > -1; i--)
-                        {
-                            if (thispart.LinkPart == "0")
-                            {
-                                break;
-                            }
-                            if (partList[i] != thispart && !orderedList.Contains(partList[i]) && partList[i].LinkPart == thispart.LinkPart)
-                            {
-                                orderedList.Add(partList[i]);
-                            }
-                        }
-                    }
-                }
-                else
+                if (thispart.LinkPart == "") continue;
+                for (int i = partList.Count - 1; i > -1; i--)
                 {
-
+                    if (thispart.LinkPart == "0")
+                        break;
+                    
+                    if (partList[i] != thispart && !orderedList.Contains(partList[i]) && partList[i].LinkPart == thispart.LinkPart)
+                        orderedList.Add(partList[i]);
                 }
             }
 
@@ -2316,7 +2264,7 @@ namespace RFQ
             SqlDataReader tempDR = sql.ExecuteReader();
             while (tempDR.Read())
             {
-                partChecklist = System.Convert.ToInt32(tempDR.GetValue(0).ToString());
+                partChecklist = Convert.ToInt32(tempDR.GetValue(0).ToString());
             }
             tempDR.Close();
 
@@ -2339,7 +2287,7 @@ namespace RFQ
                 }
 
 
-                thispart.quotingHTML = "<div id='quoting" + thispart.PartId.ToString() + "'>";
+                thispart.quotingHTML = "<div id='quoting" + thispart.PartId + "'>";
 
                 if (!thispart.PartId.Contains("A"))
                 {
@@ -2363,7 +2311,7 @@ namespace RFQ
                         thispart.BackGroundColor = link.LinkColor;
                     }
                 }
-                if (System.Convert.ToInt32(thispart.LinkPart) > 0)
+                if (Convert.ToInt32(thispart.LinkPart) > 0)
                 {
                     if (thispart.BackGroundColor == "White")
                     {
@@ -2418,7 +2366,7 @@ namespace RFQ
                 dr = sql.ExecuteReader();
                 while (dr.Read())
                 {
-                    hdnReservedPartIds.Value += "," + dr["ppdPartID"].ToString();
+                    hdnReservedPartIds.Value += "," + dr["ppdPartID"];
                 }
                 dr.Close();
             }
@@ -2451,7 +2399,7 @@ namespace RFQ
 
         protected void addNewVehicle_Click(object sender, EventArgs e)
         {
-            Site master = new RFQ.Site();
+            Site master = new Site();
             SqlConnection connection = new SqlConnection(master.getConnectionString());
             connection.Open();
             SqlCommand sql = new SqlCommand();
@@ -2483,7 +2431,7 @@ namespace RFQ
 
         protected void addNewProgram_Click(object sender, EventArgs e)
         {
-            Site master = new RFQ.Site();
+            Site master = new Site();
             SqlConnection connection = new SqlConnection(master.getConnectionString());
             connection.Open();
             SqlCommand sql = new SqlCommand();
@@ -2515,7 +2463,7 @@ namespace RFQ
         protected void duplicatePart_click(object sender, EventArgs e)
         {
             string partID = hdnPartID.Value;
-            Site master = new RFQ.Site();
+            Site master = new Site();
             SqlConnection connection = new SqlConnection(master.getConnectionString());
             connection.Open();
             SqlCommand sql = new SqlCommand();
@@ -2529,7 +2477,7 @@ namespace RFQ
             int lineNum = 0;
             if (dr.Read())
             {
-                lineNum = System.Convert.ToInt32(dr.GetValue(0).ToString()) + 1;
+                lineNum = Convert.ToInt32(dr.GetValue(0).ToString()) + 1;
             }
             dr.Close();
 
@@ -2587,7 +2535,7 @@ namespace RFQ
                 //}
                 //else
                 //{
-                sql.Parameters.AddWithValue("@" + i.ToString(), part[i]);
+                sql.Parameters.AddWithValue("@" + i, part[i]);
                 //}
             }
             partID = master.ExecuteScalar(sql, "Edit RFQ").ToString();
@@ -2607,7 +2555,7 @@ namespace RFQ
 
         protected void btnDeleteAllHistory(object sender, EventArgs e)
         {
-            Site master = new RFQ.Site();
+            Site master = new Site();
             SqlConnection connection = new SqlConnection(master.getConnectionString());
             connection.Open();
             SqlCommand sql = new SqlCommand();
@@ -2652,7 +2600,7 @@ namespace RFQ
         }
 
 
-        protected void cbBundleQuotesYes_Checked_Clicked(Object sender, EventArgs e)
+        protected void cbBundleQuotesYes_Checked_Clicked(object sender, EventArgs e)
         {
             txtSendQuotes.Enabled = cbBundleQuotesYes.Checked;
         }
@@ -2672,7 +2620,7 @@ namespace RFQ
 
             if (cbBundleQuotesYes.Checked && !sendQuotesFilledOut)
             {
-                Page.ClientScript.RegisterStartupScript(this.GetType(), "ErrorAlert", "alert('Bundle Quotes to Customer is checked on but send quotes box is empty.');", true);
+                Page.ClientScript.RegisterStartupScript(GetType(), "ErrorAlert", "alert('Bundle Quotes to Customer is checked on but send quotes box is empty.');", true);
 
 
                 return;
@@ -2680,7 +2628,7 @@ namespace RFQ
 
             if (!cbBundleQuotesYes.Checked && sendQuotesFilledOut)
             {
-                Page.ClientScript.RegisterStartupScript(this.GetType(), "ErrorAlert", "alert('Bundle Quotes to Customer is checked off but send quotes box is filled out.');", true);
+                Page.ClientScript.RegisterStartupScript(GetType(), "ErrorAlert", "alert('Bundle Quotes to Customer is checked off but send quotes box is filled out.');", true);
 
 
                 return;
@@ -2690,13 +2638,13 @@ namespace RFQ
 
             if (RFQID == 0)
             {
-                Site master = new RFQ.Site();
+                Site master = new Site();
                 SqlConnection connection = new SqlConnection(master.getConnectionString());
                 connection.Open();
                 SqlCommand sql = new SqlCommand();
                 sql.Connection = connection;
 
-                Boolean doNotSell = false;
+                bool doNotSell = false;
 
                 sql.CommandText = "Select cusDoNotSell from Customer where CustomerId = @customer ";
                 sql.Parameters.Clear();
@@ -2706,7 +2654,7 @@ namespace RFQ
                 {
                     if (dr["cusDoNotSell"].ToString() != "")
                     {
-                        doNotSell = System.Convert.ToBoolean(dr["cusDoNotSell"].ToString());
+                        doNotSell = Convert.ToBoolean(dr["cusDoNotSell"].ToString());
                     }
                 }
                 dr.Close();
@@ -2714,7 +2662,7 @@ namespace RFQ
                 if (doNotSell)
                 {
                     connection.Close();
-                    litScript.Text = "<script>alert('" + ddlCustomer.SelectedItem.ToString() + " is on the do not sell list.  You may not enter an RFQ for them.  This RFQ has not been saved.');</script>";
+                    litScript.Text = "<script>alert('" + ddlCustomer.SelectedItem + " is on the do not sell list.  You may not enter an RFQ for them.  This RFQ has not been saved.');</script>";
                     return;
                 }
 
@@ -2725,19 +2673,18 @@ namespace RFQ
                 int salesmanID = 0;
                 if (dr.Read())
                 {
-                    salesmanID = System.Convert.ToInt32(dr.GetValue(0));
+                    salesmanID = Convert.ToInt32(dr.GetValue(0));
                 }
 
                 dr.Close();
                 sql.Parameters.Clear();
-                int programID = System.Convert.ToInt32(ddlProgram.SelectedValue);
+                int programID = Convert.ToInt32(ddlProgram.SelectedValue);
                 if (ddlProgram.SelectedValue == "0" && txtNewProgram.Text != "")
                 {
                     sql.CommandText = "insert into Program (ProgramName, proCreated, proCreatedBy) OUTPUT inserted.ProgramID Values (@program, GETDATE(), @createdBy )";
                     sql.Parameters.AddWithValue("@program", txtNewProgram.Text);
                     sql.Parameters.AddWithValue("@createdBy", master.getUserName());
-                    programID = System.Convert.ToInt32(master.ExecuteScalar(sql, "EditRFQ"));
-                    //txts
+                    programID = Convert.ToInt32(master.ExecuteScalar(sql, "EditRFQ"));
                 }
 
 
@@ -2753,10 +2700,8 @@ namespace RFQ
                     "cbHydroformTooling, cbKitDie, cbFormSteelCoatings," +
                     "cbMoldToolingTubeDies, cbLcc, cbSparePunchesButtons, cbEngineeringChange, cbSeeDocumentFromCustomer, cbIncludeEarlyParts, cbAssemblyToolingEquipment," +
                     "cbIncludeFinanceCost, cbPrototypes, cbTsims, cbTurnkeySeeInternalTsgRfq, cbTransferFingers, cbBundleQuotesYes, txtSendQuotes ) ";
-                //sql.CommandText += " rfqATSReady, rfqBTSReady, rfqDTSReady, rfqETSReady, rfqGTSReady, rfqHTSReady, rfqRTSReady, rfqSTSReady, rfqUGSReady, rfqSendTo, rfqCCTo, rfqBCCTo ) ";
                 sql.CommandText += " OUTPUT inserted.rfqID ";
                 sql.CommandText += " values ( @status, @customer, @plant, @rfq, @program, @oem, @vehicle, @due, @received, @podate, @biddate, ";
-                //sql.CommandText += " @country, @eng, @type, @parts, @notes, @meetingnotes, current_timestamp, @createdby,  @livework, @src, @srctwo, @salesman, DateAdd(DD, 7,GETDATE()), @handling, 1, @logo, @contact, @turnKey, @global, ";
                 sql.CommandText += " @country, @eng, @type, @parts, @notes, @meetingnotes, current_timestamp, @createdby, " +
                     " @livework, @src, @srctwo, @salesman, @internalduedate, @handling, 1, @logo, @contact, @turnKey, @global, " +
                     "@cbDies, " +
@@ -2765,10 +2710,6 @@ namespace RFQ
                     "@cbMoldToolingTubeDies, @cbLcc, @cbSparePunchesButtons, @cbEngineeringChange, @cbSeeDocumentFromCustomer, @cbIncludeEarlyParts, @cbAssemblyToolingEquipment," +
                     "@cbIncludeFinanceCost, @cbPrototypes, @cbTsims, @cbTurnkeySeeInternalTsgRfq, @cbTransferFingers, @cbBundleQuotesYes, @txtSendQuotes ) ";
 
-
-
-
-                //sql.CommandText += "@ats, @bts, @dts, @ets, @gts, @hts, @rts, @sts, @ugs, @sendTo, @cc, @bcc ) ";
                 sql.Parameters.AddWithValue("@status", ddlStatus.SelectedValue);
                 sql.Parameters.AddWithValue("@customer", ddlCustomer.SelectedValue);
                 sql.Parameters.AddWithValue("@plant", ddlPlant.SelectedValue);
@@ -2795,54 +2736,11 @@ namespace RFQ
                 sql.Parameters.AddWithValue("@contact", ddlCustomerContact.SelectedValue);
 
 
+                sql.Parameters.AddWithValue("@logo", cbUseTSGLogo.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@turnkey", cbTurnkey.Checked ? 1 : 0);
 
-                //sql.Parameters.AddWithValue("@ats", cbATSReady.Checked);
-                //sql.Parameters.AddWithValue("@bts", cbBTSReady.Checked);
-                //sql.Parameters.AddWithValue("@dts", cbDTSReady.Checked);
-                //sql.Parameters.AddWithValue("@ets", cbETSReady.Checked);
-                //sql.Parameters.AddWithValue("@gts", cbGTSReady.Checked);
-                //sql.Parameters.AddWithValue("@hts", cbHTSReady.Checked);
-                //sql.Parameters.AddWithValue("@rts", cbRTSReady.Checked);
-                //sql.Parameters.AddWithValue("@sts", cbSTSReady.Checked);
-                //sql.Parameters.AddWithValue("@ugs", cbUGSReady.Checked);
-                //sql.Parameters.AddWithValue("@sendTo", txtSendBundledTo.Text);
-                //sql.Parameters.AddWithValue("@cc", txtCCBundledTo.Text);
-                //sql.Parameters.AddWithValue("@bcc", txtBCCBundledTo.Text);
-
-
-                if (cbUseTSGLogo.Checked)
-                {
-                    sql.Parameters.AddWithValue("@logo", 1);
-                }
-                else
-                {
-                    sql.Parameters.AddWithValue("@logo", 0);
-                }
-                if (cbTurnkey.Checked)
-                {
-                    sql.Parameters.AddWithValue("@turnkey", 1);
-                }
-                else
-                {
-                    sql.Parameters.AddWithValue("@turnkey", 0);
-                }
-
-                if (cbLiveWork.Checked)
-                {
-                    sql.Parameters.AddWithValue("@livework", 1);
-                }
-                else
-                {
-                    sql.Parameters.AddWithValue("@livework", 0);
-                }
-                if (cbGlobalProgram.Checked)
-                {
-                    sql.Parameters.AddWithValue("@global", 1);
-                }
-                else
-                {
-                    sql.Parameters.AddWithValue("@global", 0);
-                }
+                sql.Parameters.AddWithValue("@livework", cbLiveWork.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@global", cbGlobalProgram.Checked ? 1 : 0);
 
                 sql.Parameters.AddWithValue("@cbDies", cbDies.Checked ? 1 : 0);
                 sql.Parameters.AddWithValue("@cbNaBuild", cbNaBuild.Checked ? 1 : 0);
@@ -2894,7 +2792,7 @@ namespace RFQ
 
                 try
                 {
-                    Int64 newID = System.Convert.ToInt64(master.ExecuteScalar(sql, "editRFQ"));
+                    long newID = Convert.ToInt64(master.ExecuteScalar(sql, "editRFQ"));
                     connection.Close();
 
                     //SaveCheckBoxes(newID);
@@ -2915,17 +2813,17 @@ namespace RFQ
             }
             else
             {
-                Site master = new RFQ.Site();
+                Site master = new Site();
                 SqlConnection connection = new SqlConnection(master.getConnectionString());
                 connection.Open();
                 SqlCommand sql = new SqlCommand();
-                int programID = System.Convert.ToInt32(ddlProgram.SelectedValue);
+                int programID = Convert.ToInt32(ddlProgram.SelectedValue);
                 if (ddlProgram.SelectedValue == "0" && txtNewProgram.Text != "")
                 {
                     sql.CommandText = "insert int Program (ProgramName, proCreated, proCreatedBy) OUTPUT inserted.ProgramID Values(@program, GETDATE(), @createdBy )";
                     sql.Parameters.AddWithValue("@program", txtNewProgram.Text);
                     sql.Parameters.AddWithValue("@createdBy", master.getUserName());
-                    programID = System.Convert.ToInt32(master.ExecuteScalar(sql, "EditRFQ"));
+                    programID = Convert.ToInt32(master.ExecuteScalar(sql, "EditRFQ"));
                 }
 
                 sql.Connection = connection;
@@ -3003,8 +2901,8 @@ namespace RFQ
                 sql.Parameters.AddWithValue("@type", ddlProductType.SelectedValue);
                 sql.Parameters.AddWithValue("@src", ddlRFQSource.SelectedValue);
                 sql.Parameters.AddWithValue("@srctwo", ddlRFQSource2.SelectedValue);
-                Int64 partCount = 0;
-                Int64 quoteCount = 0;
+                long partCount = 0;
+                long quoteCount = 0;
                 sql.Parameters.AddWithValue("@parts", partCount);
                 sql.Parameters.AddWithValue("@quote", quoteCount);
                 sql.Parameters.AddWithValue("@notes", txtNotes.Text.Trim());
@@ -3014,38 +2912,10 @@ namespace RFQ
                 sql.Parameters.AddWithValue("@plant", ddlPlant.SelectedValue);
 
 
-                if (cbLiveWork.Checked)
-                {
-                    sql.Parameters.AddWithValue("@livework", 1);
-                }
-                else
-                {
-                    sql.Parameters.AddWithValue("@livework", 0);
-                }
-                if (cbUseTSGLogo.Checked)
-                {
-                    sql.Parameters.AddWithValue("@logo", 1);
-                }
-                else
-                {
-                    sql.Parameters.AddWithValue("@logo", 0);
-                }
-                if (cbTurnkey.Checked)
-                {
-                    sql.Parameters.AddWithValue("@turnkey", 1);
-                }
-                else
-                {
-                    sql.Parameters.AddWithValue("@turnkey", 0);
-                }
-                if (cbGlobalProgram.Checked)
-                {
-                    sql.Parameters.AddWithValue("@global", 1);
-                }
-                else
-                {
-                    sql.Parameters.AddWithValue("@global", 0);
-                }
+                sql.Parameters.AddWithValue("@livework", cbLiveWork.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@logo", cbUseTSGLogo.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@turnkey", cbTurnkey.Checked ? 1 : 0);
+                sql.Parameters.AddWithValue("@global", cbGlobalProgram.Checked ? 1 : 0);
 
                 sql.Parameters.AddWithValue("@modby", Context.User.Identity.Name);
                 sql.Parameters.AddWithValue("@id", RFQID);
@@ -3067,98 +2937,96 @@ namespace RFQ
         protected void importFiles_click(object sender, EventArgs e)
         {
             Site master = new Site();
-            if (attachmentUpload.HasFiles)
+            if (!attachmentUpload.HasFiles) return;
+            foreach (HttpPostedFile attachment in attachmentUpload.PostedFiles)
             {
-                foreach (var attachment in attachmentUpload.PostedFiles)
-                {
-                    Microsoft.SharePoint.Client.ClientContext ctx = new Microsoft.SharePoint.Client.ClientContext("https://toolingsystemsgroup.sharepoint.com/sites/Estimating/");
-                    ctx.Credentials = master.getSharePointCredentials();
-                    Microsoft.SharePoint.Client.Web web = ctx.Web;
-                    // if this does not exist we will get an error 
-                    var mainfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/sites/Estimating/RFQ%20Email%20Attachments/");
-                    ctx.Load(web);
+                ClientContext ctx = new ClientContext("https://toolingsystemsgroup.sharepoint.com/sites/Estimating/");
+                ctx.Credentials = master.getSharePointCredentials();
+                Web web = ctx.Web;
+                // if this does not exist we will get an error 
+                Folder mainfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/sites/Estimating/RFQ%20Email%20Attachments/");
+                ctx.Load(web);
 
-                    Microsoft.SharePoint.Client.List list = ctx.Web.Lists.GetByTitle("Documents");
-                    Microsoft.SharePoint.Client.ListItem list2 = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/sites/Estimating/RFQ%20Email%20Attachments/" + RFQID).ListItemAllFields;
+                List list = ctx.Web.Lists.GetByTitle("Documents");
+                Microsoft.SharePoint.Client.ListItem list2 = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/sites/Estimating/RFQ%20Email%20Attachments/" + RFQID).ListItemAllFields;
 
-                    ctx.Load(list);
-                    ctx.Load(list.RootFolder);
-                    ctx.Load(list.RootFolder.Folders);
-                    ctx.Load(list.RootFolder.Files);
-                    //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                    SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                ctx.Load(list);
+                ctx.Load(list.RootFolder);
+                ctx.Load(list.RootFolder.Folders);
+                ctx.Load(list.RootFolder.Files);
+                //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
 
-                    Microsoft.SharePoint.Client.Folder fo = list2.Folder;
-                    Microsoft.SharePoint.Client.FileCollection files = fo.Files;
+                Folder fo = list2.Folder;
+                FileCollection files = fo.Files;
 
-                    ctx.Load(files);
-                    //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                    SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                ctx.Load(files);
+                //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
 
-                    FileCreationInformation newFile = new FileCreationInformation();
-                    newFile.ContentStream = attachment.InputStream;
-                    newFile.Url = "https://toolingsystemsgroup.sharepoint.com/sites/Estimating/RFQ%20Email%20Attachments/" + RFQID + "/" + attachment.FileName;
-                    newFile.Overwrite = true;
+                FileCreationInformation newFile = new FileCreationInformation();
+                newFile.ContentStream = attachment.InputStream;
+                newFile.Url = "https://toolingsystemsgroup.sharepoint.com/sites/Estimating/RFQ%20Email%20Attachments/" + RFQID + "/" + attachment.FileName;
+                newFile.Overwrite = true;
 
-                    Microsoft.SharePoint.Client.File file = list.RootFolder.Files.Add(newFile);
-                    list.Update();
+                File file = list.RootFolder.Files.Add(newFile);
+                list.Update();
 
-                    //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                    SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
 
 
-                    ////Create folder to hold the email attachments
-                    //ClientContext ctx = new ClientContext("https://toolingsystemsgroup.sharepoint.com/TSG/IT/Software Development Site/RFQAndQuotingApplicationProject");
-                    //ctx.Credentials = master.getSharePointCredentials();
-                    //Web web = ctx.Web;
-                    //// if this does not exist we will get an error 
-                    //var mainfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/TSG/IT/Software Development Site/RFQAndQuotingApplicationProject/Shared Documents/RFQ Email Attachments/");
-                    //ctx.Load(web);
-                    //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                    //var customerfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/TSG/IT/Software Development Site/RFQAndQuotingApplicationProject/Shared Documents/RFQ Email Attachments/" + RFQID);
-                    //ctx.Load(web);
-                    //try
-                    //{
-                    //    SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                    //}
-                    //catch
-                    //{
-                    //    // assume need to create
-                    //    //lblMessage.Text += "Need to create customer folder";
-                    //    mainfolder.Folders.Add(RFQID.ToString());
-                    //    ctx.Credentials = master.getSharePointCredentials();
-                    //    ctx.Load(web);
-                    //    SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                    //    customerfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/TSG/IT/Software Development Site/RFQAndQuotingApplicationProject/Shared Documents/RFQ Email Attachments/" + RFQID);
-                    //    ctx.Load(web);
-                    //    SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                    //}
+                ////Create folder to hold the email attachments
+                //ClientContext ctx = new ClientContext("https://toolingsystemsgroup.sharepoint.com/TSG/IT/Software Development Site/RFQAndQuotingApplicationProject");
+                //ctx.Credentials = master.getSharePointCredentials();
+                //Web web = ctx.Web;
+                //// if this does not exist we will get an error 
+                //var mainfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/TSG/IT/Software Development Site/RFQAndQuotingApplicationProject/Shared Documents/RFQ Email Attachments/");
+                //ctx.Load(web);
+                //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                //var customerfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/TSG/IT/Software Development Site/RFQAndQuotingApplicationProject/Shared Documents/RFQ Email Attachments/" + RFQID);
+                //ctx.Load(web);
+                //try
+                //{
+                //    SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                //}
+                //catch
+                //{
+                //    // assume need to create
+                //    //lblMessage.Text += "Need to create customer folder";
+                //    mainfolder.Folders.Add(RFQID.ToString());
+                //    ctx.Credentials = master.getSharePointCredentials();
+                //    ctx.Load(web);
+                //    SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                //    customerfolder = web.GetFolderByServerRelativeUrl("https://toolingsystemsgroup.sharepoint.com/TSG/IT/Software Development Site/RFQAndQuotingApplicationProject/Shared Documents/RFQ Email Attachments/" + RFQID);
+                //    ctx.Load(web);
+                //    SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                //}
 
-                    //byte[] fileData = null;
-                    //using (var binaryReader = new System.IO.BinaryReader(attachment.InputStream))
-                    //{
-                    //    fileData = binaryReader.ReadBytes((int)attachment.InputStream.Length);
-                    //}
-                    //System.IO.MemoryStream newStream = new System.IO.MemoryStream(fileData);
-                    //FileCreationInformation newFile = new FileCreationInformation();
-                    //newFile.ContentStream = newStream;
-                    //newFile.Url = "https://toolingsystemsgroup.sharepoint.com/TSG/IT/Software Development Site/RFQAndQuotingApplicationProject/Shared Documents/RFQ Email Attachments/" + RFQID + "/" + attachment.FileName;
-                    //newFile.Overwrite = true;
-                    ////Microsoft.SharePoint.Client.List partPicturesList = web.Lists.GetByTitle(RFQID.ToString());
-                    ////Microsoft.SharePoint.Client.File file = partPicturesList.RootFolder.Files.Add(newFile);
-                    ////partPicturesList.Update();
-                    //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                //byte[] fileData = null;
+                //using (var binaryReader = new System.IO.BinaryReader(attachment.InputStream))
+                //{
+                //    fileData = binaryReader.ReadBytes((int)attachment.InputStream.Length);
+                //}
+                //System.IO.MemoryStream newStream = new System.IO.MemoryStream(fileData);
+                //FileCreationInformation newFile = new FileCreationInformation();
+                //newFile.ContentStream = newStream;
+                //newFile.Url = "https://toolingsystemsgroup.sharepoint.com/TSG/IT/Software Development Site/RFQAndQuotingApplicationProject/Shared Documents/RFQ Email Attachments/" + RFQID + "/" + attachment.FileName;
+                //newFile.Overwrite = true;
+                ////Microsoft.SharePoint.Client.List partPicturesList = web.Lists.GetByTitle(RFQID.ToString());
+                ////Microsoft.SharePoint.Client.File file = partPicturesList.RootFolder.Files.Add(newFile);
+                ////partPicturesList.Update();
+                //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
 
-                    //// set the Attributes
-                    //Microsoft.SharePoint.Client.ListItem newItem = file.ListItemAllFields;
-                    //newItem["Title"] = txtPart.Text;
-                    //newItem["PartID"] = UpdateRecord;
-                    //newItem["PartNumber"] = txtPart.Text;
-                    //newItem["PartDescription"] = txtDescription.Text;
-                    //newItem["RFQ"] = "https://tsgrfq.azurewebsites.net/EditRFQ?id=" + RFQID;
-                    //newItem.Update();
-                    //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                }
+                //// set the Attributes
+                //Microsoft.SharePoint.Client.ListItem newItem = file.ListItemAllFields;
+                //newItem["Title"] = txtPart.Text;
+                //newItem["PartID"] = UpdateRecord;
+                //newItem["PartNumber"] = txtPart.Text;
+                //newItem["PartDescription"] = txtDescription.Text;
+                //newItem["RFQ"] = "https://tsgrfq.azurewebsites.net/EditRFQ?id=" + RFQID;
+                //newItem.Update();
+                //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
             }
         }
 
@@ -3175,10 +3043,10 @@ namespace RFQ
                 Response.Write("<script>alert('Please enter a file to import!');</script>");
                 return;
             }
-            Site master = new RFQ.Site();
+            Site master = new Site();
             lblMessage.Text = "";
             // Get The File that was uploaded.  Must be an Excel Workbook
-            String FileName = fileUpload.PostedFile.FileName;
+            string FileName = fileUpload.PostedFile.FileName;
             XSSFWorkbook wb = new XSSFWorkbook(fileUpload.PostedFile.InputStream);
             // The Tab/Sheet we want is ALWAYS named CAD INFO
             XSSFSheet sh = (XSSFSheet)wb.GetSheet("CAD INFO");
@@ -3187,10 +3055,10 @@ namespace RFQ
             {
                 // Get the column where the part picture is located.
                 // all other data is relative to this column
-                Int32 PictureColumn = 1;
+                int PictureColumn = 1;
 
                 XSSFDrawing drawing = (XSSFDrawing)sh.CreateDrawingPatriarch();
-                Boolean GotFirstPicture = false;
+                bool GotFirstPicture = false;
                 foreach (XSSFShape shape in drawing.GetShapes())
                 {
                     if (!GotFirstPicture)
@@ -3235,7 +3103,7 @@ namespace RFQ
                     try
                     {
                         // Apparently, the part number can contain the * character, which separates MULTIPLE parts
-                        String RawPartNumber = "";
+                        string RawPartNumber = "";
                         try
                         {
                             RawPartNumber = sh.GetRow(i).GetCell(PictureColumn + 2).StringCellValue;
@@ -3254,19 +3122,19 @@ namespace RFQ
                         // each part within the asterisks will be linked together.
                         // This LinkID field will hold the common id from linkPartToPart table
                         // Only Need To Link if there is an asterisk in the part number
-                        Int32 LinkID = 0;
-                        Boolean NeedToLink = (RawPartNumber.Split('*').Count() > 1);
+                        int LinkID = 0;
+                        bool NeedToLink = RawPartNumber.Split('*').Count() > 1;
                         if (i == 1)
                         {
-                            minLineNum = System.Convert.ToInt32((count + CurrentMaxLineNumber).ToString()) - 1;
+                            minLineNum = Convert.ToInt32((count + CurrentMaxLineNumber).ToString()) - 1;
                         }
-                        foreach (String eachpart in RawPartNumber.Split('*'))
+                        foreach (string eachpart in RawPartNumber.Split('*'))
                         {
                             // Just using this class to make sure that all fields are picked up for that part
                             RFQPart newPart = new RFQPart();
                             // reset some values
-                            String pictureName = "";
-                            Int64 newID = 0;
+                            string pictureName = "";
+                            long newID = 0;
                             // notice that if there are multiple parts, they get the same part index.
                             // this is intentional, to match them each up with the picture in their row
                             newPart.PartIndex = i;
@@ -3298,7 +3166,7 @@ namespace RFQ
                             int materialID = 0;
                             if (dr.Read())
                             {
-                                materialID = System.Convert.ToInt32(dr.GetValue(0));
+                                materialID = Convert.ToInt32(dr.GetValue(0));
                             }
                             dr.Close();
                             sql.Parameters.Clear();
@@ -3311,7 +3179,7 @@ namespace RFQ
                                 sql.CommandText += "values (@mat, GETDATE(), @created)";
                                 sql.Parameters.AddWithValue("@mat", newPart.MaterialType);
                                 sql.Parameters.AddWithValue("@created", master.getUserName());
-                                materialID = System.Convert.ToInt32(master.ExecuteScalar(sql, "EditRFQ"));
+                                materialID = Convert.ToInt32(master.ExecuteScalar(sql, "EditRFQ"));
                             }
 
                             sql.Parameters.Clear();
@@ -3335,7 +3203,7 @@ namespace RFQ
                             sql.Parameters.AddWithValue("@annualVolume", newPart.annualVolume.ToString());
                             try
                             {
-                                newID = System.Convert.ToInt64(master.ExecuteScalar(sql, "EditRFQ"));
+                                newID = Convert.ToInt64(master.ExecuteScalar(sql, "EditRFQ"));
                             }
                             catch (Exception ex)
                             {
@@ -3388,7 +3256,7 @@ namespace RFQ
                                 master.ExecuteNonQuery(sql, "EditRFQ");
                             }
                             // walk through each picture in the CAD INFO Worksheet
-                            Boolean uploadedPicture = false;
+                            bool uploadedPicture = false;
                             foreach (XSSFShape shape in drawing.GetShapes())
                             {
                                 try
@@ -3396,7 +3264,7 @@ namespace RFQ
                                     XSSFPicture picture = (XSSFPicture)shape;
                                     XSSFClientAnchor anchor = (XSSFClientAnchor)picture.GetAnchor();
                                     XSSFPictureData pdata = (XSSFPictureData)picture.PictureData;
-                                    String PictureRawPartNumber = "";
+                                    string PictureRawPartNumber = "";
                                     try
                                     {
                                         PictureRawPartNumber = sh.GetRow(anchor.Row1).GetCell(PictureColumn + 2).StringCellValue;
@@ -3413,8 +3281,8 @@ namespace RFQ
                                         }
                                     }
 
-                                    String PictureLineNumber = count.ToString();
-                                    if ((PictureRawPartNumber == RawPartNumber) && (PictureLineNumber == (System.Convert.ToInt32(newPart.LineNumber) - minLineNum).ToString()))
+                                    string PictureLineNumber = count.ToString();
+                                    if (PictureRawPartNumber == RawPartNumber && PictureLineNumber == (Convert.ToInt32(newPart.LineNumber) - minLineNum).ToString())
                                     {
                                         uploadedPicture = true;
                                         newPart.MimeType = pdata.MimeType;
@@ -3427,19 +3295,19 @@ namespace RFQ
                                         Web web = ctx.Web;
                                         ctx.Load(web);
                                         //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                                        SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                                        Microsoft.SharePoint.Client.List partPicturesList = web.Lists.GetByTitle("Part Pictures");
-                                        System.IO.MemoryStream newStream = new System.IO.MemoryStream(newPart.PictureData);
+                                        ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
+                                        List partPicturesList = web.Lists.GetByTitle("Part Pictures");
+                                        MemoryStream newStream = new MemoryStream(newPart.PictureData);
                                         FileCreationInformation newFile = new FileCreationInformation();
                                         newFile.ContentStream = newStream;
                                         newFile.Url = "https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Part Pictures/" + pictureName;
                                         newFile.Overwrite = true;
 
-                                        Microsoft.SharePoint.Client.File file = partPicturesList.RootFolder.Files.Add(newFile);
+                                        File file = partPicturesList.RootFolder.Files.Add(newFile);
                                         partPicturesList.Update();
 
                                         //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                                        SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                                        ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
 
                                         // set the Attributes - again could not find a way to do this without first adding the picture
                                         Microsoft.SharePoint.Client.ListItem newItem = file.ListItemAllFields;
@@ -3450,7 +3318,7 @@ namespace RFQ
                                         newItem["RFQ"] = "https://tsgrfq.azurewebsites.net/EditRFQ?id=" + RFQID;
                                         newItem.Update();
                                         //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                                        SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                                        ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
                                         newPart.prtPicture = newFile.Url;
                                     }
                                 }
@@ -3473,7 +3341,7 @@ namespace RFQ
                     }
                     catch (Exception err)
                     {
-                        lblMessage.Text += "Error Loading Row " + i.ToString() + ": " + err.Message;
+                        lblMessage.Text += "Error Loading Row " + i + ": " + err.Message;
                     }
                     i++;
                 }
@@ -3522,8 +3390,8 @@ namespace RFQ
             char[] delimiterChars = { ' ', '.', '_', '-', ',', '\\', '/', '+' };      // add in / \ 
             // possible TODO - instead  of partNum, tokens would use searchString instead
             // only if users do not like how it works now (searching for searchString and partNum)
-            String[] tokens = partNum.Trim().Split(delimiterChars);
-            String removedEndTag = "%";
+            string[] tokens = partNum.Trim().Split(delimiterChars);
+            string removedEndTag = "%";
             string partNumber = "";
             //removing all tokens are replacing with wildcard
             for (int i = 0; i < tokens.Length; i++)
@@ -3560,9 +3428,9 @@ namespace RFQ
             //{ partNumber.Trim(), removedEndTag.Trim(), longest.Trim()};
 
             List<string> quoteID = new List<string>();
-            List<Boolean> hts = new List<Boolean>();
-            List<Boolean> sts = new List<Boolean>();
-            List<Boolean> ugs = new List<Boolean>();
+            List<bool> hts = new List<bool>();
+            List<bool> sts = new List<bool>();
+            List<bool> ugs = new List<bool>();
             List<string> mass = new List<string>();
             List<string> parts = new List<string>();
             List<string> noQuote = new List<string>();
@@ -3798,120 +3666,57 @@ namespace RFQ
 
         private static string GetNumbers(string input)
         {
-            return new string(input.Where(c => char.IsDigit(c)).ToArray());
+            return new string(input.Where(char.IsDigit).ToArray());
         }
 
-        //protected void Edit_Click(object sender, CommandEventArgs e)
-        //{
-        //    if (e.CommandName == "edit")
-        //    {
-        //        Site master = new RFQ.Site();
-        //        SqlConnection connection = new SqlConnection(master.getConnectionString());
-        //        connection.Open();
-        //        SqlCommand sql = new SqlCommand();
-        //        sql.Connection = connection;
-        //        sql.CommandText = "select prtPartNumber, prtPartDescription, prtPartTypeID, prtBlankInfoID, prtPicture, prtPartLength, prtPartWidth, prtPartHeight, prtPartMaterialType, prtPartWeight, prtPartThickness, prtNote, prtRFQLineNumber from tblPart, linkPartToRFQ   where prtPartNumber=@part and ptrRFQID=@rfq and ptrPartID=prtPartID  ";
-        //        sql.Parameters.AddWithValue("@rfq", RFQID);
-        //        sql.Parameters.AddWithValue("@part", e.CommandArgument);
-        //        SqlDataReader dr = sql.ExecuteReader();
-        //        while (dr.Read())
-        //        {
-        //            txtPart.Text = dr.GetValue(0).ToString();
-        //            txtDescription.Text = dr.GetValue(1).ToString();
-        //            try
-        //            {
-        //                ddlPartType.SelectedValue = dr.GetValue(2).ToString();
-        //            }
-        //            catch
-        //            {
-        //            }
-        //            try
-        //            {
-        //                //ddlBlankInfo.SelectedValue = dr.GetValue(3).ToString();
-        //            }
-        //            catch
-        //            {
-        //            }
-        //            lblPicture.Text = "<a href='https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Part%20Pictures/";
-        //            lblPicture.Text += dr.GetValue(4).ToString() + "?rand=1' target='_blank'><img width='100' src='https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Part%20Pictures/";
-        //            lblPicture.Text += dr.GetValue(4).ToString() + "?rand=1' style='border: 0;'></a>";
-        //            txtLength.Text = dr.GetValue(5).ToString();
-        //            txtWidth.Text = dr.GetValue(6).ToString();
-        //            txtHeight.Text = dr.GetValue(7).ToString();
-        //            try
-        //            {
-        //                ddlMaterialType.SelectedValue = dr.GetValue(8).ToString();
-        //            }
-        //            catch
-        //            {
-
-        //            }
-        //            txtWeight.Text = dr.GetValue(9).ToString();
-        //            txtThickness.Text = dr.GetValue(10).ToString();
-        //            txtPartNotesDia.Text = dr.GetValue(11).ToString();
-        //            txtLineNumber.Text = dr.GetValue(12).ToString();
-        //        }
-
-        //        sql.Parameters.Clear();
-        //        sql.CommandText = "Update tblRFQ set rfqCheckBit = 1 where rfqID = @rfq";
-        //        sql.Parameters.AddWithValue("@rfq", this.RFQID);
-
-        //        master.ExecuteNonQuery(sql, "EditRFQ");
-
-        //        dr.Close();
-        //        connection.Close();
-        //        lblMessage.Text = "\n<script>showEditDialog();</script>\n";
-        //    }
-        //}
 
         protected void addNewCustomer_Click(object sender, EventArgs e)
         {
-            if (ddlCustomer.SelectedValue != "Please Select")
-            {
-                Site master = new RFQ.Site();
-                SqlConnection connection = new SqlConnection(master.getConnectionString());
-                connection.Open();
-                SqlCommand sql = new SqlCommand();
-                sql.Connection = connection;
-
-                sql.CommandText = "insert into CustomerContact (CustomerID, Name, Title, OfficePhone, MobilePhone, Email, Notes, ccoCreated, ccoCreatedBy) ";
-                sql.CommandText += "output inserted.CustomerContactID ";
-                sql.CommandText += "values (@customerID, @name, @title, @officePhone, @mobilePhone, @email, @notes, GETDATE(), @createdBy)";
-                sql.Parameters.AddWithValue("@customerID", ddlCustomer.SelectedValue);
-                sql.Parameters.AddWithValue("@name", txtContactName.Text);
-                sql.Parameters.AddWithValue("@title", txtContactTitle.Text);
-                sql.Parameters.AddWithValue("@officePhone", txtContactOfficeNumber.Text);
-                sql.Parameters.AddWithValue("@mobilePhone", txtContactMobileNumber.Text);
-                sql.Parameters.AddWithValue("@email", txtContactEmail.Text);
-                sql.Parameters.AddWithValue("@notes", txtCustomerContactNotes.Text);
-                sql.Parameters.AddWithValue("@createdBy", master.getUserName());
-
-                string contactID = master.ExecuteScalar(sql, "EditRFQ").ToString();
-
-                lblMessage.Text = "\n<script>$('#newCustomerDialog').dialog('close');</script>";
-
-                sql.Parameters.Clear();
-                sql.CommandText = "Select CustomerContactID, Name from CustomerContact where CustomerID = @customer and (ccoInactive = 0 or ccoInactive is null) order by Name";
-                sql.Parameters.AddWithValue("@customer", ddlCustomer.SelectedValue);
-                SqlDataReader cusDR = sql.ExecuteReader();
-                ddlCustomerContact.DataSource = cusDR;
-                ddlCustomerContact.DataTextField = "Name";
-                ddlCustomerContact.DataValueField = "CustomerContactID";
-                ddlCustomerContact.DataBind();
-                cusDR.Close();
-                connection.Close();
-                ddlCustomerContact.SelectedValue = contactID;
-            }
-            else
+            if (ddlCustomer.SelectedValue == "Please Select")
             {
                 Response.Write("<script>alert('Please select a customer before adding a contact!');</script>");
+                return;
             }
+
+            Site master = new Site();
+            SqlConnection connection = new SqlConnection(master.getConnectionString());
+            connection.Open();
+            SqlCommand sql = new SqlCommand();
+            sql.Connection = connection;
+
+            sql.CommandText = "insert into CustomerContact (CustomerID, Name, Title, OfficePhone, MobilePhone, Email, Notes, ccoCreated, ccoCreatedBy) ";
+            sql.CommandText += "output inserted.CustomerContactID ";
+            sql.CommandText += "values (@customerID, @name, @title, @officePhone, @mobilePhone, @email, @notes, GETDATE(), @createdBy)";
+            sql.Parameters.AddWithValue("@customerID", ddlCustomer.SelectedValue);
+            sql.Parameters.AddWithValue("@name", txtContactName.Text);
+            sql.Parameters.AddWithValue("@title", txtContactTitle.Text);
+            sql.Parameters.AddWithValue("@officePhone", txtContactOfficeNumber.Text);
+            sql.Parameters.AddWithValue("@mobilePhone", txtContactMobileNumber.Text);
+            sql.Parameters.AddWithValue("@email", txtContactEmail.Text);
+            sql.Parameters.AddWithValue("@notes", txtCustomerContactNotes.Text);
+            sql.Parameters.AddWithValue("@createdBy", master.getUserName());
+
+            string contactID = master.ExecuteScalar(sql, "EditRFQ").ToString();
+
+            lblMessage.Text = "\n<script>$('#newCustomerDialog').dialog('close');</script>";
+
+            sql.Parameters.Clear();
+            sql.CommandText = "Select CustomerContactID, Name from CustomerContact where CustomerID = @customer and (ccoInactive = 0 or ccoInactive is null) order by Name";
+            sql.Parameters.AddWithValue("@customer", ddlCustomer.SelectedValue);
+            SqlDataReader cusDR = sql.ExecuteReader();
+            ddlCustomerContact.DataSource = cusDR;
+            ddlCustomerContact.DataTextField = "Name";
+            ddlCustomerContact.DataValueField = "CustomerContactID";
+            ddlCustomerContact.DataBind();
+            cusDR.Close();
+            connection.Close();
+            ddlCustomerContact.SelectedValue = contactID;
         }
 
 
         protected void btnSavePart_Click(object sender, EventArgs e)
         {
-            Site master = new RFQ.Site();
+            Site master = new Site();
             SqlConnection connection = new SqlConnection(master.getConnectionString());
             connection.Open();
             SqlCommand sql = new SqlCommand();
@@ -3920,14 +3725,14 @@ namespace RFQ
             sql.Parameters.AddWithValue("@rfq", RFQID);
             sql.Parameters.AddWithValue("@line", hdnLineNum.Value);
             SqlDataReader dr = sql.ExecuteReader();
-            Int64 UpdateRecord = 0;
+            long UpdateRecord = 0;
             lblMessage.Text = sql.CommandText.Replace("@rfq", RFQID.ToString()).Replace("@part", txtPart.Text);
             string lineNumber = "";
-            String pictureName = $"RFQ{RFQID}_{lineNumber}_{txtPart.Text.Trim()}.png";
+            string pictureName = $"RFQ{RFQID}_{lineNumber}_{txtPart.Text.Trim()}.png";
 
             while (dr.Read())
             {
-                UpdateRecord = System.Convert.ToInt64(dr.GetValue(0));
+                UpdateRecord = Convert.ToInt64(dr.GetValue(0));
                 //txtPart.Text = dr.GetValue(1).ToString();
                 lblMessage.Text = "Part Updated";
                 lineNumber = dr.GetValue(2).ToString();
@@ -3967,7 +3772,7 @@ namespace RFQ
                 {
                     if (dr.GetValue(0).ToString() != "")
                     {
-                        maxLineNum = System.Convert.ToInt32(dr.GetValue(0).ToString());
+                        maxLineNum = Convert.ToInt32(dr.GetValue(0).ToString());
                     }
                 }
                 dr.Close();
@@ -4020,7 +3825,7 @@ namespace RFQ
                 sql.Parameters.AddWithValue("@annualVolume", txtPartAnnualVolume.Text.Trim());
 
                 lblMessage.Text += sql.CommandText;
-                UpdateRecord = System.Convert.ToInt64(master.ExecuteScalar(sql, "EditRFQ"));
+                UpdateRecord = Convert.ToInt64(master.ExecuteScalar(sql, "EditRFQ"));
                 sql.CommandText = "insert into linkPartToRFQ (ptrPartID, ptrRFQID, ptrCreated, ptrCreatedBy) ";
                 sql.CommandText += " values (@part, @rfq, current_timestamp, @who) ";
                 sql.Parameters.Clear();
@@ -4077,7 +3882,7 @@ namespace RFQ
                 master.ExecuteNonQuery(sql, "EditRFQ");
             }
             // Upload image into SharePoint
-            String FileName = "";
+            string FileName = "";
             try
             {
                 FileName = filePicture.PostedFile.FileName;
@@ -4093,22 +3898,22 @@ namespace RFQ
                 Web web = ctx.Web;
                 ctx.Load(web);
                 //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                Microsoft.SharePoint.Client.List partPicturesList = web.Lists.GetByTitle("Part Pictures");
+                ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
+                List partPicturesList = web.Lists.GetByTitle("Part Pictures");
                 byte[] fileData = null;
-                using (var binaryReader = new System.IO.BinaryReader(filePicture.PostedFile.InputStream))
+                using (BinaryReader binaryReader = new BinaryReader(filePicture.PostedFile.InputStream))
                 {
                     fileData = binaryReader.ReadBytes((int)filePicture.PostedFile.InputStream.Length);
                 }
-                System.IO.MemoryStream newStream = new System.IO.MemoryStream(fileData);
+                MemoryStream newStream = new MemoryStream(fileData);
                 FileCreationInformation newFile = new FileCreationInformation();
                 newFile.ContentStream = newStream;
                 newFile.Url = "https://toolingsystemsgroup.sharepoint.com/sites/Estimating/Part Pictures/" + pictureName;
                 newFile.Overwrite = true;
-                Microsoft.SharePoint.Client.File file = partPicturesList.RootFolder.Files.Add(newFile);
+                File file = partPicturesList.RootFolder.Files.Add(newFile);
                 partPicturesList.Update();
                 //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
 
                 // set the Attributes
                 Microsoft.SharePoint.Client.ListItem newItem = file.ListItemAllFields;
@@ -4119,7 +3924,7 @@ namespace RFQ
                 newItem["RFQ"] = "https://tsgrfq.azurewebsites.net/EditRFQ?id=" + RFQID;
                 newItem.Update();
                 //SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
-                SpQuery.ExecuteQueryWithIncrementalRetry(ctx, 5, 30000);
+                ctx.ExecuteQueryWithIncrementalRetry(5, 30000);
 
                 sql.CommandText = "update tblPart set prtPicture = @picture, prtModified = GETDATE(), prtModifiedBy = @user where prtPartID = @part";
                 sql.Parameters.Clear();
@@ -4131,7 +3936,7 @@ namespace RFQ
 
             sql.Parameters.Clear();
             sql.CommandText = "Update tblRFQ set rfqCheckBit = 1 where rfqID = @rfq";
-            sql.Parameters.AddWithValue("@rfq", this.RFQID);
+            sql.Parameters.AddWithValue("@rfq", RFQID);
 
             master.ExecuteNonQuery(sql, "EditRFQ");
 
@@ -4149,15 +3954,13 @@ namespace RFQ
         // Need to put a unique ID on each TR element so that I can place another TR element underneath it via jQuery
         protected void dgParts_ItemDataBound(object sender, DataGridItemEventArgs e)
         {
-            if ((e.Item.ItemType == ListItemType.AlternatingItem) || (e.Item.ItemType == ListItemType.Item))
-            {
-                // get the Part Number, that will make the id unique
-                Label BackGroundColor = (Label)e.Item.FindControl("lblBackGroundColor");
-                e.Item.BackColor = System.Drawing.Color.FromName(BackGroundColor.Text.Trim());
-                Label PartID = (Label)e.Item.FindControl("PartID");
-                DataGridItem row = e.Item;
-                row.Attributes["id"] = "line" + PartID.Text.ToString();
-            }
+            if (e.Item.ItemType != ListItemType.AlternatingItem && e.Item.ItemType != ListItemType.Item) return;
+            // get the Part Number, that will make the id unique
+            Label BackGroundColor = (Label)e.Item.FindControl("lblBackGroundColor");
+            e.Item.BackColor = System.Drawing.Color.FromName(BackGroundColor.Text.Trim());
+            Label PartID = (Label)e.Item.FindControl("PartID");
+            DataGridItem row = e.Item;
+            row.Attributes["id"] = "line" + PartID.Text;
         }
 
         protected void ddlPlant_SelectedIndexChanged(object sender, EventArgs e)
@@ -4167,7 +3970,7 @@ namespace RFQ
 
         protected void setSalesmanAndRank()
         {
-            Site master = new RFQ.Site();
+            Site master = new Site();
             IsMasterCompany = master.getMasterCompany();
             UserCompanyID = master.getCompanyId();
             SqlConnection connection = new SqlConnection(master.getConnectionString());
@@ -4191,7 +3994,7 @@ namespace RFQ
                 lblSalesman.Text = dr["PrimarySalesman"].ToString();
                 if (dr["SecondarySalesman"].ToString() != "")
                 {
-                    lblSalesman.Text += ", " + dr["SecondarySalesman"].ToString();
+                    lblSalesman.Text += ", " + dr["SecondarySalesman"];
                 }
             }
             dr.Close();
@@ -4212,8 +4015,8 @@ namespace RFQ
             server.TargetName = "STARTTLS/smtp.office365.com";
             MailMessage mail = new MailMessage();
             mail.From = master.getFromAddress();
-            var to = txtNoQuoteTo.Text.Trim().Split(',');
-            foreach (var address in to)
+            string[] to = txtNoQuoteTo.Text.Trim().Split(',');
+            foreach (string address in to)
             {
                 if (!string.IsNullOrWhiteSpace(address) && !mail.To.Contains(new MailAddress(address)))
                 {
@@ -4221,8 +4024,8 @@ namespace RFQ
                 }
             }
             mail.CC.Add(new MailAddress("jdalman@toolingsystemsgroup.com"));
-            var cc = txtNoQuoteCC.Text.Trim().Split(',');
-            foreach (var address in cc)
+            string[] cc = txtNoQuoteCC.Text.Trim().Split(',');
+            foreach (string address in cc)
             {
                 if (!string.IsNullOrWhiteSpace(address) && !mail.CC.Contains(new MailAddress(address)))
                 {
@@ -4230,7 +4033,7 @@ namespace RFQ
                 }
             }
 
-            var salesman = lblSalesman.Text.Trim().Split(',');
+            string[] salesman = lblSalesman.Text.Trim().Split(',');
 
             SqlConnection connection = new SqlConnection(master.getConnectionString());
             connection.Open();
@@ -4240,7 +4043,7 @@ namespace RFQ
             sql.CommandText += "select Email from TSGSalesman ";
             sql.CommandText += "where Name = @name";
 
-            foreach (var name in salesman)
+            foreach (string name in salesman)
             {
                 sql.Parameters.AddWithValue("@name", name);
                 SqlDataReader dr = sql.ExecuteReader();
@@ -4270,24 +4073,24 @@ namespace RFQ
         public string PartId { get; set; }
         public string prtPicture { get; set; }
         public byte[] PictureData { get; set; }
-        public String MimeType { get; set; }
-        public String LineNumber { get; set; }
-        public String prtPartNumber { get; set; }
-        public String prtPartDescription { get; set; }
-        public String ptyPartDescription { get; set; }
-        public Double Length { get; set; }
-        public Double Width { get; set; }
-        public Double Height { get; set; }
-        public String MaterialType { get; set; }
-        public Double MaterialThickness { get; set; }
-        public Double Weight { get; set; }
-        public String BlankDescription { get; set; }
-        public String LinkPart { get; set; }
-        public String BackGroundColor { get; set; }
-        public String NQRHTML { get; set; }
-        public String checklistHTML { get; set; }
-        public String quotingHTML { get; set; }
-        public String linkpartsHTML { get; set; }
+        public string MimeType { get; set; }
+        public string LineNumber { get; set; }
+        public string prtPartNumber { get; set; }
+        public string prtPartDescription { get; set; }
+        public string ptyPartDescription { get; set; }
+        public double Length { get; set; }
+        public double Width { get; set; }
+        public double Height { get; set; }
+        public string MaterialType { get; set; }
+        public double MaterialThickness { get; set; }
+        public double Weight { get; set; }
+        public string BlankDescription { get; set; }
+        public string LinkPart { get; set; }
+        public string BackGroundColor { get; set; }
+        public string NQRHTML { get; set; }
+        public string checklistHTML { get; set; }
+        public string quotingHTML { get; set; }
+        public string linkpartsHTML { get; set; }
         public string prtNote { get; set; }
         public int annualVolume { get; set; }
     }
@@ -4328,7 +4131,7 @@ namespace RFQ
 
     public class LinkList
     {
-        public String LinkID { get; set; }
-        public String LinkColor { get; set; }
+        public string LinkID { get; set; }
+        public string LinkColor { get; set; }
     }
 }
