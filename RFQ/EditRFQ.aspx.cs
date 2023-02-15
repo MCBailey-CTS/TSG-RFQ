@@ -2658,6 +2658,29 @@ namespace RFQ
 
         protected void btnSave_Click_Click(object sender, EventArgs e)
         {
+
+            bool sendQuotesFilledOut = !(string.IsNullOrEmpty(txtSendQuotes.Text) || string.IsNullOrWhiteSpace(txtSendQuotes.Text));
+
+
+
+            if (cbBundleQuotesYes.Checked && !sendQuotesFilledOut)
+            {
+                Page.ClientScript.RegisterStartupScript(this.GetType(), "ErrorAlert", "alert('Bundle Quotes to Customer is checked on but send quotes box is empty.');", true);
+
+
+                return;
+            }
+
+            if (!cbBundleQuotesYes.Checked && sendQuotesFilledOut)
+            {
+                Page.ClientScript.RegisterStartupScript(this.GetType(), "ErrorAlert", "alert('Bundle Quotes to Customer is checked off but send quotes box is filled out.');", true);
+
+
+                return;
+            }
+
+
+
             if (RFQID == 0)
             {
                 Site master = new RFQ.Site();
@@ -2734,6 +2757,7 @@ namespace RFQ
                     "@cbHydroformTooling, @cbKitDie, @cbFormSteelCoatings," +
                     "@cbMoldToolingTubeDies, @cbLcc, @cbSparePunchesButtons, @cbEngineeringChange, @cbSeeDocumentFromCustomer, @cbIncludeEarlyParts, @cbAssemblyToolingEquipment," +
                     "@cbIncludeFinanceCost, @cbPrototypes, @cbTsims, @cbTurnkeySeeInternalTsgRfq, @cbTransferFingers, @cbBundleQuotesYes, @txtSendQuotes ) ";
+
 
 
 
@@ -2852,6 +2876,13 @@ namespace RFQ
                 //}
 
                 //ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Insert is successfull')", true);
+
+
+
+                //
+
+            
+
 
 
                 try
