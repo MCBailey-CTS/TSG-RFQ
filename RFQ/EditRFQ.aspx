@@ -139,58 +139,81 @@
             </tr>
 
             <tr>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbDies" Text="Dies" /></td>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbNaBuild" Text="NA Build" /></td>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbHomeLineSupport" Text="Home Line Support" /></td>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbBundleQuotesYes" Text="Yes" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbDies" Text="Dies" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbNaBuild" Text="NA Build" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbHomeLineSupport" Text="Home Line Support" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbBundleQuotesYes" Text="Yes" /></td>
             </tr>
 
             <tr>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbCheckFixture" Text="Check Fixture" /></td>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbBlended" Text="Blended" /></td>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbShippingToPlant" Text="Shipping to Plant" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbCheckFixture" Text="Check Fixture" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbBlended" Text="Blended" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbShippingToPlant" Text="Shipping to Plant" /></td>
                 <td valign="top" class="ui-widget">Send quote to:</td>
-                 <td><asp:TextBox ID="txtSendQuotes"  runat="server" CssClass="ui-widget" MaxLength="120"></asp:TextBox></td>
+                <td>
+                    <asp:TextBox ID="txtSendQuotes" runat="server" CssClass="ui-widget" MaxLength="120"></asp:TextBox></td>
             </tr>
             <tr>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbHydroformTooling" Text="Hydroform Tooling" /></td>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbKitDie" Text="Kit Die" /></td>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbFormSteelCoatings" Text="Form Steel Coatings" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbHydroformTooling" Text="Hydroform Tooling" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbKitDie" Text="Kit Die" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbFormSteelCoatings" Text="Form Steel Coatings" /></td>
             </tr>
             <tr>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbMoldToolingTubeDies" Text="Mold Tooling / Tube Dies" /></td>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbLcc" Text="LCC" /></td>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbSparePunchesButtons" Text="Spare Punches and Buttons" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbMoldToolingTubeDies" Text="Mold Tooling / Tube Dies" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbLcc" Text="LCC" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbSparePunchesButtons" Text="Spare Punches and Buttons" /></td>
             </tr>
             <tr>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbEngineeringChange" Text="Engineering Change" /></td>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbSeeDocumentFromCustomer" Text="See Document from Customer" /></td>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbIncludeEarlyParts" Text="Include early parts (see customer RFQ)" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbEngineeringChange" Text="Engineering Change" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbSeeDocumentFromCustomer" Text="See Document from Customer" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbIncludeEarlyParts" Text="Include early parts (see customer RFQ)" /></td>
             </tr>
             <tr>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbAssemblyToolingEquipment" Text="Assembly Tooling /  Equipment" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbAssemblyToolingEquipment" Text="Assembly Tooling /  Equipment" /></td>
                 <td>&nbsp;</td>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbIncludeFinanceCost" Text="Include Finance cost" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbIncludeFinanceCost" Text="Include Finance cost" /></td>
             </tr>
 
             <tr>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbPrototypes" Text="Prototypes" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbPrototypes" Text="Prototypes" /></td>
                 <td>&nbsp;</td>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbTsims" Text="T-sims" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbTsims" Text="T-sims" /></td>
             </tr>
             <tr>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbTurnkeySeeInternalTsgRfq" Text="Turnkey (See internal TSG RFQ)" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbTurnkeySeeInternalTsgRfq" Text="Turnkey (See internal TSG RFQ)" /></td>
                 <td>&nbsp;</td>
-                <td><asp:CheckBox TextAlign="Right" runat="Server" ID="cbTransferFingers" Text="Transfer fingers" /></td>
+                <td>
+                    <asp:CheckBox TextAlign="Right" runat="Server" ID="cbTransferFingers" Text="Transfer fingers" /></td>
             </tr>
 
             <tr>
-                <td valign="top" class="ui-widget">Notes:</td>
+        </table>
+        <div>
+            Notes:
+            <asp:TextBox ID="txtNotes" runat="server" TextMode="MultiLine" Height="200px" Width="800px"></asp:TextBox></div>
 
-                <td colspan="3">
-                    <asp:TextBox ID="txtNotes" runat="server" TextMode="MultiLine" Rows="20" Columns="20" Width="100%"></asp:TextBox>
-                </td>
-            </tr>
+        <table>
             <tr>
                 <td colspan="6" style="background-color: sandybrown; font-weight: bold; padding: 4px;">RFQ Link: 
                 <asp:HyperLink runat="server" ID="hlRFQLink" Target="_blank"></asp:HyperLink>
